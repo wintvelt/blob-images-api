@@ -17,6 +17,7 @@ provider:
 
   environment:
     photoTable: blob-images-photos
+    photoIndex: SK-PK-idx
     messageTable: blob-images-messages
 
   iamRoleStatements:
@@ -41,13 +42,18 @@ functions:
           cors: true
           authorizer: aws_iam
   getPhoto:
-    # Defines an HTTP API endpoint that calls the main function in get.js
-    # - path: url path is /notes/{id}
-    # - method: GET request
     handler: getPhoto.main
     events:
       - http:
           path: photos/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  listPhotos:
+    handler: listPhotos.main
+    events:
+      - http:
+          path: photos
           method: get
           cors: true
           authorizer: aws_iam
