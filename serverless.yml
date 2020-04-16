@@ -13,4 +13,41 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: prod
-  region: us-central-1
+  region: eu-central-1
+
+  environment:
+    photoTable: blob-images-photos
+    messageTable: blob-images-messages
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:eu-central-1:*:*"
+
+functions:
+  createPhoto:
+    handler: createPhoto.main
+    events:
+      - http:
+          path: photos
+          method: post
+          cors: true
+          authorizer: aws_iam
+  getPhoto:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is /notes/{id}
+    # - method: GET request
+    handler: getPhoto.main
+    events:
+      - http:
+          path: photos/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
