@@ -1,4 +1,4 @@
-const PHOTO_PARTS = 15;
+const PARTS = 15;
 
 export const now = () => {
     const today = new Date();
@@ -11,5 +11,5 @@ export const now = () => {
 };
 
 export const RND = () => {
-    return 'RND' + Math.round(Math.random() * PHOTO_PARTS);
+    return 'RND' + Math.round(Math.random() * PARTS);
 };

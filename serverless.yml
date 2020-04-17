@@ -34,7 +34,7 @@ provider:
 
 functions:
   createPhoto:
-    handler: createPhoto.main
+    handler: handlersPhoto/createPhoto.main
     events:
       - http:
           path: photos
@@ -42,7 +42,7 @@ functions:
           cors: true
           authorizer: aws_iam
   getPhoto:
-    handler: getPhoto.main
+    handler: handlersPhoto/getPhoto.main
     events:
       - http:
           path: photos/{id}
@@ -50,7 +50,7 @@ functions:
           cors: true
           authorizer: aws_iam
   listPhotos:
-    handler: listPhotos.main
+    handler: handlersPhoto/listPhotos.main
     events:
       - http:
           path: photos
