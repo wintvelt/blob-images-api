@@ -1,8 +1,0 @@
-{
-    "body": "{\"title\":\"hello world\",\"url\":\"mobly team 2.jepg\"}",
-    "requestContext": {
-        "identity": {
-            "cognitoIdentityId": "USER-SUB-1234"
-        }
-    }
-}

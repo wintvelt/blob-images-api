@@ -1,3 +1,5 @@
+import * as uuid from "uuid";
+
 const PARTS = 15;
 
 export const now = () => {
@@ -13,3 +15,5 @@ export const now = () => {
 export const RND = () => {
     return 'RND' + Math.round(Math.random() * PARTS);
 };
+
+export const newPhotoId = () => 'P' + uuid.v1();
