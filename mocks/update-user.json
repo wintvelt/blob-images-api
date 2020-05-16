@@ -1,0 +1,8 @@
+{
+    "body": "{\"name\":\"Wouter In 't Velt\",\"avatar\":\"some url.jpg\"}",
+    "requestContext": {
+        "identity": {
+            "cognitoIdentityId": "eu-central-1:test1234"
+        }
+    }
+}
