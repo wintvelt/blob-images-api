@@ -41,6 +41,14 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  getUser:
+    handler: handlersUser/getUser.main
+    events:
+      - http:
+          path: users/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
   createPhoto:
     handler: handlersPhoto/createPhoto.main
     events:

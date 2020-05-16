@@ -1,0 +1,10 @@
+{
+    "pathParameters": {
+        "id": "Ueu-central-1:test1234"
+    },
+    "requestContext": {
+        "identity": {
+            "cognitoIdentityId": "eu-central-1:test1234"
+        }
+    }
+}
