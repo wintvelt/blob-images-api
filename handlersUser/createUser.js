@@ -1,4 +1,4 @@
-import { now } from '../libs/helpers';
+import { now, RND } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 
@@ -13,6 +13,8 @@ export const main = handler(async (event, context) => {
             SK: 'U' + cognitoId,
             name: data.name,
             avatar: data.avatar,
+            state: 'pending',
+            RND: RND(),
             createdAt: now(),
         }
     };
