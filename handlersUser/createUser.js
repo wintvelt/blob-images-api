@@ -13,7 +13,7 @@ export const main = handler(async (event, context) => {
             SK: 'U' + cognitoId,
             name: data.name,
             avatar: data.avatar,
-            state: 'pending',
+            comp: 'pending',
             RND: RND(),
             createdAt: now(),
         }
