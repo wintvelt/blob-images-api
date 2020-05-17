@@ -14,7 +14,7 @@ export const main = handler(async (event, context) => {
             name: data.name,
             email: data.email,
             avatar: data.avatar,
-            comp: 'pending',
+            comp: 'confirmed',
             RND: RND(),
             createdAt: now(),
         }
