@@ -12,6 +12,7 @@ export const main = handler(async (event, context) => {
             PK: 'UBbase',
             SK: 'U' + cognitoId,
             name: data.name,
+            email: data.email,
             avatar: data.avatar,
             comp: 'pending',
             RND: RND(),
