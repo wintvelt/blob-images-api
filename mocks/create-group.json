@@ -1,0 +1,8 @@
+{
+    "body": "{\"name\":\"Blob fotogroep\",\"description\":\"Laag naar de top sinds 1985\",\"image\":\"\"}",
+    "requestContext": {
+        "identity": {
+            "cognitoIdentityId": "eu-central-1:test1234"
+        }
+    }
+}

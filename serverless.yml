@@ -33,6 +33,14 @@ provider:
       Resource: "arn:aws:dynamodb:eu-central-1:*:*"
 
 functions:
+  createGroup:
+    handler: handlersGroup/createGroup.main
+    events:
+      - http:
+          path: groups
+          method: post
+          cors: true
+          authorizer: aws_iam
   createUser:
     handler: handlersUser/createUser.main
     events:

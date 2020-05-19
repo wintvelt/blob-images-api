@@ -17,3 +17,4 @@ export const RND = () => {
 };
 
 export const newPhotoId = () => 'P' + uuid.v1();
+export const newGroupId = () => 'G' + uuid.v1();
