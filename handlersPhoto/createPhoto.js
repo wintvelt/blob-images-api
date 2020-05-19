@@ -10,7 +10,7 @@ export const main = handler(async (event, context) => {
     const keyListLength = keyList.length;
     for (let i = 0; i < keyListLength; i++) {
         const key = keyList[i];
-        const [_, cognitoId, filename] = key.split('/');
+        const cognitoId = key.split('/')[1];
         const params = {
             TableName: process.env.photoTable,
             Item: {
@@ -21,7 +21,6 @@ export const main = handler(async (event, context) => {
                 createdAt: now(),
             }
         };
-    
         await dynamoDb.put(params);
     }
 
