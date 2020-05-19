@@ -1,4 +1,4 @@
-import { now, RND } from '../libs/helpers';
+import { now } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 
@@ -14,8 +14,8 @@ export const main = handler(async (event, context) => {
             name: data.name,
             email: data.email,
             avatar: data.avatar,
-            comp: 'confirmed',
-            RND: RND(),
+            comp: data.email,
+            RND: 'USER',
             createdAt: now(),
         }
     };
