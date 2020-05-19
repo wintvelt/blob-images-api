@@ -4,13 +4,13 @@ import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
-    const eventList = JSON.parse(event.Records) || [];
+    const eventList = event.Records || [];
     const keyList = eventList.map(item => item.s3.object.key);
 
     const keyListLength = keyList.length;
     for (let i = 0; i < keyListLength; i++) {
         const key = keyList[i];
-        const cognitoId = key.split('/')[1];
+        const cognitoId = decodeURIComponent(key).split('/')[1];
         const params = {
             TableName: process.env.photoTable,
             Item: {
