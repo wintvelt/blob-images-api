@@ -5,12 +5,13 @@ export const main = handler(async (event, context) => {
     const params = {
         TableName: process.env.photoTable,
         IndexName: process.env.photoIndex,
-        KeyConditionExpression: "#u = :user",
+        KeyConditionExpression: "#u = :user and begins_with(PK, :p)",
         ExpressionAttributeNames: {
-            '#u': 'SK'
+            '#u': 'SK',
         },
         ExpressionAttributeValues: {
-            ":user": 'U' + event.requestContext.identity.cognitoIdentityId
+            ":user": 'U' + event.requestContext.identity.cognitoIdentityId,
+            ":p": 'PO',
         },
     };
 

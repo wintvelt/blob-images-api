@@ -14,7 +14,7 @@ export const main = handler(async (event, context) => {
         const params = {
             TableName: process.env.photoTable,
             Item: {
-                PK: newPhotoId(),
+                PK: 'PO' + newPhotoId(),
                 SK: 'U' + cognitoId,
                 url: key,
                 RND: RND(),
