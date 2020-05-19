@@ -16,7 +16,15 @@ export const main = handler(async (event, context) => {
     };
 
     const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("photos retrieval failed.");
+    }
 
-    // Return the matching list of items in response body
-    return result.Items;
+    const photos = items.map(item => ({
+        owner: 'me',
+        image: item.url,
+    }));
+
+    return photos;
 });
