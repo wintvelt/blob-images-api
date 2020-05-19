@@ -33,6 +33,15 @@ provider:
       Resource: "arn:aws:dynamodb:eu-central-1:*:*"
 
 functions:
+  createPhoto:
+    handler: handlersPhoto/createPhoto.main
+    events:
+      - s3:
+          bucket: blob-images
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: protected/
+          existing: true
   createGroup:
     handler: handlersGroup/createGroup.main
     events:
@@ -63,14 +72,6 @@ functions:
       - http:
           path: users
           method: put
-          cors: true
-          authorizer: aws_iam
-  createPhoto:
-    handler: handlersPhoto/createPhoto.main
-    events:
-      - http:
-          path: photos
-          method: post
           cors: true
           authorizer: aws_iam
   getPhoto:

@@ -1,24 +1,29 @@
+// invoked from S3 Lambda trigger
 import { now, RND, newPhotoId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
-    const data = JSON.parse(event.body);
+    const eventList = JSON.parse(event.Records) || [];
+    const keyList = eventList.map(item => item.s3.object.key);
 
-    const params = {
-        TableName: process.env.photoTable,
-        Item: {
-            PK: newPhotoId(),
-            SK: 'U' + event.requestContext.identity.cognitoIdentityId,
-            title: data.title,
-            description: data.description,
-            url: data.url,
-            RND: RND(),
-            createdAt: now(),
-        }
-    };
+    const keyListLength = keyList.length;
+    for (let i = 0; i < keyListLength; i++) {
+        const key = keyList[i];
+        const [_, cognitoId, filename] = key.split('/');
+        const params = {
+            TableName: process.env.photoTable,
+            Item: {
+                PK: newPhotoId(),
+                SK: 'U' + cognitoId,
+                url: key,
+                RND: RND(),
+                createdAt: now(),
+            }
+        };
+    
+        await dynamoDb.put(params);
+    }
 
-    await dynamoDb.put(params);
-
-    return params.Item;
+    return 'ok';
 });
