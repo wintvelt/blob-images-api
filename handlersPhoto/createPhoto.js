@@ -9,8 +9,8 @@ export const main = handler(async (event, context) => {
 
     const keyListLength = keyList.length;
     for (let i = 0; i < keyListLength; i++) {
-        const key = keyList[i];
-        const cognitoId = decodeURIComponent(key).split('/')[1];
+        const key = decodeURIComponent(keyList[i]);
+        const cognitoId = key.split('/')[1];
         const params = {
             TableName: process.env.photoTable,
             Item: {

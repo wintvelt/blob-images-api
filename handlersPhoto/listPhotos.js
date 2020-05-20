@@ -25,6 +25,7 @@ export const main = handler(async (event, context) => {
         id: item.PK.slice(2),
         owner: 'me',
         image: item.url,
+        date: item.createdAt,
     }));
 
     return photos;
