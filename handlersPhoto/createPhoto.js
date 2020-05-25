@@ -13,7 +13,7 @@ export const main = handler(async (event, context) => {
         const key = keyList[i];
         const cognitoId = key.split('/')[1];
         let userKeyList = keyListByUser[cognitoId];
-        keyListByUser[cognitoId] = (userKeyList)?
+        keyListByUser[cognitoId] = (userKeyList) ?
             [...userKeyList, key]
             : [key];
     }
@@ -35,7 +35,7 @@ export const main = handler(async (event, context) => {
 
         const userKeyListLength = userKeyList.length;
         for (let j = 0; j < userKeyListLength; j++) {
-            const key = userKeyList[j];            
+            const key = userKeyList[j];
             const photoParams = {
                 TableName: process.env.photoTable,
                 Item: {
