@@ -50,6 +50,14 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  getGroup:
+    handler: handlersGroup/getGroup.main
+    events:
+      - http:
+          path: groups/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
   createUser:
     handler: handlersUser/createUser.main
     events:
