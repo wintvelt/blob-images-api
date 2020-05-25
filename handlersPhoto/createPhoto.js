@@ -25,7 +25,7 @@ export const main = handler(async (event, context) => {
         const userKeyList = keyListByUser[cognitoId];
         const userParams = {
             TableName: process.env.photoTable,
-            Item: {
+            Key: {
                 PK: 'UBbase',
                 SK: 'U' + cognitoId,
             }
