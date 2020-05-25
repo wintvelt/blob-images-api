@@ -1,10 +1,11 @@
 import { now, newGroupId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
+import dynamoDb, { getUser } from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const cognitoId = event.requestContext.identity.cognitoIdentityId;
+    const user = await getUser(cognitoId);
 
     const groupId = newGroupId();
 
@@ -32,6 +33,8 @@ export const main = handler(async (event, context) => {
                         PK: 'UM' + 'U' + cognitoId,
                         SK: groupId,
                         role: 'admin',
+                        name: user.name,
+                        avatar: user.avatar,
                         comp: 'admin',
                         RND: 'GROUP',
                         createdAt: now(),

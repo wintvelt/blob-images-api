@@ -25,7 +25,7 @@ export const getUser = async (cognitoId) => {
     }
     // Return the retrieved item
     return result.Item;
-}
+};
 
 export const checkUser = async (cognitoId, groupId) => {
     const memberParams = {
@@ -35,8 +35,8 @@ export const checkUser = async (cognitoId, groupId) => {
             SK: groupId
         },
     };
-    const result = await dynamoDB.get(memberParams);
+    const result = await dynamoDb.get(memberParams);
     return (!!result.Item);
-}
+};
 
 export default dynamoDb;
