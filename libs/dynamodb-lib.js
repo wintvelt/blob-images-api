@@ -16,7 +16,7 @@ export const getUser = async (cognitoId) => {
         TableName: process.env.photoTable,
         Key: {
             PK: 'UBbase',
-            SK: cognitoId,
+            SK: 'U' + cognitoId,
         }
     };
     const result = await dynamoDb.get(params);
