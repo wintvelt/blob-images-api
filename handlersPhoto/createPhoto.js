@@ -1,7 +1,7 @@
 // invoked from S3 Lambda trigger
 import { now, RND, newPhotoId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
+import dynamoDb, { getUser } from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
     const eventList = event.Records || [];
@@ -23,15 +23,7 @@ export const main = handler(async (event, context) => {
     for (let i = 0; i < userListLength; i++) {
         const cognitoId = userList[i];
         const userKeyList = keyListByUser[cognitoId];
-        const userParams = {
-            TableName: process.env.photoTable,
-            Key: {
-                PK: 'UBbase',
-                SK: 'U' + cognitoId,
-            }
-        };
-        const result = await dynamoDb.get(userParams);
-        const user = result.Item;
+        const user = await getUser(cognitoId);
 
         const userKeyListLength = userKeyList.length;
         for (let j = 0; j < userKeyListLength; j++) {

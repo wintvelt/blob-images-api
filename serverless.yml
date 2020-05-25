@@ -58,6 +58,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  listGroupPhotos:
+    handler: handlersGroup/listGroupPhotos.main
+    events:
+      - http:
+          path: groups/{id}/photos
+          method: get
+          cors: true
+          authorizer: aws_iam
   createUser:
     handler: handlersUser/createUser.main
     events:
