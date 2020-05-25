@@ -5,7 +5,7 @@ import dynamoDb, { getUser } from "../libs/dynamodb-lib";
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const cognitoId = event.requestContext.identity.cognitoIdentityId;
-    const user = await getUser(cognitoId);
+    const user = await getUser('U' + cognitoId);
 
     const groupId = newGroupId();
 

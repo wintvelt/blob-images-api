@@ -11,12 +11,12 @@ const dynamoDb = {
     transact: (params) => client.transactWrite(params).promise()
 };
 
-export const getUser = async (cognitoId) => {
+export const getUser = async (userId) => {
     const params = {
         TableName: process.env.photoTable,
         Key: {
             PK: 'UBbase',
-            SK: 'U' + cognitoId,
+            SK: userId,
         }
     };
     const result = await dynamoDb.get(params);
