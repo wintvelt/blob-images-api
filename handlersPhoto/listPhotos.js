@@ -23,7 +23,7 @@ export const main = handler(async (event, context) => {
 
     const photos = items.map(item => ({
         id: item.PK.slice(2),
-        owner: 'me',
+        owner: item.owner,
         image: item.url,
         date: item.createdAt,
     }));
