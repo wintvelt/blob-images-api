@@ -39,4 +39,22 @@ export const checkUser = async (cognitoId, groupId) => {
     return (!!result.Item);
 };
 
+export const getMemberships = (userId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        KeyConditionExpression: "#u = :member",
+        ExpressionAttributeNames: {
+            '#u': 'PK',
+        },
+        ExpressionAttributeValues: {
+            ":member": 'UM' + userId,
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("membership retrieval failed.");
+    }
+}
 export default dynamoDb;
