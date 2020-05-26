@@ -7,7 +7,12 @@ export const main = handler(async (event, context) => {
     const cognitoId = event.requestContext.identity.cognitoIdentityId;
     const user = await getUser('U' + cognitoId);
 
-    const groupId = newGroupId();
+    const newGroup = {
+        id: newGroupId(),
+        name: data.name, 
+        description: data.description,
+        image: data.image,
+    };
 
     const params = {
         TransactItems: [
@@ -16,10 +21,10 @@ export const main = handler(async (event, context) => {
                     TableName: process.env.photoTable,
                     Item: {
                         PK: 'GBbase',
-                        SK: groupId,
-                        name: data.name,
-                        description: data.description,
-                        image: data.image,
+                        SK: newGroup.id,
+                        name: newGroup.name,
+                        description: newGroup.description,
+                        image: newGroup.image,
                         comp: 'dummy',
                         RND: 'GROUP',
                         createdAt: now(),
@@ -33,8 +38,7 @@ export const main = handler(async (event, context) => {
                         PK: 'UM' + 'U' + cognitoId,
                         SK: groupId,
                         role: 'admin',
-                        name: user.name,
-                        avatar: user.avatar,
+                        user,
                         comp: 'admin',
                         RND: 'GROUP',
                         createdAt: now(),
