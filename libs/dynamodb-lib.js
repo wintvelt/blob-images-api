@@ -56,5 +56,6 @@ export const getMemberships = async (userId) => {
     if (!items) {
         throw new Error("membership retrieval failed.");
     }
-}
+};
+
 export default dynamoDb;
