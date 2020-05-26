@@ -23,7 +23,7 @@ export const main = handler(async (event, context) => {
     for (let i = 0; i < userListLength; i++) {
         const cognitoId = userList[i];
         const userKeyList = keyListByUser[cognitoId];
-        const user = await getUser(cognitoId);
+        const user = await getUser('U' + cognitoId);
 
         const userKeyListLength = userKeyList.length;
         for (let j = 0; j < userKeyListLength; j++) {
