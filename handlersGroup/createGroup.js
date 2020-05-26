@@ -39,6 +39,7 @@ export const main = handler(async (event, context) => {
                         SK: newGroup.id,
                         role: 'admin',
                         user,
+                        group: newGroup,
                         comp: 'admin',
                         RND: 'GROUP',
                         createdAt: now(),
