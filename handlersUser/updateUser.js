@@ -13,7 +13,7 @@ const memberUpdate = (PK, SK, newUser) => ({
             '#user': 'user',
         },
         ExpressionAttributeValues: {
-            ":newuser": newUser,
+            ":newUser": newUser,
         },
         ReturnValues: "ALL_NEW"
     }
