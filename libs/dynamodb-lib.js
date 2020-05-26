@@ -39,7 +39,7 @@ export const checkUser = async (cognitoId, groupId) => {
     return (!!result.Item);
 };
 
-export const getMemberships = (userId) => {
+export const getMemberships = async (userId) => {
     const params = {
         TableName: process.env.photoTable,
         KeyConditionExpression: "#u = :member",
