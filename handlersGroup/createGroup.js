@@ -9,7 +9,7 @@ export const main = handler(async (event, context) => {
 
     const newGroup = {
         id: newGroupId(),
-        name: data.name, 
+        name: data.name,
         description: data.description,
         image: data.image,
     };
@@ -36,7 +36,7 @@ export const main = handler(async (event, context) => {
                     TableName: process.env.photoTable,
                     Item: {
                         PK: 'UM' + 'U' + cognitoId,
-                        SK: groupId,
+                        SK: newGroup.id,
                         role: 'admin',
                         user,
                         comp: 'admin',
