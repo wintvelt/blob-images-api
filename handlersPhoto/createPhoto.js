@@ -36,7 +36,7 @@ export const main = handler(async (event, context) => {
                     url: key,
                     RND: RND(),
                     createdAt: now(),
-                    owner: user.name,
+                    owner: user,
                 }
             };
             await dynamoDb.put(photoParams);
