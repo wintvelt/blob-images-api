@@ -1,6 +1,20 @@
 import AWS from "aws-sdk";
+import { splitArr } from './helpers';
 
 const client = new AWS.DynamoDB.DocumentClient();
+
+const splitTransact = (params) => {
+    const transactions = params.TransactItems;
+    const bundledTransactions = splitArr(transactions, 25);
+    return Promise.all(
+        bundledTransactions.map(transactionSet => {
+            const bundledParams = {
+                TransactItems: transactionSet
+            };
+            return client.transactWrite(bundledParams).promise()
+        })
+    )
+};
 
 const dynamoDb = {
     get: (params) => client.get(params).promise(),
@@ -8,7 +22,7 @@ const dynamoDb = {
     query: (params) => client.query(params).promise(),
     update: (params) => client.update(params).promise(),
     delete: (params) => client.delete(params).promise(),
-    transact: (params) => client.transactWrite(params).promise()
+    transact: (params) => splitTransact(params),
 };
 
 export const getUser = async (userId) => {
@@ -48,7 +62,7 @@ export const listPhotos = async (userId) => {
             '#u': 'SK',
         },
         ExpressionAttributeValues: {
-            ":user": 'U' + event.requestContext.identity.cognitoIdentityId,
+            ":user": userId,
             ":p": 'PO',
         },
     };
@@ -67,7 +81,7 @@ export const listPhotos = async (userId) => {
     }));
 
     return photos;
-}
+};
 export const getMemberships = async (userId) => {
     const params = {
         TableName: process.env.photoTable,

@@ -46,7 +46,7 @@ export const main = handler(async (event, context) => {
     const membershipUpdates = memberships.map(item => memberUpdate(item.PK, item.SK, 'user', newUser));
 
     const photos = await listPhotos(userId);
-    const photoUpdates = photos.map(item => memberUpdate(item.PK, item.SK, 'owner', newUser))
+    const photoUpdates = photos.map(item => memberUpdate(item.PK, item.SK, 'owner', newUser));
 
     await dynamoDb.transact({
         TransactItems: [

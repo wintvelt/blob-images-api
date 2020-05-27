@@ -18,3 +18,13 @@ export const RND = () => {
 
 export const newPhotoId = () => 'P' + uuid.v1();
 export const newGroupId = () => 'G' + uuid.v1();
+
+export const splitArr = (arr, size) => {
+    let inArr = [...arr];
+    let outArr = [];
+    do {
+        outArr.push(inArr.slice(0, size));
+        inArr = inArr.slice(size);
+    } while (inArr.length > 0);
+    return outArr;
+};
