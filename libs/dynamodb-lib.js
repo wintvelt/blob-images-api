@@ -13,9 +13,10 @@ const splitTransact = (params) => {
             const bundledParams = {
                 TransactItems: transactionSet
             };
-            return client.transactWrite(bundledParams).promise()
+            console.log(transactionSet);
+            return client.transactWrite(bundledParams).promise();
         })
-    )
+    );
 };
 
 const dynamoDb = {
@@ -78,7 +79,7 @@ export const listPhotos = async (userId) => {
     const photos = items.map(item => ({
         id: item.PK.slice(2),
         owner: item.owner,
-        image: item.image,
+        image: item.url,
         date: item.createdAt,
     }));
 

@@ -44,9 +44,11 @@ export const main = handler(async (event, context) => {
     };
     const memberships = await getMemberships(userId);
     const membershipUpdates = memberships.map(item => memberUpdate(item.PK, item.SK, 'user', newUser));
+    console.log('got members');
 
     const photos = await listPhotos(userId);
     const photoUpdates = photos.map(item => memberUpdate(item.PK, item.SK, 'owner', newUser));
+    console.log('got photos');
 
     await dynamoDb.transact({
         TransactItems: [
