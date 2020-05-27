@@ -1,7 +1,7 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberships } from "../libs/dynamodb-lib";
+import dynamoDb, { getMemberships, listPhotos } from "../libs/dynamodb-lib";
 
-const memberUpdate = (PK, SK, newUser) => ({
+const memberUpdate = (PK, SK, key, newUser) => ({
     Update: {
         TableName: process.env.photoTable,
         Key: {
@@ -10,7 +10,7 @@ const memberUpdate = (PK, SK, newUser) => ({
         },
         UpdateExpression: "SET #user = :newUser",
         ExpressionAttributeNames: {
-            '#user': 'user',
+            '#user': key,
         },
         ExpressionAttributeValues: {
             ":newUser": newUser,
@@ -42,13 +42,17 @@ export const main = handler(async (event, context) => {
         },
         ReturnValues: "ALL_NEW"
     };
-    const memberships = getMemberships(userId);
-    const membershipUpdates = (await memberships).map(item => memberUpdate(item.PK, item.SK, newUser));
+    const memberships = await getMemberships(userId);
+    const membershipUpdates = memberships.map(item => memberUpdate(item.PK, item.SK, 'user', newUser));
+
+    const photos = await listPhotos(userId);
+    const photoUpdates = photos.map(item => memberUpdate(item.PK, item.SK, 'owner', newUser))
 
     await dynamoDb.transact({
         TransactItems: [
             { Update: userParams },
-            ...membershipUpdates
+            ...membershipUpdates,
+            ...photoUpdates
         ]
     });
 
