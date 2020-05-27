@@ -13,7 +13,6 @@ const splitTransact = (params) => {
             const bundledParams = {
                 TransactItems: transactionSet
             };
-            console.log(transactionSet);
             return client.transactWrite(bundledParams).promise();
         })
     );
@@ -77,6 +76,8 @@ export const listPhotos = async (userId) => {
     }
 
     const photos = items.map(item => ({
+        PK: item.PK,
+        SK: item.SK,
         id: item.PK.slice(2),
         owner: item.owner,
         image: item.url,
@@ -85,6 +86,7 @@ export const listPhotos = async (userId) => {
 
     return photos;
 };
+
 export const getMemberships = async (userId) => {
     const params = {
         TableName: process.env.photoTable,
