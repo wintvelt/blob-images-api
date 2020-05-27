@@ -3,9 +3,11 @@ import { splitArr } from './helpers';
 
 const client = new AWS.DynamoDB.DocumentClient();
 
+const MAX_TRANSACTWRITE = 2;
+
 const splitTransact = (params) => {
     const transactions = params.TransactItems;
-    const bundledTransactions = splitArr(transactions, 25);
+    const bundledTransactions = splitArr(transactions, MAX_TRANSACTWRITE);
     return Promise.all(
         bundledTransactions.map(transactionSet => {
             const bundledParams = {
