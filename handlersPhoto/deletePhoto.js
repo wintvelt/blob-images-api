@@ -1,5 +1,41 @@
 import handler from "../libs/handler-lib";
 import dynamoDb, { getMemberships } from "../libs/dynamodb-lib";
+import s3 from '../libs/s3-lib';
+
+const groupUpdate = (photoUrl) => (group) => ({
+    Update: {
+        TableName: process.env.photoTable,
+        Key: {
+            PK: 'GBbase',
+            SK: group.SK
+        },
+        UpdateExpression: "REMOVE #image, #imageUrl",
+        ConditionExpression: '#imageUrl = :photoUrl',
+        ExpressionAttributeNames: {
+            '#image': 'image',
+            '#imageUrl': 'imageUrl',
+        },
+        ExpressionAttributeValues: {
+            ":photoUrl": photoUrl,
+        },
+    }
+});
+const userUpdate = (photoUrl) => (userId) => ({
+    TableName: process.env.photoTable,
+    Key: {
+        PK: 'UBbase',
+        SK: userId
+    },
+    UpdateExpression: "REMOVE #avatar",
+    ConditionExpression: '#avatar = :photoUrl',
+    ExpressionAttributeNames: {
+        '#avatar': 'avatar',
+    },
+    ExpressionAttributeValues: {
+        ":photoUrl": photoUrl,
+    },
+});
+
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -18,29 +54,28 @@ export const main = handler(async (event, context) => {
         throw new Error("Photo not found.");
     };
     const photoUrl = result.Attributes.url;
+    console.log(photoUrl);
 
     const groups = await getMemberships(userId);
-    const groupUpdate = await dynamoDb.transact({
-        TransactItems: groups.map(group => ({
-            Update: {
-                TableName: process.env.photoTable,
-                Key: {
-                    PK: 'GBbase',
-                    SK: item.SK
-                },
-                UpdateExpression: "REMOVE #image, #imageUrl",
-                ConditionExpresssion: '#imageUrl = :photoUrl',
-                ExpressionAttributeNames: {
-                    '#image': 'image',
-                    '#imageUrl': 'imageUrl',
-                },
-                ExpressionAttributeValues: {
-                    ":photoUrl": photoUrl,
-                },
-            }
-        }))
-    })
+    try {
+        await dynamoDb.transact({
+            TransactItems: groups.map(groupUpdate(photoUrl))
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    try {
+        await dynamoDb.update(userUpdate(photoUrl)(userId));
+    } catch (error) {
+        console.log(error);
+    }
+    try {
+        await s3.delete({
+            Key: photoUrl
+        });
+    } catch (error) {
+        console.log(error);
+    }
 
-    // Return the retrieved item
-    return result.Item;
+    return 'ok';
 });

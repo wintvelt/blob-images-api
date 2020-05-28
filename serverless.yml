@@ -19,6 +19,7 @@ provider:
     photoTable: blob-images-photos
     photoIndex: SK-PK-idx
     messageTable: blob-images-messages
+    photoBucket: blob-images
 
   iamRoleStatements:
     - Effect: Allow
