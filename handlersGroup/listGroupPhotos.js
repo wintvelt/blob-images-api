@@ -3,8 +3,8 @@ import dynamoDb, { checkUser } from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
     const groupId = event.pathParameters.id;
-    const cognitoId = event.requestContext.identity.cognitoIdentityId;
-    const hasAccess = await checkUser(cognitoId, groupId);
+    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    const hasAccess = await checkUser(userId, groupId);
     if (!hasAccess) throw new Error('no access');
 
     const groupPhotoParams = {
