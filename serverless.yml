@@ -114,7 +114,15 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-
+  deletePhoto:
+    handler: handlersPhoto/deletePhoto.main
+    events:
+      - http:
+          path: photos/{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+        
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}

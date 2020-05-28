@@ -12,6 +12,7 @@ export const main = handler(async (event, context) => {
         name: data.name,
         description: data.description,
         image: data.image,
+        imageUrl: data.image.image,
     };
 
     const params = {
@@ -25,6 +26,7 @@ export const main = handler(async (event, context) => {
                         name: newGroup.name,
                         description: newGroup.description,
                         image: newGroup.image,
+                        imageUrl: newGroup.imageUrl,
                         comp: 'dummy',
                         RND: 'GROUP',
                         createdAt: now(),
