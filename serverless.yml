@@ -131,7 +131,15 @@ functions:
           method: delete
           cors: true
           authorizer: aws_iam
-        
+  createAlbum:
+    handler: handlersAlbum/createAlbum.main
+    events:
+      - http:
+          path: groups/{groupId}/albums
+          method: post
+          cors: true
+          authorizer: aws_iam
+                
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
