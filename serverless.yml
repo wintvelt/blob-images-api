@@ -135,7 +135,7 @@ functions:
     handler: handlersAlbum/createAlbum.main
     events:
       - http:
-          path: groups/{groupId}/albums
+          path: groups/{id}/albums
           method: post
           cors: true
           authorizer: aws_iam
@@ -143,7 +143,7 @@ functions:
     handler: handlersAlbum/listAlbums.main
     events:
       - http:
-          path: groups/{groupId}/albums
+          path: groups/{id}/albums
           method: get
           cors: true
           authorizer: aws_iam

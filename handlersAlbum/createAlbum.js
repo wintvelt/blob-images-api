@@ -4,7 +4,7 @@ import dynamoDb, { getMemberRole } from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
-    const groupId = event.pathParameters.groupId;
+    const groupId = event.pathParameters.id;
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
     const memberRole = await getMemberRole(userId, groupId);
     if (!memberRole === 'admin') throw new Error('Not authorized to create album');

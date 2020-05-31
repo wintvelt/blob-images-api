@@ -59,7 +59,7 @@ export const checkUser = async (userId, groupId) => {
     return (!!groupRole);
 };
 
-export const listPhotos = async (userId) => {
+export const listPhotos = async (userId, groupRole) => {
     const params = {
         TableName: process.env.photoTable,
         IndexName: process.env.photoIndex,
@@ -85,6 +85,7 @@ export const listPhotos = async (userId) => {
         id: item.PK.slice(2),
         owner: item.owner,
         image: item.url,
+        groupRole,
         date: item.createdAt,
     }));
 
@@ -150,8 +151,16 @@ export const listGroupAlbums = async (groupId) => {
     const items = result.Items;
     if (!items) {
         throw new Error("albums retrieval failed.");
-    }
-    return items;
+    };
+    const albums = items.map(item => ({
+        PK: item.PK,
+        SK: item.SK,
+        id: item.SK,
+        name: item.name,
+        image: item.image,
+        date: item.createdAt,
+    }));
+    return albums;
 };
 
 export default dynamoDb;
