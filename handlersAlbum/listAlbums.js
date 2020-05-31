@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import { listGroupAlbums, checkUser, getMemberRole } from "../libs/dynamodb-lib";
+import { listGroupAlbums, getMemberRole } from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
