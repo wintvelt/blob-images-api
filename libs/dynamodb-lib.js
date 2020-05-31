@@ -134,4 +134,24 @@ export const getMembers = async (groupId) => {
     return items;
 };
 
+export const listGroupAlbums = async (groupId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        KeyConditionExpression: "#g = :g",
+        ExpressionAttributeNames: {
+            '#g': 'PK',
+        },
+        ExpressionAttributeValues: {
+            ":g": 'GA' + groupId,
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("albums retrieval failed.");
+    }
+    return items;
+};
+
 export default dynamoDb;
