@@ -59,7 +59,7 @@ export const checkUser = async (userId, groupId) => {
     return (!!groupRole);
 };
 
-export const listPhotos = async (userId, groupRole) => {
+export const listPhotos = async (userId) => {
     const params = {
         TableName: process.env.photoTable,
         IndexName: process.env.photoIndex,
@@ -85,7 +85,6 @@ export const listPhotos = async (userId, groupRole) => {
         id: item.PK.slice(2),
         owner: item.owner,
         image: item.url,
-        groupRole,
         date: item.createdAt,
     }));
 
@@ -135,7 +134,7 @@ export const getMembers = async (groupId) => {
     return items;
 };
 
-export const listGroupAlbums = async (groupId) => {
+export const listGroupAlbums = async (groupId, groupRole) => {
     const params = {
         TableName: process.env.photoTable,
         KeyConditionExpression: "#g = :g",
@@ -158,6 +157,7 @@ export const listGroupAlbums = async (groupId) => {
         id: item.SK,
         name: item.name,
         image: item.image,
+        groupRole,
         date: item.createdAt,
     }));
     return albums;
