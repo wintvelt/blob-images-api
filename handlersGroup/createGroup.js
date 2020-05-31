@@ -12,7 +12,7 @@ export const main = handler(async (event, context) => {
         name: data.name,
         description: data.description,
         image: data.image,
-        imageUrl: data.image.image,
+        imageUrl: data.image && data.image.image,
     };
 
     const params = {

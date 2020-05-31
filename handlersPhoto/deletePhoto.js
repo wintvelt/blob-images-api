@@ -61,15 +61,7 @@ export const main = handler(async (event, context) => {
         await dynamoDb.transact({
             TransactItems: groups.map(groupUpdate(photoUrl))
         });
-    } catch (error) {
-        console.log(error);
-    }
-    try {
         await dynamoDb.update(userUpdate(photoUrl)(userId));
-    } catch (error) {
-        console.log(error);
-    }
-    try {
         await s3.delete({
             Key: photoUrl
         });

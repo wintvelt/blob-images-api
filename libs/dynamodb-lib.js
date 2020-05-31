@@ -111,4 +111,27 @@ export const getMemberships = async (userId) => {
     return items;
 };
 
+export const getMembers = async (groupId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        IndexName: process.env.photoIndex,
+        KeyConditionExpression: "#g = :grp and begins_with(PK, :p)",
+        ExpressionAttributeNames: {
+            '#g': 'SK',
+        },
+        ExpressionAttributeValues: {
+            ":grp": groupId,
+            ":p": 'UM',
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("members retrieval failed.");
+    }
+
+    return items;
+};
+
 export default dynamoDb;
