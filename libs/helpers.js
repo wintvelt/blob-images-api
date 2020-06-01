@@ -16,9 +16,9 @@ export const RND = () => {
     return 'RND' + Math.round(Math.random() * PARTS);
 };
 
-export const newPhotoId = () => 'P' + nanoid(12);
-export const newGroupId = () => 'G' + nanoid(12);
-export const newAlbumId = () => 'A' + nanoid(12);
+export const newPhotoId = () => 'P' + nanoid(15);
+export const newGroupId = () => 'G' + nanoid(15);
+export const newAlbumId = () => 'A' + nanoid(15);
 
 export const splitArr = (arr, size) => {
     let inArr = [...arr];
