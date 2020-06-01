@@ -20,7 +20,7 @@ export const main = handler(async (event, context) => {
     const albumParams = {
         TableName: process.env.photoTable,
         Key: {
-            PK: 'GB' + groupId,
+            PK: 'GA' + groupId,
             SK: albumId,
         },
         UpdateExpression: "SET #name = :name, #img = :img, #imgUrl = :imgUrl",
