@@ -54,8 +54,8 @@ export const getMember = async (userId, groupId) => {
     return (result.Item);
 };
 export const getMemberRole = async (userId, groupId) => {
-    const memberShip = await getMemberRole(userId, groupId);
-    return memberShip.role;
+    const membership = await getMember(userId, groupId);
+    return membership.role;
 };
 export const checkUser = async (userId, groupId) => {
     const groupRole = await getMemberRole(userId, groupId);
