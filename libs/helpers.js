@@ -1,4 +1,4 @@
-import * as uuid from "uuid";
+import { nanoid } from 'nanoid';
 
 const PARTS = 15;
 
@@ -16,9 +16,9 @@ export const RND = () => {
     return 'RND' + Math.round(Math.random() * PARTS);
 };
 
-export const newPhotoId = () => 'P' + uuid.v1();
-export const newGroupId = () => 'G' + uuid.v1();
-export const newAlbumId = () => 'A' + uuid.v1();
+export const newPhotoId = () => 'P' + nanoid(12);
+export const newGroupId = () => 'G' + nanoid(12);
+export const newAlbumId = () => 'A' + nanoid(12);
 
 export const splitArr = (arr, size) => {
     let inArr = [...arr];
