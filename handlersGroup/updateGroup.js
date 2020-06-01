@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberRole, getMembers } from "../libs/dynamodb-lib";
+import dynamoDb, { getMemberRole, getMembers, listGroupAlbums } from "../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -39,10 +39,28 @@ export const main = handler(async (event, context) => {
         ReturnValues: "NONE"
     };
     const groupMembers = await getMembers(groupId);
+    const groupAlbums = await listGroupAlbums(groupId, memberRole);
     await dynamoDb.transact({
         TransactItems: [
             { Update: groupParams },
             ...groupMembers.map(item => ({
+                Update: {
+                    TableName: process.env.photoTable,
+                    Key: {
+                        PK: item.PK,
+                        SK: item.SK,
+                    },
+                    UpdateExpression: "SET #group = :newGroup",
+                    ExpressionAttributeNames: {
+                        '#group': 'group',
+                    },
+                    ExpressionAttributeValues: {
+                        ":newGroup": newGroup,
+                    },
+                    ReturnValues: "NONE"
+                }
+            })),
+            ...groupAlbums.map(item => ({
                 Update: {
                     TableName: process.env.photoTable,
                     Key: {

@@ -42,7 +42,7 @@ export const getUser = async (userId) => {
     // Return the retrieved item
     return result.Item;
 };
-export const getMemberRole = async (userId, groupId) => {
+export const getMember = async (userId, groupId) => {
     const memberParams = {
         TableName: process.env.photoTable,
         Key: {
@@ -51,8 +51,11 @@ export const getMemberRole = async (userId, groupId) => {
         },
     };
     const result = await dynamoDb.get(memberParams);
-    console.log(result.Item);
-    return (result.Item && result.Item.role);
+    return (result.Item);
+};
+export const getMemberRole = async (userId, groupId) => {
+    const memberShip = await getMemberRole(userId, groupId);
+    return memberShip.role;
 };
 export const checkUser = async (userId, groupId) => {
     const groupRole = await getMemberRole(userId, groupId);
