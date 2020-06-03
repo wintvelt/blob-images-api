@@ -27,6 +27,7 @@ export const main = handler(async (event, context) => {
     };
     const albumPhotos = items.map(item => ({
         ...item.photo,
+        image: item.photo.url,
         id: item.photo.PK.slice(2)
     }));
     return albumPhotos;
