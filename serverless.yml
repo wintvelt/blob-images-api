@@ -171,7 +171,15 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
-                                                
+  listAlbumPhotos:
+    handler: handlersAlbum/listAlbumPhotos.main
+    events:
+      - http:
+          path: groups/{id}/albums/{albumid}/photos
+          method: get
+          cors: true
+          authorizer: aws_iam
+                                                        
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
