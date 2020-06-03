@@ -21,5 +21,5 @@ export const main = handler(async (event, context) => {
     if (!result.Item) {
         throw new Error("Item not found.");
     }
-    return { ...result.Item, userIsAdmin };
+    return { ...result.Item, id: groupId, userIsAdmin };
 });
