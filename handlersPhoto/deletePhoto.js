@@ -81,10 +81,8 @@ export const main = handler(async (event, context) => {
         throw new Error("Photo not found.");
     };
     const photoUrl = result.Attributes.url;
-    console.log(photoUrl);
 
     const groups = await getMemberships(userId);
-    console.log(groups);
     const groupAlbums = await Promise.all(groups.map(group => dynamoDb.query({
         TableName: process.env.photoTable,
         KeyConditionExpression: "#PK = :group",
@@ -99,8 +97,8 @@ export const main = handler(async (event, context) => {
     console.log(albums);
     try {
         await Promise.all([
-            ...groups.map(groupUpdate(photoUrl)),
-            ...albums.map(albumUpdate(photoUrl)),
+            ...groups.filter(group => (group.imageUrl === photoUrl)).map(groupUpdate(photoUrl)),
+            ...albums.filter(album => (album.imageUrl === photoUrl)).map(albumUpdate(photoUrl)),
             ...albums.map(albumPhotoUpdate(result.Attributes.PK.slice(2))),
             dynamoDb.update(userUpdate(photoUrl)(userId)),
             s3.delete({
