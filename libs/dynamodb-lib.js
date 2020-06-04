@@ -186,4 +186,30 @@ export const listGroupAlbums = async (groupId, groupRole) => {
     return albums;
 };
 
+export const listAlbumPhotos = async (groupId, albumId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        KeyConditionExpression: "#a = :groupAlbum",
+        ExpressionAttributeNames: {
+            '#a': 'PK',
+        },
+        ExpressionAttributeValues: {
+            ":groupAlbum": `GP${groupId}#${albumId}`,
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("album photos retrieval failed.");
+    };
+    const albumPhotos = items.map(item => ({
+        ...item.photo,
+        image: item.photo.url,
+        id: item.photo.PK.slice(2),
+        date: item.photo.createdAt,
+    }));
+    return albumPhotos;
+};
+
 export default dynamoDb;
