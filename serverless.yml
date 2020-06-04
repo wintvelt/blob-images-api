@@ -83,6 +83,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  listGroupMembers:
+    handler: handlersGroup/listMembers.main
+    events:
+      - http:
+          path: groups/{id}/members
+          method: get
+          cors: true
+          authorizer: aws_iam
   createUser:
     handler: handlersUser/createUser.main
     events:
