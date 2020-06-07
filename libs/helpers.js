@@ -1,16 +1,28 @@
 import { nanoid } from 'nanoid';
 
-const PARTS = 15;
-
-export const now = () => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const m = today.getMonth() + 1;
+// date helpers
+const makeStr = (date) => {
+    const yyyy = date.getFullYear();
+    const m = date.getMonth() + 1;
     const mm = (m < 10) ? '0' + m : '' + m;
-    const d = today.getDate();
+    const d = date.getDate();
     const dd = (d < 10) ? '0' + d : '' + d;
     return `${yyyy}-${mm}-${dd}`;
 };
+
+export const now = () => makeStr(new Date());
+
+export const expireDate = (dateStr) => {
+    let expDate = new Date(dateStr);
+    expDate.setDate(expDate.getDate()+30);
+    return makeStr(expDate);
+};
+
+// base64 key for invites
+export const otoa = (object) => Buffer.from(JSON.stringify(object)).toString('base64');
+
+// random key for secondary index
+const PARTS = 15;
 
 export const RND = () => {
     return 'RND' + Math.round(Math.random() * PARTS);
