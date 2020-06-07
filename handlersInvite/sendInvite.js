@@ -48,7 +48,7 @@ export const main = handler(async (event, context) => {
         }
     };
     const membership = await dynamoDb.put(inviteMembershipParams);
-    console.log(membership);
+    if (!membership) throw new Error('could not create invite');
 
     const url = `${process.env.FRONTEND}/invites/${otoa(inviteKey)}`;
     const inviteParams = {
@@ -61,5 +61,7 @@ export const main = handler(async (event, context) => {
         message
     };
     const result = await ses.send(invite(inviteParams));
-    return result;
+    if (!result) throw new Error('could not send invite');
+
+    return { status: 'invite sent'};
 });
