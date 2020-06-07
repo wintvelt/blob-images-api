@@ -8,7 +8,7 @@ export const invite = ({toName, toEmail, fromName, groupName, url, expirationDat
         Body: {
             Html: {
                 Charset: "UTF-8",
-                Data: `<table align="center" cellpadding="0" cellspacing="8" width="600" style="border-collapse: collapse;">
+                Data: `<table align="center" cellpadding="8" cellspacing="0 " width="600" style="border-collapse: collapse;">
                         <tr>
                             <td>
                                 <h2>Hi ${toName},</h2>
