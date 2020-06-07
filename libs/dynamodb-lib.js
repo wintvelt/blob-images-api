@@ -42,6 +42,27 @@ export const getUser = async (userId) => {
     // Return the retrieved item
     return result.Item;
 };
+export const getUserByEmail = async (email) => {
+    const params = {
+        TableName: process.env.photoTable,
+        KeyConditionExpression: "#pk = :ubase",
+        ExpressionAttributeNames: {
+            '#pk': 'PK',
+        },
+        ExpressionAttributeValues: {
+            ":ubase": 'UBbase',
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) throw new Error("users retrieval failed.");
+
+    const userFound = items.find(user => (user.email === email));
+    if (!userFound) return false;
+
+    return userFound;
+};
 export const getMember = async (userId, groupId) => {
     const memberParams = {
         TableName: process.env.photoTable,

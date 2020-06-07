@@ -2,7 +2,7 @@ import handler from "../libs/handler-lib";
 import ses from "../libs/ses-lib";
 
 import { expireDate, otoa } from '../libs/helpers';
-import { getMember } from "../libs/dynamodb-lib";
+import { getMember, getUserByEmail } from "../libs/dynamodb-lib";
 import { invite } from "../emails/invite";
 
 export const main = handler(async (event, context) => {
@@ -15,8 +15,11 @@ export const main = handler(async (event, context) => {
     const member = await getMember(userId, groupId);
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
     const { group, user } = member;
+    const invitedUser = await getUserByEmail(toEmail);
+    const inviteeId = invitedUser ? invitedUser.SK : toEmail;
+
     const inviteKey = {
-        PK: 'UM' + toEmail,
+        PK: 'UM' + inviteeId,
         SK: groupId
     };
     const url = `${process.env.FRONTEND}/invites/${otoa(inviteKey)}`;
