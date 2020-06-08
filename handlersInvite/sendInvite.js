@@ -17,13 +17,13 @@ export const main = handler(async (event, context) => {
     const member = await getMember(userId, groupId);
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
     const { group, user } = member;
-    const invitedUser = await getUserByEmail(toEmail);
+    const invitedUser = await getUserByEmail(safeToEmail);
     if (invitedUser) {
         const invitedAlreadyMember = await getMember(invitedUser.SK, groupId);
         if (invitedAlreadyMember) return { status: 'already member' };
     };
 
-    const inviteeId = invitedUser ? invitedUser.SK : toEmail;
+    const inviteeId = invitedUser ? invitedUser.SK : safeToEmail;
     const inviteKey = {
         PK: 'UM' + inviteeId,
         SK: groupId
