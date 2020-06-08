@@ -19,7 +19,8 @@ export const expireDate = (dateStr) => {
 };
 
 // base64 key for invites
-export const otoa = (object) => Buffer.from(JSON.stringify(object)).toString('base64');
+export const otob = (object) => Buffer.from(JSON.stringify(object)).toString('base64');
+export const btoa = (b) => Buffer.from(b, 'base64').toString();
 
 // random key for secondary index
 const PARTS = 15;

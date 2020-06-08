@@ -1,7 +1,7 @@
 import handler from "../libs/handler-lib";
 import ses from "../libs/ses-lib";
 
-import { expireDate, otoa, now } from '../libs/helpers';
+import { expireDate, otob, now } from '../libs/helpers';
 import dynamoDb, { getMember, getUserByEmail } from "../libs/dynamodb-lib";
 import { invite } from "../emails/invite";
 
@@ -53,7 +53,7 @@ export const main = handler(async (event, context) => {
     const membership = await dynamoDb.put(inviteMembershipParams);
     if (!membership) throw new Error('could not create invite');
 
-    const url = `${process.env.FRONTEND}/invites/${otoa(inviteKey)}`;
+    const url = `${process.env.FRONTEND}/invites/${otob(inviteKey)}`;
     const inviteParams = {
         toName,
         toEmail: safeToEmail,
