@@ -11,6 +11,8 @@ export const main = handler(async (event, context) => {
 
     const data = JSON.parse(event.body);
     const { toName, toEmail, message, role } = data;
+    const safeMessage = message.replace(/(<([^>]+)>)/ig,"");
+    const safeToEmail = toEmail.toLowerCase();
 
     const member = await getMember(userId, groupId);
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
@@ -35,14 +37,14 @@ export const main = handler(async (event, context) => {
             role: role || 'guest',
             user: invitedUser || {
                 name: toName,
-                email: toEmail
+                email: safeToEmail
             },
             group,
             comp: role,
             status: 'invite',
             invitation: {
                 from: user,
-                message
+                message: safeMessage
             },
             RND: 'GROUP',
             createdAt,
@@ -54,12 +56,12 @@ export const main = handler(async (event, context) => {
     const url = `${process.env.FRONTEND}/invites/${otoa(inviteKey)}`;
     const inviteParams = {
         toName,
-        toEmail,
+        toEmail: safeToEmail,
         fromName: user.name,
         groupName: group.name,
         url,
         expirationDate: expireDate(createdAt),
-        message
+        message: safeMessage
     };
     const result = await ses.send(invite(inviteParams));
     if (!result) throw new Error('could not send invite');

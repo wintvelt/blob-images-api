@@ -12,9 +12,9 @@ export const main = handler(async (event, context) => {
             PK: 'UBbase',
             SK: 'U' + cognitoId,
             name: data.name,
-            email: data.email,
+            email: data.email.toLowerCase(),
             avatar: data.avatar,
-            comp: data.email,
+            comp: data.email.toLowerCase(),
             RND: 'USER',
             createdAt: now(),
         }
