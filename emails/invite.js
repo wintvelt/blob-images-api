@@ -19,7 +19,7 @@ export const invite = ({toName, toEmail, fromName, groupName, url, expirationDat
                                 <br/>
                                 This invite is valid until ${expirationDate}<br/>
                                 <br/>
-                                ${message}
+                                ${message.replace(/\n/g,'<br/>')}
                                 <br/>
                             </td>
                         </tr>

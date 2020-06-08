@@ -76,7 +76,7 @@ export const getMember = async (userId, groupId) => {
 };
 export const getMemberRole = async (userId, groupId) => {
     const membership = await getMember(userId, groupId);
-    return membership.role;
+    return (membership.status !== 'invite') && membership.role;
 };
 export const checkUser = async (userId, groupId) => {
     const groupRole = await getMemberRole(userId, groupId);

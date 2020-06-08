@@ -32,6 +32,13 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:eu-central-1:*:*"
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+        - ses:SendTemplatedEmail
+        - ses:SendBulkTemplatedEmail
+      Resource: "arn:aws:ses:eu-central-1:*:*"
 
 functions:
   createPhoto:

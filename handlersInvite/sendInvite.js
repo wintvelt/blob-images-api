@@ -26,6 +26,7 @@ export const main = handler(async (event, context) => {
         PK: 'UM' + inviteeId,
         SK: groupId
     };
+    const createdAt = now();
     const inviteMembershipParams = {
         TableName: process.env.photoTable,
         Item: {
@@ -44,8 +45,8 @@ export const main = handler(async (event, context) => {
                 message
             },
             RND: 'GROUP',
-            createdAt: now(),
-        }
+            createdAt,
+        },
     };
     const membership = await dynamoDb.put(inviteMembershipParams);
     if (!membership) throw new Error('could not create invite');
@@ -57,7 +58,7 @@ export const main = handler(async (event, context) => {
         fromName: user.name,
         groupName: group.name,
         url,
-        expirationDate: expireDate(member.createdAt),
+        expirationDate: expireDate(createdAt),
         message
     };
     const result = await ses.send(invite(inviteParams));
