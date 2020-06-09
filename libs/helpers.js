@@ -1,4 +1,11 @@
 import { nanoid } from 'nanoid';
+import sanitizeHtml from 'sanitize-html';
+
+// text sanitizer for HTML (included in emails)
+export const sanitize = (dirty) => sanitizeHtml(dirty, {
+    allowedTags: [],
+    allowedAttributes: {}
+});
 
 // date helpers
 const makeStr = (date) => {
@@ -14,7 +21,7 @@ export const now = () => makeStr(new Date());
 
 export const expireDate = (dateStr) => {
     let expDate = new Date(dateStr);
-    expDate.setDate(expDate.getDate()+30);
+    expDate.setDate(expDate.getDate() + 30);
     return makeStr(expDate);
 };
 

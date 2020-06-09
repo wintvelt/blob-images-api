@@ -1,6 +1,7 @@
 import { now } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
+import sanitize from 'sanitize-html';
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
@@ -11,7 +12,7 @@ export const main = handler(async (event, context) => {
         Item: {
             PK: 'UBbase',
             SK: 'U' + cognitoId,
-            name: data.name,
+            name: sanitize(data.name),
             email: data.email.toLowerCase(),
             avatar: data.avatar,
             comp: data.email.toLowerCase(),

@@ -1,6 +1,7 @@
 import { now, newGroupId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb, { getUser } from "../libs/dynamodb-lib";
+import sanitize from 'sanitize-html';
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
@@ -9,8 +10,8 @@ export const main = handler(async (event, context) => {
 
     const newGroup = {
         id: newGroupId(),
-        name: data.name,
-        description: data.description,
+        name: sanitize(data.name),
+        description: sanitize(data.description),
         image: data.image,
         imageUrl: data.image && data.image.image,
     };

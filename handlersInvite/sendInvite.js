@@ -1,7 +1,7 @@
 import handler from "../libs/handler-lib";
 import ses from "../libs/ses-lib";
 
-import { expireDate, otob, now } from '../libs/helpers';
+import { expireDate, otob, now, sanitize } from '../libs/helpers';
 import dynamoDb, { getMember, getUserByEmail } from "../libs/dynamodb-lib";
 import { invite } from "../emails/invite";
 
@@ -11,8 +11,9 @@ export const main = handler(async (event, context) => {
 
     const data = JSON.parse(event.body);
     const { toName, toEmail, message, role } = data;
-    const safeMessage = message.replace(/(<([^>]+)>)/ig,"");
-    const safeToEmail = toEmail.toLowerCase();
+    const safeToName = sanitize(toName);
+    const safeMessage = sanitize(message);
+    const safeToEmail = sanitize(toEmail.toLowerCase());
 
     const member = await getMember(userId, groupId);
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
@@ -36,7 +37,7 @@ export const main = handler(async (event, context) => {
             SK: inviteKey.SK,
             role: role || 'guest',
             user: invitedUser || {
-                name: toName,
+                name: safeToName,
                 email: safeToEmail
             },
             group,

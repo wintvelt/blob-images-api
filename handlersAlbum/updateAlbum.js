@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
 import dynamoDb, { getMemberRole } from "../libs/dynamodb-lib";
+import { sanitize } from '../libs/helpers';
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -12,7 +13,7 @@ export const main = handler(async (event, context) => {
 
     const newAlbum = {
         id: albumId,
-        name: data.name,
+        name: sanitize(data.name),
         image: data.image || null,
         imageUrl: (data.image) ? data.image.image : null,
     };

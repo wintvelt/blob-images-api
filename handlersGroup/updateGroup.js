@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
 import dynamoDb, { getMemberRole, getMembers, listGroupAlbums } from "../libs/dynamodb-lib";
+import { sanitize } from "../libs/helpers";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -11,8 +12,8 @@ export const main = handler(async (event, context) => {
 
     const newGroup = {
         id: groupId,
-        name: data.name,
-        description: data.description || null,
+        name: sanitize(data.name),
+        description: sanitize(data.description) || null,
         image: data.image || null,
         imageUrl: (data.image) ? data.image.image : null,
     };
