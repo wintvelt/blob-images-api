@@ -1,5 +1,5 @@
 import AWS from "aws-sdk";
-import { splitArr } from './helpers';
+import { splitArr, now, expireDate } from './helpers';
 
 const client = new AWS.DynamoDB.DocumentClient();
 
@@ -173,9 +173,10 @@ export const getMembers = async (groupId) => {
     const items = result.Items;
     if (!items) {
         throw new Error("members retrieval failed.");
-    }
+    };
+    const today = now();
 
-    return items;
+    return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
 };
 
 export const listGroupAlbums = async (groupId, groupRole) => {
