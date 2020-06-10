@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberships } from "../libs/dynamodb-lib";
+import dynamoDb, { getMembershipsAndInvites } from "../libs/dynamodb-lib";
 import s3 from '../libs/s3-lib';
 
 const groupUpdate = (photoUrl) => (group) => {
@@ -82,7 +82,7 @@ export const main = handler(async (event, context) => {
     };
     const photoUrl = result.Attributes.url;
 
-    const groups = await getMemberships(userId);
+    const groups = await getMembershipsAndInvites(userId);
     const groupAlbums = await Promise.all(groups.map(group => dynamoDb.query({
         TableName: process.env.photoTable,
         KeyConditionExpression: "#PK = :group",

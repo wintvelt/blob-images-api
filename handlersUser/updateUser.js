@@ -42,7 +42,7 @@ export const main = handler(async (event, context) => {
         },
         ReturnValues: "ALL_NEW"
     };
-    const memberships = await getMemberships(userId);
+    const memberships = await getMembershipsAndInvites(userId);
     const membershipUpdates = memberships.map(item => memberUpdate(item.PK, item.SK, 'user', newUser));
 
     const photos = await listPhotos(userId);

@@ -135,7 +135,7 @@ export const getPhoto = async (photoId) => {
     return items[0];
 };
 
-export const getMemberships = async (userId) => {
+export const getMembershipsAndInvites = async (userId) => {
     const params = {
         TableName: process.env.photoTable,
         KeyConditionExpression: "#u = :member",
@@ -152,10 +152,15 @@ export const getMemberships = async (userId) => {
     if (!items) {
         throw new Error("membership retrieval failed.");
     }
-    return items;
+    const today = now();
+    return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
 };
+export const getMemberships = async (userId) => {
+    const items = await getMembersAndInvites(userId);
+    return items.filter(item => item.status !== 'invite');
+}
 
-export const getMembers = async (groupId) => {
+export const getMembersAndInvites = async (groupId) => {
     const params = {
         TableName: process.env.photoTable,
         IndexName: process.env.photoIndex,
@@ -175,8 +180,11 @@ export const getMembers = async (groupId) => {
         throw new Error("members retrieval failed.");
     };
     const today = now();
-
     return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
+};
+export const getMembers = async (groupId) => {
+    const items = await getMembersAndInvites(groupId);
+    return items.filter(item => item.status !== 'invite');
 };
 
 export const listGroupAlbums = async (groupId, groupRole) => {

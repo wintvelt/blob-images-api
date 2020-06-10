@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import { getMembers, getMemberRole } from "../libs/dynamodb-lib";
+import { getMembersAndInvites, getMemberRole } from "../libs/dynamodb-lib";
 
 const compareMembers = (a, b) => {
     if (a.status && a.status === 'invite') {
@@ -25,7 +25,7 @@ export const main = handler(async (event, context) => {
     const groupRole = await getMemberRole(userId, groupId);
     if (!groupRole) throw new Error('no access to group');
 
-    const members = await getMembers(groupId);
+    const members = await getMembersAndInvites(groupId);
 
     return members.sort(compareMembers);
 });

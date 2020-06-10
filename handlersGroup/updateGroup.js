@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberRole, getMembers, listGroupAlbums } from "../libs/dynamodb-lib";
+import dynamoDb, { getMemberRole, getMembersAndInvites, listGroupAlbums } from "../libs/dynamodb-lib";
 import { sanitize } from "../libs/helpers";
 
 export const main = handler(async (event, context) => {
@@ -39,7 +39,7 @@ export const main = handler(async (event, context) => {
         },
         ReturnValues: "NONE"
     };
-    const groupMembers = await getMembers(groupId);
+    const groupMembers = await getMembersAndInvites(groupId);
     const groupAlbums = await listGroupAlbums(groupId, memberRole);
     await dynamoDb.transact({
         TransactItems: [
