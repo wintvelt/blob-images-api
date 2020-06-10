@@ -2,6 +2,8 @@ import handler from "../libs/handler-lib";
 import { getInvite } from './inviteHelpers';
 import dynamoDb, { getUser } from "../libs/dynamodb-lib";
 import { now } from "../libs/helpers";
+import ses from "../libs/ses-lib";
+import { acceptedInvite } from "../emails/acceptedInvite";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -52,6 +54,15 @@ export const main = handler(async (event, context) => {
         });
     }
 
-    // Return the retrieved item
+    const mailParams = {
+        toName: invite.invitation.from.name,
+        toEmail: invite.invitation.from.email,
+        fromName: invite.user.name,
+        groupName: invite.group.name,
+        url: `${process.env.FRONTEND}/personal/groups/${invite.group.id}`,
+    };
+
+    await ses.send(acceptedInvite(mailParams));
+
     return 'done';
 });
