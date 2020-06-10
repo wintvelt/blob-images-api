@@ -10,7 +10,7 @@ export const getInvite = async (userId, inviteId) => {
     }
     // check if invite is for user, if so: must be logged in user
     const inviteIsForAuthUser = (Key.PK.slice(0, 3) === 'UMU') && (!Key.PK.includes('@'));
-    if (inviteIsForAuthUser && Key.PK.slice(3) !== userId) throw new Error('invite not for you');
+    if (inviteIsForAuthUser && Key.PK.slice(2) !== userId) throw new Error('invite not for you');
 
     const params = {
         TableName: process.env.photoTable,
