@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberships, listPhotos } from "../libs/dynamodb-lib";
+import dynamoDb, { getMembershipsAndInvites, listPhotos } from "../libs/dynamodb-lib";
 
 const memberUpdate = (PK, SK, key, newUser) => ({
     Update: {

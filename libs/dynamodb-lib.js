@@ -158,7 +158,7 @@ export const getMembershipsAndInvites = async (userId) => {
 export const getMemberships = async (userId) => {
     const items = await getMembersAndInvites(userId);
     return items.filter(item => item.status !== 'invite');
-}
+};
 
 export const getMembersAndInvites = async (groupId) => {
     const params = {

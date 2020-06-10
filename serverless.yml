@@ -210,7 +210,15 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-                                                                        
+  acceptInvite:
+    handler: handlersInvite/acceptInvite.main
+    events:
+      - http:
+          path: invites/{id}
+          method: post
+          cors: true
+          authorizer: aws_iam
+                                                                                
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
