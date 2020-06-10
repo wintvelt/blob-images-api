@@ -209,7 +209,9 @@ functions:
           path: invites/{id}
           method: get
           cors: true
+          authorizer: aws_iam
                                                                         
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
+  
