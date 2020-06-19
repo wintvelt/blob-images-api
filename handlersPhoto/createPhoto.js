@@ -1,5 +1,5 @@
 // invoked from S3 Lambda trigger
-import { RND, newPhotoId } from '../libs/helpers';
+import { newPhotoId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import { getUser } from "../libs/dynamodb-lib";
 import { dbCreateItem } from '../libs/dynamodb-create-lib';
@@ -30,12 +30,11 @@ export const main = handler(async (event, context) => {
         let createPromises = [];
         for (let j = 0; j < userKeyListLength; j++) {
             const key = userKeyList[j];
-            const photoId = newPhotoId(); 
+            const photoId = newPhotoId();
             const photoItem = {
                 PK: 'PO' + photoId,
                 SK: 'U' + cognitoId,
                 url: key,
-                RND: RND(),
                 owner: user,
                 compAfterDate: photoId
             };

@@ -1,4 +1,4 @@
-import { RND, newAlbumId } from '../libs/helpers';
+import { newAlbumId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import { getMember } from "../libs/dynamodb-lib";
 import sanitize from 'sanitize-html';
@@ -19,14 +19,13 @@ export const main = handler(async (event, context) => {
         group: membership.group,
     };
     const albumItem = {
-            PK: 'GA' + groupId,
-            SK: newAlbum.id,
-            name: newAlbum.name,
-            image: newAlbum.image,
-            imageUrl: newAlbum.imageUrl,
-            group: membership.group,
-            compAfterDate: `${groupId}#${newAlbum.id}`,
-            RND: RND(),
+        PK: 'GA' + groupId,
+        SK: newAlbum.id,
+        name: newAlbum.name,
+        image: newAlbum.image,
+        imageUrl: newAlbum.imageUrl,
+        group: membership.group,
+        compAfterDate: `${groupId}#${newAlbum.id}`,
     };
 
     const result = await dbCreateItem(albumItem);
