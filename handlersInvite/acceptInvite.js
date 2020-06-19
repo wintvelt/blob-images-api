@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import { getInvite } from './inviteHelpers';
-import dynamoDb, { getUser } from "../libs/dynamodb-lib";
+import dynamoDb, { getUser, getMember } from "../libs/dynamodb-lib";
 import { now } from "../libs/helpers";
 import ses from "../libs/ses-lib";
 import { acceptedInvite } from "../emails/acceptedInvite";
@@ -30,6 +30,7 @@ export const main = handler(async (event, context) => {
     } else {
         // create membership for this user
         const user = await getUser(userId);
+        const membership = await getMember(userId, invite.SK);
         await dynamoDb.transact({
             TransactItems: [
                 {
@@ -43,6 +44,7 @@ export const main = handler(async (event, context) => {
                         TableName: process.env.photoTable,
                         Item: {
                             ...invite,
+                            role: (membership && membership.role === 'admin')? 'admin': invite.role,
                             PK: 'UM' + userId,
                             user,
                             status: 'active',

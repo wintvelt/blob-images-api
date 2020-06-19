@@ -1,7 +1,8 @@
-import { now, RND, newAlbumId } from '../libs/helpers';
+import { RND, newAlbumId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMember } from "../libs/dynamodb-lib";
+import { getMember } from "../libs/dynamodb-lib";
 import sanitize from 'sanitize-html';
+import { dbCreateItem } from '../libs/dynamodb-create-lib';
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
@@ -17,22 +18,18 @@ export const main = handler(async (event, context) => {
         imageUrl: data.image && data.image.image,
         group: membership.group,
     };
-    const params = {
-        TableName: process.env.photoTable,
-        Item: {
+    const albumItem = {
             PK: 'GA' + groupId,
             SK: newAlbum.id,
             name: newAlbum.name,
             image: newAlbum.image,
             imageUrl: newAlbum.imageUrl,
             group: membership.group,
-            comp: 'dummy',
+            compAfterDate: `${groupId}#${newAlbum.id}`,
             RND: RND(),
-            createdAt: now(),
-        }
     };
 
-    await dynamoDb.put(params);
+    const result = await dbCreateItem(albumItem);
 
-    return params.Item;
+    return result.Item;
 });

@@ -1,7 +1,8 @@
 // invoked from S3 Lambda trigger
-import { now, RND, newPhotoId } from '../libs/helpers';
+import { RND, newPhotoId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import dynamoDb, { getUser } from "../libs/dynamodb-lib";
+import { getUser } from "../libs/dynamodb-lib";
+import { dbCreateItem } from '../libs/dynamodb-create-lib';
 
 export const main = handler(async (event, context) => {
     const eventList = event.Records || [];
@@ -26,21 +27,21 @@ export const main = handler(async (event, context) => {
         const user = await getUser('U' + cognitoId);
 
         const userKeyListLength = userKeyList.length;
+        let createPromises = [];
         for (let j = 0; j < userKeyListLength; j++) {
             const key = userKeyList[j];
-            const photoParams = {
-                TableName: process.env.photoTable,
-                Item: {
-                    PK: 'PO' + newPhotoId(),
-                    SK: 'U' + cognitoId,
-                    url: key,
-                    RND: RND(),
-                    createdAt: now(),
-                    owner: user,
-                }
+            const photoId = newPhotoId(); 
+            const photoItem = {
+                PK: 'PO' + photoId,
+                SK: 'U' + cognitoId,
+                url: key,
+                RND: RND(),
+                owner: user,
+                compAfterDate: photoId
             };
-            await dynamoDb.put(photoParams);
+            createPromises.push(dbCreateItem(photoItem));
         }
+        await Promise.all(createPromises);
     }
 
     return 'ok';
