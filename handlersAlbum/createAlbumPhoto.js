@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import dynamoDb, { getMemberRole, getPhoto } from "../libs/dynamodb-lib";
-import { now } from '../libs/helpers';
+import { dbCreateItem } from "../libs/dynamodb-create-lib";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -35,16 +35,12 @@ export const main = handler(async (event, context) => {
     }
     if (!photo) throw new Error('photo not found');
 
-    const params = {
-        TableName: process.env.photoTable,
-        Item: {
-            PK: `GP${groupId}#${albumId}`,
-            SK: photo.PK.slice(2),
-            createdAt: now(),
-            photo,
-        }
+    const Item = {
+        PK: `GP${groupId}#${albumId}`,
+        SK: photo.PK.slice(2),
+        photo,
     };
-    await dynamoDb.put(params);
+    const result = await dbCreateItem(Item);
 
-    return params.Item;
+    return result.Item;
 });

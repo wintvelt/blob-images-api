@@ -1,27 +1,21 @@
-import { now } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
 import sanitize from 'sanitize-html';
+import { dbCreateItem } from "../libs/dynamodb-create-lib";
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const cognitoId = event.requestContext.identity.cognitoIdentityId;
 
-    const params = {
-        TableName: process.env.photoTable,
-        Item: {
-            PK: 'UBbase',
-            SK: 'U' + cognitoId,
-            name: sanitize(data.name),
-            email: data.email.toLowerCase(),
-            avatar: data.avatar,
-            comp: data.email.toLowerCase(),
-            RND: 'USER',
-            createdAt: now(),
-        }
+    const Item = {
+        PK: 'UBbase',
+        SK: 'U' + cognitoId,
+        name: sanitize(data.name),
+        email: data.email.toLowerCase(),
+        avatar: data.avatar,
+        compAfterDate: data.email.toLowerCase(),
     };
 
-    await dynamoDb.put(params);
+    const result = await dbCreateItem(Item);
 
-    return params.Item;
+    return result.Item;
 });
