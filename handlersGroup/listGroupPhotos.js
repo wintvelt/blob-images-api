@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
-import { getMemberRole, listGroupAlbums, listAlbumPhotos } from "../libs/dynamodb-lib";
+import { getMemberRole } from "../libs/dynamodb-lib";
+import { listGroupAlbums, listAlbumPhotos } from "../libs/dynamodb-query-lib";
 
 export const main = handler(async (event, context) => {
     const groupId = event.pathParameters.id;

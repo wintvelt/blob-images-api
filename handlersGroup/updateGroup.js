@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberRole, getMembersAndInvites, listGroupAlbums } from "../libs/dynamodb-lib";
+import dynamoDb, { getMemberRole } from "../libs/dynamodb-lib";
+import { getMembersAndInvites, listGroupAlbums } from "../libs/dynamodb-lib";
 import { sanitize } from "../libs/helpers";
 
 export const main = handler(async (event, context) => {

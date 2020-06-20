@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMembershipsAndInvites } from "../libs/dynamodb-lib";
+import dynamoDb from "../libs/dynamodb-lib";
+import { getMembershipsAndInvites } from "../libs/dynamodb-query-lib";
 import s3 from '../libs/s3-lib';
 
 const groupUpdate = (photoUrl) => (group) => {

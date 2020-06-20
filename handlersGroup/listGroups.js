@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import { getMemberships } from "../libs/dynamodb-lib";
+import { getMemberships } from "../libs/dynamodb-query-lib";
 
 export const main = handler(async (event, context) => {
     const items = await getMemberships('U' + event.requestContext.identity.cognitoIdentityId);
