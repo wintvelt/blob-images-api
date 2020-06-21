@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberRole, getPhoto } from "../libs/dynamodb-lib";
+import dynamoDb, { getMemberRole, getPhotoByUser } from "../libs/dynamodb-lib";
 import { dbCreateItem } from "../libs/dynamodb-create-lib";
 
 export const main = handler(async (event, context) => {
@@ -16,7 +16,7 @@ export const main = handler(async (event, context) => {
 
     let photo;
     if (photoId) {
-        photo = await getPhoto(photoId);
+        photo = await getPhotoByUser(photoId, userId);
     } else {
         const result = await dynamoDb.query({
             TableName: process.env.photoTable,

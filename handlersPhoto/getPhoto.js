@@ -1,13 +1,19 @@
 import handler from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
+import dynamoDb, { checkUser } from "../libs/dynamodb-lib";
+import { btoa } from "../libs/helpers";
 
 export const main = handler(async (event, context) => {
+    const Key = JSON.parse(btoa(event.pathParameters.id));
+    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    if (Key.SK !== userId) {
+        const groupId = Key.PK.slice(3);
+        const userIsInGroup = await checkUser(userId, groupId);
+        if (!userIsInGroup) throw new Error('Not authorized to load photo');
+    };
+
     const params = {
         TableName: process.env.photoTable,
-        Key: {
-            PK: event.pathParameters.id,
-            SK: 'U' + event.requestContext.identity.cognitoIdentityId,
-        }
+        Key
     };
 
     const result = await dynamoDb.get(params);

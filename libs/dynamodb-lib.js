@@ -83,25 +83,22 @@ export const checkUser = async (userId, groupId) => {
     return (!!groupRole);
 };
 
-
-export const getPhoto = async (photoId) => {
+export const getPhotoByUser = async (photoId, userId) => {
     const params = {
         TableName: process.env.photoTable,
-        KeyConditionExpression: "#p = :photoId",
-        ExpressionAttributeNames: {
-            '#p': 'PK',
-        },
-        ExpressionAttributeValues: {
-            ":photoId": 'PO' + photoId,
-        },
+        Key: {
+            PK: 'PO' + photoId,
+            SK: userId,
+        }
     };
 
-    const result = await dynamoDb.query(params);
-    const items = result.Items;
-    if (!items || items.length === 0) {
-        throw new Error("photo retrieval failed.");
+    const result = await dynamoDb.get(params);
+    if (!result.Item) {
+        throw new Error("Item not found.");
     }
-    return items[0];
+
+    // Return the retrieved item
+    return result.Item;
 };
 
 export default dynamoDb;
