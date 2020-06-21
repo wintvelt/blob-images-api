@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import { getMemberRole } from "../libs/dynamodb-lib";
-import { listGroupAlbums, listAlbumPhotos } from "../libs/dynamodb-query-lib";
+import { listGroupAlbums, listAlbumPhotosByDate } from "../libs/dynamodb-query-lib";
 
 export const main = handler(async (event, context) => {
     const groupId = event.pathParameters.id;
@@ -10,7 +10,7 @@ export const main = handler(async (event, context) => {
 
     const groupAlbums = await listGroupAlbums(groupId, groupRole);
     const groupAlbumPhotos = await Promise.all(groupAlbums.map(album => {
-        return listAlbumPhotos(groupId, album.id);
+        return listAlbumPhotosByDate(groupId, album.id);
     }));
     const groupPhotos = groupAlbumPhotos.reduce((acc, photolist, i) => (
         [...acc, ...photolist.map(photo => ({...photo, album: groupAlbums[i]}))]

@@ -18,6 +18,7 @@ export const main = handler(async (event, context) => {
     if (photoId) {
         photo = await getPhotoByUser(photoId, userId);
     } else {
+        console.log(filename);
         const result = await dynamoDb.query({
             TableName: process.env.photoTable,
             IndexName: process.env.photoIndex,
@@ -39,8 +40,8 @@ export const main = handler(async (event, context) => {
         PK: `GP${groupId}#${albumId}`,
         SK: photo.PK.slice(2),
         photo,
-        compAfterDate: `${albumId}#${photoId}`,
-        compAfterType: groupId,
+        compAfterDate: `${photoId}`,
+        compAfterType: `${groupId}#${albumId}`,
     };
     const result = await dbCreateItem(Item);
 

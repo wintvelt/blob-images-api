@@ -135,6 +135,27 @@ export const listGroupAlbums = async (groupId, groupRole) => {
     return albums;
 };
 
+export const listAlbumPhotosByDate = async (groupId, albumId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        IndexName: process.env.dateIndex,
+        KeyConditionExpression: "#t = :type",
+        ExpressionAttributeNames: {
+            '#t': 'type',
+        },
+        ExpressionAttributeValues: {
+            ":type": `GP${groupId}#${albumId}`,
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("album photos retrieval failed.");
+    };
+    return items;
+};
+
 export const listAlbumPhotos = async (groupId, albumId) => {
     const params = {
         TableName: process.env.photoTable,

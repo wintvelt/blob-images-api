@@ -7,7 +7,7 @@ export const dbCreateItem = (item) => {
     delete Item.compAfterDate;
     delete Item.compAfterType;
     const comp = createdAt + (item.compAfterDate ? '#' + item.compAfterDate : '');
-    const type = item.PK.slice(0, 2) + (item.compAfterType ? '#' + item.compAfterType : '');
+    const type = item.PK.slice(0, 2) + (item.compAfterType || '');
     Item.comp = comp;
     Item.createdAt = createdAt;
     Item.type = type;
