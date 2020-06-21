@@ -226,7 +226,14 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
-                                                                                
+  dummy:
+    handler: handlersPhoto/dummy.main
+    events:
+      - http:
+          path: dummy
+          method: get
+          cors: true
+                                                                                        
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
