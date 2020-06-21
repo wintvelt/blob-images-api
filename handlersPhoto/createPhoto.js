@@ -23,8 +23,9 @@ export const main = handler(async (event, context) => {
     const userListLength = userList.length;
     for (let i = 0; i < userListLength; i++) {
         const cognitoId = userList[i];
+        const userId = 'U' + cognitoId;
         const userKeyList = keyListByUser[cognitoId];
-        const user = await getUser('U' + cognitoId);
+        const user = await getUser(userId);
 
         const userKeyListLength = userKeyList.length;
         let createPromises = [];
@@ -33,10 +34,11 @@ export const main = handler(async (event, context) => {
             const photoId = newPhotoId();
             const photoItem = {
                 PK: 'PO' + photoId,
-                SK: 'U' + cognitoId,
+                SK: userId,
                 url: key,
                 owner: user,
-                compAfterDate: photoId
+                compAfterDate: photoId,
+                compAfterType: userId,
             };
             createPromises.push(dbCreateItem(photoItem));
         }

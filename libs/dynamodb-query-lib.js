@@ -32,6 +32,26 @@ export const listPhotos = async (userId) => {
 
     return photos;
 };
+export const listPhotosByDate = async (userId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        IndexName: process.env.dateIndex,
+        KeyConditionExpression: "#t = :type",
+        ExpressionAttributeNames: {
+            '#t': 'type',
+        },
+        ExpressionAttributeValues: {
+            ":type": 'PO' + userId,
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("photos retrieval failed.");
+    }
+    return items;
+};
 
 export const getMembershipsAndInvites = async (userId) => {
     const params = {

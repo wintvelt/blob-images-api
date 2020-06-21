@@ -39,6 +39,8 @@ export const main = handler(async (event, context) => {
         PK: `GP${groupId}#${albumId}`,
         SK: photo.PK.slice(2),
         photo,
+        compAfterDate: `${albumId}#${photoId}`,
+        compAfterType: groupId,
     };
     const result = await dbCreateItem(Item);
 

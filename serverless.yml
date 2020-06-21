@@ -18,6 +18,7 @@ provider:
   environment:
     photoTable: blob-images-photos
     photoIndex: SK-PK-idx
+    dateIndex: date-index
     messageTable: blob-images-messages
     photoBucket: blob-images
 
