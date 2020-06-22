@@ -40,6 +40,10 @@ provider:
         - ses:SendTemplatedEmail
         - ses:SendBulkTemplatedEmail
       Resource: "arn:aws:ses:eu-central-1:*:*"
+    - Effect: Allow
+      Action:
+        - s3:getObject
+      Resource: "arn:aws:s3:::*"
 
 functions:
   createPhoto:

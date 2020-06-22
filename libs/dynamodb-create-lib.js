@@ -1,7 +1,7 @@
 import dynamoDb from "./dynamodb-lib";
 import { now, RND } from "./helpers";
 
-export const dbCreateItem = (item) => {
+export const dbItem = (item) => {
     const createdAt = now();
     let Item = { ...item };
     delete Item.compAfterDate;
@@ -12,8 +12,16 @@ export const dbCreateItem = (item) => {
     Item.createdAt = createdAt;
     Item.type = type;
     Item.RND = RND();
+    return Item;
+};
+
+export const dbCreate = (Item) => {
     return dynamoDb.put({
         TableName: process.env.photoTable,
         Item
     });
+};
+export const dbCreateItem = (item) => {
+    const Item = dbItem(item);
+    return dbCreate(Item);
 };

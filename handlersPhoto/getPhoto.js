@@ -6,7 +6,7 @@ export const main = handler(async (event, context) => {
     const Key = JSON.parse(btoa(event.pathParameters.id));
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
     if (Key.SK !== userId) {
-        const groupId = Key.PK.slice(3);
+        const groupId = Key.PK.split('#')[0].slice(2);
         const userIsInGroup = await checkUser(userId, groupId);
         if (!userIsInGroup) throw new Error('Not authorized to load photo');
     };

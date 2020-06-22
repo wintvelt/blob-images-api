@@ -36,11 +36,12 @@ export const main = handler(async (event, context) => {
     }
     if (!photo) throw new Error('photo not found');
 
+    const foundPhotoId = photo.PK.slice(2);
     const Item = {
         PK: `GP${groupId}#${albumId}`,
-        SK: photo.PK.slice(2),
+        SK: foundPhotoId,
         photo,
-        compAfterDate: `${photoId}`,
+        compAfterDate: foundPhotoId,
         compAfterType: `${groupId}#${albumId}`,
     };
     const result = await dbCreateItem(Item);
