@@ -21,7 +21,8 @@ export const dbCreate = (Item) => {
         Item
     });
 };
-export const dbCreateItem = (item) => {
+export const dbCreateItem = async (item) => {
     const Item = dbItem(item);
-    return dbCreate(Item);
+    await dbCreate(Item);
+    return Item;
 };

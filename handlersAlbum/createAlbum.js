@@ -30,5 +30,5 @@ export const main = handler(async (event, context) => {
 
     const result = await dbCreateItem(albumItem);
 
-    return result.Item;
+    return result;
 });

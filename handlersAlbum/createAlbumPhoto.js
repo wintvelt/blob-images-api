@@ -46,5 +46,5 @@ export const main = handler(async (event, context) => {
     };
     const result = await dbCreateItem(Item);
 
-    return result.Item;
+    return result;
 });
