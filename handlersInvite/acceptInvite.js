@@ -13,6 +13,8 @@ export const main = handler(async (event, context) => {
     // check if invite is to user
     const inviteIsForThisUser = (invite.PK.slice(2) === userId);
 
+    console.log(JSON.stringify(invite, null, 2));
+
     if (inviteIsForThisUser) {
         // update the invite to membership
         await dynamoDb.update({
@@ -44,7 +46,7 @@ export const main = handler(async (event, context) => {
                         TableName: process.env.photoTable,
                         Item: {
                             ...invite,
-                            role: (membership && membership.role === 'admin')? 'admin': invite.role,
+                            role: (membership && membership.role === 'admin') ? 'admin' : invite.role,
                             PK: 'UM' + userId,
                             user,
                             status: 'active',
@@ -63,6 +65,7 @@ export const main = handler(async (event, context) => {
         groupName: invite.group.name,
         url: `${process.env.FRONTEND}/personal/groups/${invite.group.id}`,
     };
+    console.log(JSON.stringify(mailParams, null, 2));
 
     await ses.send(acceptedInvite(mailParams));
 

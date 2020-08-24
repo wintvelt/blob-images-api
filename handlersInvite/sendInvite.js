@@ -64,6 +64,7 @@ export const main = handler(async (event, context) => {
         expirationDate: expireDate(createdAt),
         message: safeMessage
     };
+    console.log({inviteParams});
     const result = await ses.send(invite(inviteParams));
     if (!result) throw new Error('could not send invite');
 

@@ -1,0 +1,10 @@
+{
+    "pathParameters": {
+        "id": "PALA0X5yogjex1ba"
+    },
+    "requestContext": {
+        "identity": {
+            "cognitoIdentityId": "eu-central-1:a9f66e4e-0bd4-4d38-b628-dc65a299f633"
+        }
+    }
+}
