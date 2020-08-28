@@ -39,5 +39,5 @@ export const main = handler(async (event, context) => {
     const ratingResult = await dynamoDb.get(ratingParams);
     const ratingItem = ratingResult.Item;
 
-    return { rating: ratingItem.rating || 0 };
+    return { rating: ratingItem?.rating || 0 };
 });
