@@ -17,10 +17,11 @@ export const main = handler(async (event, context) => {
     };
 
     const result = await dynamoDb.get(params);
-    if (!result.Item) {
+    const item = result.Item;
+    if (!item) {
         throw new Error("Item not found.");
     }
 
-    // Return the retrieved item
-    return result.Item;
+    // Return the photo
+    return item.photo || item;
 });
