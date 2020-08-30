@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMembershipsAndInvites } from "../libs/dynamodb-query-lib";
+import { getMembershipsAndInvites, listPhotoRatings } from "../libs/dynamodb-query-lib";
 import s3 from '../libs/s3-lib';
 
 const groupUpdate = (photoUrl) => (group) => {
@@ -64,6 +64,16 @@ const userUpdate = (photoUrl) => (userId) => ({
     },
 });
 
+const ratingDelete = (rating) => {
+    return dynamoDb.delete({
+        TableName: process.env.photoTable,
+        Key: {
+            PK: rating.PK,
+            SK: rating.SK
+        },
+    });
+};
+
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -82,6 +92,7 @@ export const main = handler(async (event, context) => {
         throw new Error("Photo not found.");
     };
     const photoUrl = result.Attributes.url;
+    const photoId = result.Attributes.PK.slice(2);
 
     const groups = await getMembershipsAndInvites(userId);
     const groupAlbums = await Promise.all(groups.map(group => dynamoDb.query({
@@ -95,12 +106,16 @@ export const main = handler(async (event, context) => {
         },
     })));
     const albums = groupAlbums.reduce((acc, alb) => ([...acc, ...alb.Items]), []);
+
+    const ratings = await listPhotoRatings(photoId);
+
     console.log(albums);
     try {
         await Promise.all([
             ...groups.filter(group => (group.imageUrl === photoUrl)).map(groupUpdate(photoUrl)),
             ...albums.filter(album => (album.imageUrl === photoUrl)).map(albumUpdate(photoUrl)),
-            ...albums.map(albumPhotoUpdate(result.Attributes.PK.slice(2))),
+            ...albums.map(albumPhotoUpdate(photoId)),
+            ...ratings.map(ratingDelete),
             dynamoDb.update(userUpdate(photoUrl)(userId)),
             s3.delete({
                 Key: photoUrl

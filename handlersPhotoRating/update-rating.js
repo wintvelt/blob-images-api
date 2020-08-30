@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import dynamoDb, { checkUser } from "../libs/dynamodb-lib";
-import { btoa } from "../libs/helpers";
+import { btoa, now } from "../libs/helpers";
 import { listPhotoPublications } from "../libs/dynamodb-query-lib";
 
 export const main = handler(async (event, context) => {
@@ -65,12 +65,14 @@ export const main = handler(async (event, context) => {
                 Update: {
                     TableName: process.env.photoTable,
                     Key: userRatingKey,
-                    UpdateExpression: "SET #r = :r",
+                    UpdateExpression: "SET #r = :r, #ca = :ca",
                     ExpressionAttributeNames: {
                         '#r': 'rating',
+                        '#ca': 'createdAt'
                     },
                     ExpressionAttributeValues: {
                         ":r": newUserRating,
+                        ':ca': now(),
                     },
                     ReturnValues: "NONE"
                 }
