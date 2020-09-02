@@ -231,6 +231,14 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  deleteAlbumPhoto:
+    handler: handlersAlbum/deleteAlbumPhoto.main
+    events:
+      - http:
+          path: groups/{id}/albums/{albumid}/photos
+          method: delete
+          cors: true
+          authorizer: aws_iam
   listAlbumPhotos:
     handler: handlersAlbum/listAlbumPhotos.main
     events:
