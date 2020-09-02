@@ -209,7 +209,7 @@ export const listPhotoRatings = async (photoId) => {
         TableName: process.env.photoTable,
         KeyConditionExpression: "#pk = :pid",
         ExpressionAttributeNames: {
-            '#p': 'PK',
+            '#pk': 'PK',
         },
         ExpressionAttributeValues: {
             ":pid": 'UF' + photoId,
