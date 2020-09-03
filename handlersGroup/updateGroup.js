@@ -1,7 +1,7 @@
 import handler from "../libs/handler-lib";
 import dynamoDb, { getMemberRole } from "../libs/dynamodb-lib";
 import { getMembersAndInvites, listGroupAlbums } from "../libs/dynamodb-query-lib";
-import { sanitize } from "../libs/helpers";
+import { sanitize } from "../libs/sanitize";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;

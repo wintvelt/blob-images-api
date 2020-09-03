@@ -1,7 +1,8 @@
 import handler from "../libs/handler-lib";
 import ses from "../libs/ses-lib";
 
-import { expireDate, otob, now, sanitize } from '../libs/helpers';
+import { expireDate, otob, now } from '../libs/helpers';
+import { sanitize } from '../libs/sanitize';
 import dynamoDb, { getMember, getUserByEmail } from "../libs/dynamodb-lib";
 import { invite } from "../emails/invite";
 
@@ -64,9 +65,9 @@ export const main = handler(async (event, context) => {
         expirationDate: expireDate(createdAt),
         message: safeMessage
     };
-    console.log({inviteParams});
+    console.log({ inviteParams });
     const result = await ses.send(invite(inviteParams));
     if (!result) throw new Error('could not send invite');
 
-    return { status: 'invite sent'};
+    return { status: 'invite sent' };
 });
