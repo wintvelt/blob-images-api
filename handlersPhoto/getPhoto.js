@@ -11,7 +11,7 @@ export const main = handler(async (event, context) => {
     if (Key.SK !== userId) {
         const groupId = Key.PK.split('#')[0].slice(2);
         const membership = await getMember(userId, groupId);
-        const userIsInGroup = membership && (membership.status === 'active');
+        const userIsInGroup = membership && (membership.status !== 'invite');
         if (!userIsInGroup) throw new Error('Not authorized to load photo');
         if (membership.seenPics) {
             seenPics = membership.seenPics;
