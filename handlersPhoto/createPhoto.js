@@ -62,7 +62,7 @@ export const main = handler(async (event, context) => {
                         };
                         createPromises.push(dbCreateItem(AlbumPhotoItem));
                         // add this photo groupAlbum list
-                        let photolist = groupAlbums[groupId] || new Set();
+                        let photolist = groupAlbums[groupid] || new Set();
                         photolist.add(`${albumid}#${photoId}`);
                         groupAlbums[groupid] = photolist;
                     }
