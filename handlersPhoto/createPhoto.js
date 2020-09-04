@@ -1,7 +1,7 @@
 // invoked from S3 Lambda trigger
 import { newPhotoId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import { getUser, getMemberRole } from "../libs/dynamodb-lib";
+import { getUser, getMemberRole } from "../libs/dynamodb-lib-single";
 import s3 from "../libs/s3-lib";
 import { dbItem, dbCreate, dbCreateItem } from '../libs/dynamodb-create-lib';
 

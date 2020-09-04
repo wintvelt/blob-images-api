@@ -1,6 +1,7 @@
 import { now, newGroupId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import dynamoDb, { getUser } from "../libs/dynamodb-lib";
+import dynamoDb from "../libs/dynamodb-lib";
+import { getUser } from "../libs/dynamodb-lib-single";
 import sanitize from 'sanitize-html';
 
 export const main = handler(async (event, context) => {

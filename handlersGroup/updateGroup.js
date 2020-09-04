@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberRole } from "../libs/dynamodb-lib";
+import dynamoDb from "../libs/dynamodb-lib";
+import { getMemberRole } from "../libs/dynamodb-lib-single";
 import { getMembersAndInvites, listGroupAlbums } from "../libs/dynamodb-query-lib";
 import { sanitize } from "../libs/sanitize";
 

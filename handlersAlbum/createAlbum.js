@@ -1,6 +1,6 @@
 import { newAlbumId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
-import { getMember } from "../libs/dynamodb-lib";
+import { getMember } from "../libs/dynamodb-lib-single";
 import sanitize from 'sanitize-html';
 import { dbCreateItem } from '../libs/dynamodb-create-lib';
 

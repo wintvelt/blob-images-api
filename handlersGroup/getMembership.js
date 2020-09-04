@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import { getMemberRole } from "../libs/dynamodb-lib";
+import { getMemberRole } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;

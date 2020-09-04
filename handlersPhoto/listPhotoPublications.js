@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import { listPhotoPublications } from "../libs/dynamodb-query-lib";
-import { checkUser } from "../libs/dynamodb-lib";
+import { checkUser } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;

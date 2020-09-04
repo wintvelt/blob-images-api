@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { getMemberRole, getPhotoByUser } from "../libs/dynamodb-lib";
+import dynamoDb from "../libs/dynamodb-lib";
+import { getMemberRole, getPhotoByUser } from "../libs/dynamodb-lib-single";
 import { dbCreateItem } from "../libs/dynamodb-create-lib";
 
 export const main = handler(async (event, context) => {

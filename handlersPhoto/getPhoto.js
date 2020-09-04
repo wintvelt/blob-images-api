@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
-import dynamoDb, { checkUser } from "../libs/dynamodb-lib";
+import dynamoDb from "../libs/dynamodb-lib";
+import { checkUser } from "../libs/dynamodb-lib-single";
 import { btoa } from "../libs/helpers";
 
 export const main = handler(async (event, context) => {
