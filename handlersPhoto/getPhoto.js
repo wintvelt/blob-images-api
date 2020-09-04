@@ -1,15 +1,22 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { checkUser } from "../libs/dynamodb-lib-single";
+import { getMember } from "../libs/dynamodb-lib-single";
 import { btoa } from "../libs/helpers";
 
 export const main = handler(async (event, context) => {
     const Key = JSON.parse(btoa(event.pathParameters.id));
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    let seenPics = [];
+    let albumId = '';
     if (Key.SK !== userId) {
         const groupId = Key.PK.split('#')[0].slice(2);
-        const userIsInGroup = await checkUser(userId, groupId);
+        const membership = await getMember(userId, groupId);
+        const userIsInGroup = membership && (membership.status === 'active');
         if (!userIsInGroup) throw new Error('Not authorized to load photo');
+        if (membership.seenPics) {
+            seenPics = membership.seenPics;
+            albumId = Key.PK.split('#')[1];
+        };
     };
 
     const params = {
@@ -23,6 +30,12 @@ export const main = handler(async (event, context) => {
         throw new Error("Item not found.");
     }
 
+    const photo = item.photo || item;
+    const newKey = `${albumId}#${photo.PK.slice(2)}`;
+    const photoWithNew = (albumId) ?
+        { ...photo, isNew: !!seenPics.find(pic => (pic.albumPhoto === newKey))}
+        : photo;
+
     // Return the photo
-    return item.photo || item;
+    return photoWithNew;
 });

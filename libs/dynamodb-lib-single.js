@@ -2,7 +2,23 @@ import { now } from './helpers';
 import dynamoDb from './dynamodb-lib';
 import { getMemberships } from './dynamodb-query-lib';
 
-export const getUser = async (userId) => {
+export const getUser = async (userId, withUpdate = false) => {
+    const params = {
+        TableName: process.env.photoTable,
+        Key: {
+            PK: 'UBbase',
+            SK: userId,
+        }
+    };
+    const result = await dynamoDb.get(params);
+    const oldUser = result.Item;
+    if (!oldUser) {
+        throw new Error("Item not found.");
+    }
+    return oldUser;
+};
+
+export const getLoginUser = async (userId, withUpdate = false) => {
     const params = {
         TableName: process.env.photoTable,
         Key: {
@@ -41,7 +57,7 @@ export const getUser = async (userId) => {
             let seenPicsChanged = false;
             const newSeenPics = seenPics
                 .filter(pic => {
-                    if (pic.seenDate < today) return true;
+                    if (!pic.seenDate || pic.seenDate === today) return true;
                     seenPicsChanged = true;
                     return false;
                 })
