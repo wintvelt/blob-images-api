@@ -1,5 +1,6 @@
 import { now } from './helpers';
-import { dynamoDb } from './dynamodb-lib';
+import dynamoDb from './dynamodb-lib';
+import { getMemberships } from './dynamodb-query-lib';
 
 export const getUser = async (userId) => {
     const params = {
@@ -17,6 +18,7 @@ export const getUser = async (userId) => {
     const today = now();
     const isNewVisit = (!oldUser.visitDateLast || today > oldUser.visitDateLast);
     if (isNewVisit) {
+        const newVisitDatePrev = oldUser.visitDateLast || today;
         const updatedUser = await dynamoDb.update({
             ...params,
             UpdateExpression: 'SET #vl = :vl, #vp = :vp',
@@ -26,11 +28,43 @@ export const getUser = async (userId) => {
             },
             ExpressionAttributeValues: {
                 ":vl": today,
-                ":vp": oldUser.visitDateLast || today
+                ":vp": newVisitDatePrev
             },
             ReturnValues: "ALL_NEW"
         });
-        const memberships = await getMemberships(userId)
+        const membershipsToUpdate = await getMemberships(userId);
+        const membershipsCount = membershipsToUpdate.length;
+        let updatePromises = [];
+        for (let i = 0; i < membershipsCount; i++) {
+            const membership = membershipsToUpdate[i];
+            const seenPics = membership.seenPics || [];
+            let seenPicsChanged = false;
+            const newSeenPics = seenPics
+                .filter(pic => {
+                    if (pic.seenDate < today) return true;
+                    seenPicsChanged = true;
+                    return false;
+                })
+                .map(pic => {
+                    if (pic.seenDate) return pic;
+                    seenPicsChanged = true;
+                    return { ...pic, seenDate: today };
+                });
+            if (seenPicsChanged) {
+                const memberUpdatePromise = dynamoDb.update({
+                    TableName: process.env.photoTable,
+                    Key: {
+                        PK: membership.PK,
+                        SK: membership.SK
+                    },
+                    UpdateExpression: 'SET #sp = :sp',
+                    ExpressionAttributeNames: { '#sp': 'seenPics' },
+                    ExpressionAttributeValues: { ':sp': newSeenPics }
+                });
+                updatePromises.push(memberUpdatePromise);
+            }
+        }
+        await Promise.all(updatePromises);
         return updatedUser.Attributes;
     }
     return oldUser;
