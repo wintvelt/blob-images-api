@@ -1,7 +1,8 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMemberRole, getPhotoByUser } from "../libs/dynamodb-lib-single";
+import { getMember, getPhotoByUser } from "../libs/dynamodb-lib-single";
 import { dbCreateItem } from "../libs/dynamodb-create-lib";
+import { getMembers } from "../libs/dynamodb-query-lib";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -10,9 +11,9 @@ export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const { photoId, filename } = data;
 
-    const memberRole = await getMemberRole(userId, groupId);
-    if (!memberRole) throw new Error('not a member of this group');
-    const userIsAdmin = (memberRole === 'admin');
+    const membership = await getMember(userId, groupId);
+    if (!membership || membership.status === 'invite') throw new Error('not a member of this group');
+    const userIsAdmin = (membership.role === 'admin');
     if (!userIsAdmin) throw new Error('not authorized to add photos');
 
     let photo;
@@ -45,7 +46,34 @@ export const main = handler(async (event, context) => {
         compAfterDate: foundPhotoId,
         compAfterType: `${groupId}#${albumId}`,
     };
-    const result = await dbCreateItem(Item);
+    const albumPhoto = await dbCreateItem(Item);
 
-    return result;
+    // update seenPics in memberships for other users of same group
+    const members = await getMembers(groupId);
+    let seenPicsPromises = [];
+    const newPics = [{ albumPhoto: `${albumId}#${photoId}` }];
+    for (let j = 0; j < members.length; j++) {
+        const member = members[j];
+        if (member.PK.slice(2) !== userId) {
+            const oldSeenPics = member.seenPics || [];
+            const oldSeenPicsKeys = oldSeenPics.map(it => it.albumPhoto);
+            const newSeenPics = [
+                ...oldSeenPics,
+                ...newPics.filter(it => !oldSeenPicsKeys.includes(it.albumPhoto))
+            ];
+            const newPhotoUpdate = dynamoDb.update({
+                TableName: process.env.photoTable,
+                Key: {
+                    PK: member.PK,
+                    SK: member.SK
+                },
+                UpdateExpression: 'SET #s = :ns',
+                ExpressionAttributeNames: { '#s': 'seenPics' },
+                ExpressionAttributeValues: { ':ns': newSeenPics }
+            });
+            seenPicsPromises.push(newPhotoUpdate);
+        }
+    }
+    await Promise.all(seenPicsPromises);
+    return albumPhoto;
 });

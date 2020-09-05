@@ -1,12 +1,12 @@
 {
-    "body": "{\"photoId\":\"PQR-HzbPjAXJn_tz\"}",
+    "body": "{\"photoId\":\"PVui8xuakgUVh23b\"}",
     "pathParameters": {
-        "id": "GK4n4uu8cmcshJtx",
-        "albumid": "A_QNUrOoOeiv7NBd"
+        "id": "GcdA4S1g4xwEdByo",
+        "albumid": "A6MDydc437-VpzY9"
     },
     "requestContext": {
         "identity": {
-            "cognitoIdentityId": "eu-central-1:a9f66e4e-0bd4-4d38-b628-dc65a299f633"
+            "cognitoIdentityId": "eu-central-1:4088f074-d8fc-49df-8cf9-fdb3dddcff7e"
         }
     }
 }
