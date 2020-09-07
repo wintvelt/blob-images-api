@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMembershipsAndInvites, listPhotoRatings } from "../libs/dynamodb-query-lib";
+import { getMembershipsAndInvites, listPhotoRatings, getMembers, listPhotoPublications } from "../libs/dynamodb-query-lib";
 import s3 from '../libs/s3-lib';
 
 const groupUpdate = (photoUrl) => (group) => {
@@ -74,6 +74,42 @@ const ratingDelete = (rating) => {
     });
 };
 
+const deleteFromSeenPics = async (photoId, userId) => {
+    // get all user publications
+    const publications = await listPhotoPublications(photoId);
+    const groupAlbums = publications.map(pub => pub.PK.slice(2));
+
+    let seenPicsPromises = [];
+    for (let i = 0; i < groupAlbums.length; i++) {
+        const groupAlbum = groupAlbums[i];
+        const [groupId, albumId] = groupAlbum.split('#');
+        // remove from other users unseen list
+        const members = await getMembers(groupId);
+        const picKey = `${albumId}#${photoId}`;
+        for (let j = 0; j < members.length; j++) {
+            const member = members[j];
+            if (member.PK.slice(2) !== userId) {
+                const oldSeenPics = member.seenPics || [];
+                const newSeenPics = oldSeenPics.filter(pic => (pic.albumPhoto !== picKey));
+                if (oldSeenPics.length > newSeenPics.length) {
+                    const delPhotoUpdate = dynamoDb.update({
+                        TableName: process.env.photoTable,
+                        Key: {
+                            PK: member.PK,
+                            SK: member.SK
+                        },
+                        UpdateExpression: 'SET #s = :ns',
+                        ExpressionAttributeNames: { '#s': 'seenPics' },
+                        ExpressionAttributeValues: { ':ns': newSeenPics }
+                    });
+                    seenPicsPromises.push(delPhotoUpdate);
+                }
+            }
+        }
+    }
+    return seenPicsPromises;
+};
+
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -109,13 +145,15 @@ export const main = handler(async (event, context) => {
 
     const ratings = await listPhotoRatings(photoId);
 
-    console.log(albums);
+    const removeFromUnseenList = deleteFromSeenPics(photoId, userId);
+
     try {
         await Promise.all([
             ...groups.filter(group => (group.imageUrl === photoUrl)).map(groupUpdate(photoUrl)),
             ...albums.filter(album => (album.imageUrl === photoUrl)).map(albumUpdate(photoUrl)),
             ...albums.map(albumPhotoUpdate(photoId)),
             ...ratings.map(ratingDelete),
+            ...removeFromUnseenList,
             dynamoDb.update(userUpdate(photoUrl)(userId)),
             s3.delete({
                 Key: photoUrl

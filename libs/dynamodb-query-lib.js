@@ -198,10 +198,7 @@ export const listPhotoPublications = async (photoId) => {
 
     const result = await dynamoDb.query(params);
     const items = result.Items;
-    if (!items) {
-        throw new Error("album photos retrieval failed.");
-    };
-    return items;
+    return items || [];
 };
 
 export const listPhotoRatings = async (photoId) => {
