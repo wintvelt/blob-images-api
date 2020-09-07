@@ -22,10 +22,8 @@ export const listPhotos = async (userId) => {
     }
 
     const photos = items.map(item => ({
-        PK: item.PK,
-        SK: item.SK,
+        ...item,
         id: item.PK.slice(2),
-        owner: item.owner,
         image: item.url,
         date: item.createdAt,
     }));
