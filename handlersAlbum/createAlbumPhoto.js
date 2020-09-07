@@ -51,7 +51,7 @@ export const main = handler(async (event, context) => {
     // update seenPics in memberships for other users of same group
     const members = await getMembers(groupId);
     let seenPicsPromises = [];
-    const newPics = [{ albumPhoto: `${albumId}#${photoId}` }];
+    const newPics = [{ albumPhoto: `${albumId}#${foundPhotoId}` }];
     for (let j = 0; j < members.length; j++) {
         const member = members[j];
         if (member.PK.slice(2) !== userId) {
