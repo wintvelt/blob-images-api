@@ -1,24 +1,22 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMembershipsAndInvites, listPhotos } from "../libs/dynamodb-query-lib";
+import { getMembershipsAndInvites, listPhotos, listPhotoPublications } from "../libs/dynamodb-query-lib";
 
-const memberUpdate = (PK, SK, key, newUser) => ({
-    Update: {
-        TableName: process.env.photoTable,
-        Key: {
-            PK,
-            SK,
-        },
-        UpdateExpression: "SET #user = :newUser",
-        ExpressionAttributeNames: {
-            '#user': key,
-        },
-        ExpressionAttributeValues: {
-            ":newUser": newUser,
-        },
-        ReturnValues: "ALL_NEW"
-    }
-});
+const memberUpdate = (PK, SK, key, newUser) => (dynamoDb.update({
+    TableName: process.env.photoTable,
+    Key: {
+        PK,
+        SK,
+    },
+    UpdateExpression: "SET #user = :newUser",
+    ExpressionAttributeNames: {
+        '#user': key,
+    },
+    ExpressionAttributeValues: {
+        ":newUser": newUser,
+    },
+    ReturnValues: "ALL_NEW"
+}));
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
@@ -49,13 +47,25 @@ export const main = handler(async (event, context) => {
     const photos = await listPhotos(userId);
     const photoUpdates = photos.map(item => memberUpdate(item.PK, item.SK, 'owner', newUser));
 
-    await dynamoDb.transact({
-        TransactItems: [
-            { Update: userParams },
-            ...membershipUpdates,
-            ...photoUpdates
-        ]
-    });
+    let pubUpdates = [];
+    for (let i = 0; i < photos.length; i++) {
+        const photo = photos[i];
+        const photoId = photo.PK.slice(2);
+        const newPhoto = { ...photo, owner: newUser };
+        const publications = await listPhotoPublications(photoId);
+        for (let j = 0; j < publications.length; j++) {
+            const pub = publications[j];
+            const pubUpdate = memberUpdate(pub.PK, pub.SK, 'photo', newPhoto);
+            pubUpdates.push(pubUpdate);
+        }
+    }
+
+    await Promise.all([
+        dynamoDb.update(userParams),
+        ...membershipUpdates,
+        ...photoUpdates,
+        ...pubUpdates
+    ]);
 
     return { status: true };
 });

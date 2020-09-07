@@ -1,8 +1,8 @@
 {
-    "body": "{\"name\":\"Wouter In 't Velt\",\"avatar\":\"some url.jpg\"}",
+    "body": "{\"name\":\"Wouter COO\"}",
     "requestContext": {
         "identity": {
-            "cognitoIdentityId": "eu-central-1:0f262fe9-430e-4504-bad4-95306c57120f"
+            "cognitoIdentityId": "eu-central-1:4088f074-d8fc-49df-8cf9-fdb3dddcff7e"
         }
     }
 }
