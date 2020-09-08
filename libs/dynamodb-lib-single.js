@@ -162,5 +162,3 @@ export const getPhotoByGroupAlbum = async (photoId, groupId, albumId) => {
     // Return the retrieved item
     return photo;
 };
-
-export default dynamoDb;

@@ -111,6 +111,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  updateMembership:
+    handler: handlersGroup/updateMembership.main
+    events:
+      - http:
+          path: groups/{id}/membership
+          method: put
+          cors: true
+          authorizer: aws_iam
   createUser:
     handler: handlersUser/createUser.main
     events:
