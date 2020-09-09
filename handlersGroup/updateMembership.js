@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMemberRole } from "../libs/dynamodb-lib-single";
+import { getMemberRole, getMember } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
@@ -11,6 +11,9 @@ export const main = handler(async (event, context) => {
     const userRole = await getMemberRole(userId, groupId);
     if (!userRole === 'admin') throw new Error('not authorized to update membership');
     if (newRole !== 'admin' && newRole !== 'guest') throw new Error('invalid new role');
+
+    const memberToUpdate = await getMember(memberId, groupId);
+    if (!memberToUpdate) throw new Error('member not found in this group');
 
     const result = await dynamoDb.update({
         TableName: process.env.photoTable,
