@@ -2,17 +2,22 @@ import dynamoDb from "./dynamodb-lib";
 import { now, RND } from "./helpers";
 
 export const dbItem = (item) => {
+    // add createdAt date + RK (random key) + DK(date key = primary key for date search)
     const createdAt = now();
-    let Item = { ...item };
-    delete Item.compAfterDate;
-    delete Item.compAfterType;
-    const comp = createdAt + (item.compAfterDate ? '#' + item.compAfterDate : '');
-    const type = item.PK.slice(0, 2) + (item.compAfterType || '');
-    Item.comp = comp;
-    Item.createdAt = createdAt;
-    Item.type = type;
-    Item.RND = RND();
-    return Item;
+    const RK = RND();
+    // date key with id for PO (my photos) and GP (group photos per album), otherwise just type
+    const recordType = item.PK.slice(0, 2);
+    const DK = (recordType === 'PO')? 
+        'PO' + item.SK
+        : (recordType === 'GP')? 
+            item.PK
+            : recordType;
+    return {
+        ...item,
+        createdAt,
+        RK,
+        DK
+    };
 };
 
 export const dbCreate = (Item) => {
