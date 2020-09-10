@@ -32,6 +32,8 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
       Resource: "arn:aws:dynamodb:eu-central-1:*:*"
     - Effect: Allow
       Action:
@@ -280,12 +282,9 @@ functions:
           cors: true
           authorizer: aws_iam
   dummy:
-    handler: handlersPhoto/dummy.main
+    handler: handlersDBstreams/dummy.main
     events:
-      - http:
-          path: dummy
-          method: get
-          cors: true
+      - stream: arn:aws:dynamodb:eu-central-1:899888592127:table/blob-images-photos/stream/2020-09-09T17:57:49.872
                                                                                         
 resources:
   # API Gateway Errors

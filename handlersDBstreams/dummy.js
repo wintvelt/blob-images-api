@@ -1,5 +1,7 @@
 import handler from "../libs/handler-lib";
 
 export const main = handler(async (event, context) => {
-    return event;
+    console.log(JSON.stringify(event, null, 2));
+
+    return 'ok';
 });
