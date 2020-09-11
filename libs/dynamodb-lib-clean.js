@@ -1,8 +1,8 @@
 export const cleanRecord = (record) => {
     let cleanedRecord = { ...record };
-    delete cleanRecord.RK;
-    delete cleanRecord.datePK;
-    delete cleanRecord.dateSK;
+    delete cleanedRecord.RK;
+    delete cleanedRecord.datePK;
+    delete cleanedRecord.dateSK;
 
     return cleanedRecord;
 };

@@ -1,6 +1,5 @@
 import { now } from './helpers';
 import dynamoDb from './dynamodb-lib';
-import { getMemberships } from './dynamodb-query-lib';
 
 export const getUser = async (userId, withUpdate = false) => {
     const params = {
@@ -18,61 +17,6 @@ export const getUser = async (userId, withUpdate = false) => {
     return oldUser;
 };
 
-export const getLoginUser = async (userId, withUpdate = false) => {
-    const params = {
-        TableName: process.env.photoTable,
-        Key: {
-            PK: 'UBbase',
-            SK: userId,
-        }
-    };
-    const result = await dynamoDb.get(params);
-    const oldUser = result.Item;
-    if (!oldUser) {
-        throw new Error("Item not found.");
-    }
-    const today = now();
-    const isNewVisit = (!oldUser.visitDateLast || today > oldUser.visitDateLast);
-    if (isNewVisit) {
-        const newVisitDatePrev = oldUser.visitDateLast || today;
-        const updatedUser = await dynamoDb.update({
-            ...params,
-            UpdateExpression: 'SET #vl = :vl, #vp = :vp',
-            ExpressionAttributeNames: {
-                "#vl": "visitDateLast",
-                "#vp": "visitDatePrev"
-            },
-            ExpressionAttributeValues: {
-                ":vl": today,
-                ":vp": newVisitDatePrev
-            },
-            ReturnValues: "ALL_NEW"
-        });
-        return updatedUser.Attributes;
-    }
-    return oldUser;
-};
-export const getUserByEmail = async (email) => {
-    const params = {
-        TableName: process.env.photoTable,
-        KeyConditionExpression: "#pk = :ubase",
-        ExpressionAttributeNames: {
-            '#pk': 'PK',
-        },
-        ExpressionAttributeValues: {
-            ":ubase": 'UBbase',
-        },
-    };
-
-    const result = await dynamoDb.query(params);
-    const items = result.Items;
-    if (!items) throw new Error("users retrieval failed.");
-
-    const userFound = items.find(user => (user.email === email));
-    if (!userFound) return false;
-
-    return userFound;
-};
 export const getMember = async (userId, groupId) => {
     const memberParams = {
         TableName: process.env.photoTable,

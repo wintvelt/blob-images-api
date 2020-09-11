@@ -41,9 +41,6 @@ export const main = handler(async (event, context) => {
         },
         ReturnValues: "ALL_NEW"
     };
-    const memberships = await getMembershipsAndInvites(userId);
-    const membershipUpdates = memberships.map(item => memberUpdate(item.PK, item.SK, 'user', newUser));
-
     const photos = await listPhotos(userId);
     const photoUpdates = photos.map(item => memberUpdate(item.PK, item.SK, 'owner', newUser));
 
@@ -62,7 +59,6 @@ export const main = handler(async (event, context) => {
 
     await Promise.all([
         dynamoDb.update(userParams),
-        ...membershipUpdates,
         ...photoUpdates,
         ...pubUpdates
     ]);

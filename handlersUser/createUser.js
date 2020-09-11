@@ -12,7 +12,6 @@ export const main = handler(async (event, context) => {
         name: sanitize(data.name),
         email: data.email.toLowerCase(),
         avatar: data.avatar,
-        compAfterDate: data.email.toLowerCase(),
     };
 
     const result = await dbCreateItem(Item);

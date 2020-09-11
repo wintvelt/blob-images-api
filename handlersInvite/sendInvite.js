@@ -4,7 +4,8 @@ import ses from "../libs/ses-lib";
 import { expireDate, otob, now } from '../libs/helpers';
 import { sanitize } from '../libs/sanitize';
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMember, getUserByEmail } from "../libs/dynamodb-lib-single";
+import { getMember } from "../libs/dynamodb-lib-single";
+import { getUserByEmail } from "../libs/dynamodb-lib-user";
 import { invite } from "../emails/invite";
 
 export const main = handler(async (event, context) => {

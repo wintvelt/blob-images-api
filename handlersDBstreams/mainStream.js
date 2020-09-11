@@ -39,6 +39,8 @@ const recordHandler = async (record) => {
     switch (dbType) {
         case 'UB': {
             // user base record
+            console.log('updating user change to memberships');
+            await updateMemberUser(cleanRec);
             break;
         }
         case 'PO': {
@@ -55,8 +57,6 @@ const recordHandler = async (record) => {
         }
         case 'UM': {
             // membership record
-            console.log('updating user change to memberships');
-            await updateMemberUser(cleanRec);
             break;
         }
         case 'GP': {
