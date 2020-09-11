@@ -1,35 +1,6 @@
 import dynamoDb from './dynamodb-lib';
 import { now, expireDate } from './helpers';
 
-export const listPhotos = async (userId) => {
-    const params = {
-        TableName: process.env.photoTable,
-        IndexName: process.env.photoIndex,
-        KeyConditionExpression: "#u = :user and begins_with(PK, :p)",
-        ExpressionAttributeNames: {
-            '#u': 'SK',
-        },
-        ExpressionAttributeValues: {
-            ":user": userId,
-            ":p": 'PO',
-        },
-    };
-
-    const result = await dynamoDb.query(params);
-    const items = result.Items;
-    if (!items) {
-        throw new Error("photos retrieval failed.");
-    }
-
-    const photos = items.map(item => ({
-        ...item,
-        id: item.PK.slice(2),
-        image: item.url,
-        date: item.createdAt,
-    }));
-
-    return photos;
-};
 export const listPhotosByDate = async (userId) => {
     const params = {
         TableName: process.env.photoTable,

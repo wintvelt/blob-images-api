@@ -1,6 +1,7 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMembershipsAndInvites, listPhotos, listPhotoPublications } from "../libs/dynamodb-query-lib";
+import { listPhotoPublications } from "../libs/dynamodb-query-lib";
+import { listPhotos } from "../libs/dynamodb-lib-photo";
 
 const memberUpdate = (PK, SK, key, newUser) => (dynamoDb.update({
     TableName: process.env.photoTable,
@@ -41,10 +42,9 @@ export const main = handler(async (event, context) => {
         },
         ReturnValues: "ALL_NEW"
     };
-    const photos = await listPhotos(userId);
-    const photoUpdates = photos.map(item => memberUpdate(item.PK, item.SK, 'owner', newUser));
 
     let pubUpdates = [];
+    const photos = await listPhotos(userId);
     for (let i = 0; i < photos.length; i++) {
         const photo = photos[i];
         const photoId = photo.PK.slice(2);
@@ -59,7 +59,6 @@ export const main = handler(async (event, context) => {
 
     await Promise.all([
         dynamoDb.update(userParams),
-        ...photoUpdates,
         ...pubUpdates
     ]);
 

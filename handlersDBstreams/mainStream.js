@@ -1,6 +1,7 @@
 import handler from "../libs/handler-lib";
 import { cleanRecord } from "../libs/dynamodb-lib-clean";
 import { updateMemberUser } from "./userChangeToMembership";
+import { updatePhotoUser } from "./userChangeToPhoto";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -40,7 +41,11 @@ const recordHandler = async (record) => {
         case 'UB': {
             // user base record
             console.log('updating user change to memberships');
-            await updateMemberUser(cleanRec);
+            const memberUpdates = await updateMemberUser(cleanRec);
+            await Promise.all([
+                ...memberUpdates,
+                ...await updatePhotoUser(cleanRec)
+            ]);
             break;
         }
         case 'PO': {

@@ -46,5 +46,5 @@ export const updateMemberUser = async (newUser) => {
         });
         updatePromises.push(memberUpdatePromise);
     }
-    await Promise.all(updatePromises);
+    return updatePromises;
 };

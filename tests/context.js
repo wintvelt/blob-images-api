@@ -4,13 +4,18 @@ import { dbCreateItem } from '../libs/dynamodb-create-lib';
 const testUserCognitoId = 'eu-central:test-user';
 export const testUserId = 'U' + testUserCognitoId;
 export const testGroupId = 'Gtestgroup-1';
+export const testPhotoId = 'Ptestphoto-1';
+
+const testUser = {
+    name: 'Wouter',
+    email: 'wintvelt@xs4all.nl',
+};
 
 const recordList = [
     {
         PK: 'UBbase',
         SK: testUserId,
-        name: 'Wouter',
-        email: 'wintvelt@xs4all.nl',
+        ...testUser
     },
     {
         PK: 'GBbase',
@@ -19,6 +24,12 @@ const recordList = [
     {
         PK: 'UM' + testUserId,
         SK: testGroupId,
+    },
+    {
+        PK: 'PO' + testPhotoId,
+        SK: testUserId,
+        user: testUser,
+        url: 'dummy'
     }
 ];
 
