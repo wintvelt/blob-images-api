@@ -1,6 +1,7 @@
 import AWS from "aws-sdk";
 import { splitArr } from './helpers';
 
+if (process.env.NODE_ENV === 'test') AWS.config.update({ region: 'eu-central-1' });
 const client = new AWS.DynamoDB.DocumentClient();
 
 const MAX_TRANSACTWRITE = 2;

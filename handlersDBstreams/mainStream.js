@@ -1,13 +1,42 @@
 import handler from "../libs/handler-lib";
+import { cleanRecord } from "../libs/dynamodb-lib-clean";
+import { updateMemberUser } from "./userChangeToMembership";
 
-const getType = (eventRecord) => eventRecord.dynamodb?.Keys?.PK?.S?.slice(0, 2);
 const getEvent = (eventRecord) => eventRecord.eventName;
+const getType = (Keys) => Keys.PK?.slice(0, 2);
+
+// NB is NOT tall call optimised
+const flatItem = (item) => {
+    if (item.S) return item.S;
+    if (item.M) {
+        let outObj = {};
+        Object.keys(item.M).forEach(key => {
+            outObj[key] = flatItem(item.M[key]);
+        });
+        return outObj;
+    };
+    if (item.L) return item.L.map(el => flatItem(el));
+    if (item.N) return item.N;
+    return item;
+};
+
+const flatObj = (obj) => {
+    let outObj = {};
+    Object.keys(obj).forEach(key => {
+        outObj[key] = flatItem(obj[key]);
+    });
+    return outObj;
+};
 
 const recordHandler = async (record) => {
-    const recType = getType(record);
     const eventType = getEvent(record);
-    console.log({recType, eventType});
-    switch (recType) {
+    const Keys = flatObj(record.dynamodb.Keys);
+    const dbType = getType(Keys);
+    const newRecord = record.dynamodb.NewImage && flatObj(record.dynamodb.NewImage);
+    const cleanRec = cleanRecord(newRecord);
+
+    console.log({ dbType, eventType });
+    switch (dbType) {
         case 'UB': {
             // user base record
             break;
@@ -26,6 +55,8 @@ const recordHandler = async (record) => {
         }
         case 'UM': {
             // membership record
+            console.log('updating user change to memberships');
+            await updateMemberUser(cleanRec);
             break;
         }
         case 'GP': {
