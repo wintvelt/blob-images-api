@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import { listPhotoPublications } from "../libs/dynamodb-query-lib";
+import { listPhotoPublications } from "../libs/dynamodb-lib-photo";
 import { checkUser } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {

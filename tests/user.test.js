@@ -1,11 +1,10 @@
 import dynamoDb from '../libs/dynamodb-lib';
-import { eventContext, testUserId, setUp, cleanUp, testGroupId, sleep, testPhotoId } from './context';
+import { eventContext, testUserId, setUp, cleanUp, testGroupId, sleep, testPhotoId, testAlbumId } from './context';
 import { main as createUser } from '../handlersUser/createUser';
 import { main as getUser } from '../handlersUser/getUser';
 import { main as updateUser } from '../handlersUser/updateUser';
 import { now } from '../libs/helpers';
 import { getUserByEmail } from '../libs/dynamodb-lib-user';
-import { listPhotos } from '../libs/dynamodb-lib-photo';
 
 const testUser2 = 'test-user-2';
 const testEmail = 'sjef@test.com';
@@ -14,16 +13,16 @@ beforeAll(async () => {
     await setUp();
 });
 
-// afterAll(async () => {
-//     await cleanUp();
-//     await dynamoDb.delete({
-//         TableName: process.env.photoTable,
-//         Key: {
-//             PK: 'UBbase',
-//             SK: 'U' + testUser2,
-//         }
-//     });
-// });
+afterAll(async () => {
+    await cleanUp();
+    await dynamoDb.delete({
+        TableName: process.env.photoTable,
+        Key: {
+            PK: 'UBbase',
+            SK: 'U' + testUser2,
+        }
+    });
+});
 
 test('Create user', async () => {
     const event = eventContext({
@@ -34,7 +33,7 @@ test('Create user', async () => {
     expect(response.statusCode).toEqual(200);
 });
 
-describe('Change user and propagate to membership', () => {
+describe('Change user and propagate to membership, photos, albums, groups', () => {
     test('Change username', async () => {
         const event = eventContext({ body: { name: 'Wim' } });
         const response = await updateUser(event);
@@ -62,7 +61,40 @@ describe('Change user and propagate to membership', () => {
         });
         const photo = response.Item;
         expect(photo?.user?.name).toEqual('Wim');
-    }, 6000);
+    });
+    it('photo publication (group photo) also updated', async () => {
+        const response = await dynamoDb.get({
+            TableName: process.env.photoTable,
+            Key: {
+                PK: `GP${testGroupId}#${testAlbumId}`,
+                SK: testPhotoId
+            }
+        });
+        const publication = response.Item;
+        expect(publication?.photo?.user?.name).toEqual('Wim');
+    });
+    it('album photo also updated', async () => {
+        const response = await dynamoDb.get({
+            TableName: process.env.photoTable,
+            Key: {
+                PK: `GA${testGroupId}`,
+                SK: testAlbumId
+            }
+        });
+        const album = response.Item;
+        expect(album?.photo?.user?.name).toEqual('Wim');
+    });
+    it('group photo also updated', async () => {
+        const response = await dynamoDb.get({
+            TableName: process.env.photoTable,
+            Key: {
+                PK: 'GBbase',
+                SK: testGroupId
+            }
+        });
+        const group = response.Item;
+        expect(group?.photo?.user?.name).toEqual('Wim');
+    });
 }, 10000);
 
 test('Get user', async () => {

@@ -2,7 +2,7 @@ import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 import { checkUser } from "../libs/dynamodb-lib-single";
 import { btoa, now } from "../libs/helpers";
-import { listPhotoPublications } from "../libs/dynamodb-query-lib";
+import { listPhotoPublications } from "../libs/dynamodb-lib-photo";
 
 export const main = handler(async (event, context) => {
     const Key = JSON.parse(btoa(event.pathParameters.id));

@@ -29,3 +29,19 @@ const dynamoDb = {
 };
 
 export default dynamoDb;
+
+export const dbUpdate = (PK, SK, key, newValue) => (dynamoDb.update({
+    TableName: process.env.photoTable,
+    Key: {
+        PK,
+        SK,
+    },
+    UpdateExpression: "SET #k = :k",
+    ExpressionAttributeNames: {
+        '#k': key,
+    },
+    ExpressionAttributeValues: {
+        ":k": newValue,
+    },
+    ReturnValues: "ALL_NEW"
+}));

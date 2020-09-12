@@ -2,6 +2,8 @@ import handler from "../libs/handler-lib";
 import { cleanRecord } from "../libs/dynamodb-lib-clean";
 import { updateMemberUser } from "./userChangeToMembership";
 import { updatePhotoUser } from "./userChangeToPhoto";
+import { updatePubPhoto } from "./photoChangeToPub";
+import { updateCoverPhoto } from "./photoChangeToCover";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -40,16 +42,25 @@ const recordHandler = async (record) => {
     switch (dbType) {
         case 'UB': {
             // user base record
-            console.log('updating user change to memberships');
-            const memberUpdates = await updateMemberUser(cleanRec);
-            await Promise.all([
-                ...memberUpdates,
-                ...await updatePhotoUser(cleanRec)
-            ]);
+            if (eventType === 'MODIFY') {
+                console.log('updating user change to memberships, photos');
+                const memberUpdates = await updateMemberUser(cleanRec);
+                await Promise.all([
+                    ...memberUpdates,
+                    ...await updatePhotoUser(cleanRec)
+                ]);
+            }
             break;
         }
         case 'PO': {
             // photo record
+            if (eventType === 'MODIFY') {
+                console.log('updating photo change to publications and covers');
+                await Promise.all([
+                    ...await updatePubPhoto(cleanRec),
+                    ...await updateCoverPhoto(cleanRec)
+                ]);
+            }
             break;
         }
         case 'UF': {

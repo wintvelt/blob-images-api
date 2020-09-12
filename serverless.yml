@@ -19,7 +19,8 @@ provider:
     photoTable: blob-images-photos
     photoIndex: SK-PK-idx
     emailIndex: email-idx
-    dateIndex: date-index
+    dateIndex: date-idx
+    coverIndex: cover-idx
     messageTable: blob-images-messages
     photoBucket: blob-images
 
