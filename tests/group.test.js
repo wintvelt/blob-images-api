@@ -1,5 +1,5 @@
 import dynamoDb from '../libs/dynamodb-lib';
-import { eventContext, testUserId, testUser, testPhotoId, sleep, setUp, cleanUp } from './context';
+import { eventContext, testUserId, testUser, testPhotoId, sleep, setUp, cleanUp, testAlbumId } from './context';
 import { main as createGroup } from '../handlersGroup/createGroup';
 import { main as updateGroup } from '../handlersGroup/updateGroup';
 import { getMember } from '../libs/dynamodb-lib-single';
@@ -31,7 +31,12 @@ const recordList = [
         group: testGroup,
         user: testUser,
         role: 'admin'
-    }
+    },
+    {
+        PK: `GA${testGroupId}`,
+        SK: testAlbumId,
+        group: testGroup,
+    },
 ];
 
 beforeAll(async () => {
@@ -87,5 +92,10 @@ test('Change group name', async () => {
     const membership = await getMember(testUserId, testGroupId);
     expect(membership.group.name).toEqual(newGroupName);
 
-    
+    const albumResponse = await dynamoDb.get({
+        TableName: process.env.photoTable,
+        Key: { PK: 'GA' + testGroupId, SK: testAlbumId }
+    });
+    expect(albumResponse.Item?.group?.name).toEqual(newGroupName);
+
 }, 6000);

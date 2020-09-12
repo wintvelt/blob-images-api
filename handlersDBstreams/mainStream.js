@@ -5,6 +5,7 @@ import { updatePhotoUser } from "./userChangeToPhoto";
 import { updatePubPhoto } from "./photoChangeToPub";
 import { updateCoverPhoto } from "./photoChangeToCover";
 import { updateMemberGroup } from "./groupChangeToMembership";
+import { updateAlbumGroup } from "./groupChangeToAlbum";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -73,7 +74,8 @@ const recordHandler = async (record) => {
             if (eventType === 'MODIFY') {
                 console.log('updating group change to memberships');
                 await Promise.all([
-                    ...await updateMemberGroup(cleanRec)
+                    ...await updateMemberGroup(cleanRec),
+                    ...await updateAlbumGroup(cleanRec)
                 ]);
             }
             break;
