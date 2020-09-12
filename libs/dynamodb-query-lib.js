@@ -1,5 +1,4 @@
 import dynamoDb from './dynamodb-lib';
-import { now, expireDate } from './helpers';
 
 export const listPhotosByDate = async (userId) => {
     const params = {

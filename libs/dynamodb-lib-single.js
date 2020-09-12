@@ -1,4 +1,3 @@
-import { now } from './helpers';
 import dynamoDb from './dynamodb-lib';
 
 export const getUser = async (userId, withUpdate = false) => {

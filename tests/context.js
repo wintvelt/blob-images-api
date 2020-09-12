@@ -68,6 +68,16 @@ export const cleanUp = async () => {
     }
 };
 
+beforeAll(async () => {
+    await setUp();
+});
+
+afterAll(async () => {
+    await cleanUp();
+});
+
+
+
 export const eventContext = (event) => {
     const { body, pathParameters, cognitoUserId = testUserCognitoId } = event || {};
     return {

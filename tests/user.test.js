@@ -1,5 +1,5 @@
 import dynamoDb from '../libs/dynamodb-lib';
-import { eventContext, testUserId, setUp, cleanUp, testGroupId, sleep, testPhotoId, testAlbumId } from './context';
+import { eventContext, testUserId, testGroupId, sleep, testPhotoId, testAlbumId } from './context';
 import { main as createUser } from '../handlersUser/createUser';
 import { main as getUser } from '../handlersUser/getUser';
 import { main as updateUser } from '../handlersUser/updateUser';
@@ -9,12 +9,7 @@ import { getUserByEmail } from '../libs/dynamodb-lib-user';
 const testUser2 = 'test-user-2';
 const testEmail = 'sjef@test.com';
 
-beforeAll(async () => {
-    await setUp();
-});
-
 afterAll(async () => {
-    await cleanUp();
     await dynamoDb.delete({
         TableName: process.env.photoTable,
         Key: {
