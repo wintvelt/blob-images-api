@@ -156,7 +156,7 @@ functions:
           cors: true
           authorizer: aws_iam
   getPhotoRating:
-    handler: handlersPhotoRating/get-rating.main
+    handler: handlersPhotoRating/getRating.main
     events:
       - http:
           path: photos/{id}/rating
@@ -164,7 +164,7 @@ functions:
           cors: true
           authorizer: aws_iam
   updatePhotoRating:
-    handler: handlersPhotoRating/update-rating.main
+    handler: handlersPhotoRating/updateRating.main
     events:
       - http:
           path: photos/{id}/rating

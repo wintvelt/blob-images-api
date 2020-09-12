@@ -6,6 +6,7 @@ import { updatePubPhoto } from "./photoChangeToPub";
 import { updateCoverPhoto } from "./photoChangeToCover";
 import { updateMemberGroup } from "./groupChangeToMembership";
 import { updateAlbumGroup } from "./groupChangeToAlbum";
+import { updatePhotoRating } from "./ratingChangeToPhoto";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -67,6 +68,10 @@ const recordHandler = async (record) => {
         }
         case 'UF': {
             // rating record
+            if (eventType === 'MODIFY' || eventType === 'INSERT') {
+                console.log('updating rating change to photo');
+                await updatePhotoRating(cleanRec);
+            }
             break;
         }
         case 'GB': {
