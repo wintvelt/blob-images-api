@@ -7,46 +7,12 @@ export const testGroupId = 'Gtestgroup-1';
 export const testAlbumId = 'Atestalbum-1';
 export const testPhotoId = 'Ptestphoto-1';
 
-const testUser = {
+export const testUser = {
     name: 'Wouter',
     email: 'wintvelt@xs4all.nl',
 };
 
-const recordList = [
-    {
-        PK: 'UBbase',
-        SK: testUserId,
-        ...testUser
-    },
-    {
-        PK: 'GBbase',
-        SK: testGroupId,
-        name: 'test group',
-        photoId: testPhotoId
-    },
-    {
-        PK: 'UM' + testUserId,
-        SK: testGroupId,
-    },
-    {
-        PK: 'PO' + testPhotoId,
-        SK: testUserId,
-        user: testUser,
-        url: 'dummy'
-    },
-    {
-        PK: 'GA' + testGroupId,
-        SK: testAlbumId,
-        name: 'test album',
-        photoId: testPhotoId
-    },
-    {
-        PK: `GP${testGroupId}#${testAlbumId}`,
-        SK: testPhotoId,
-    }
-];
-
-export const setUp = async () => {
+export const setUp = async (recordList) => {
     for (let i = 0; i < recordList.length; i++) {
         const rec = recordList[i];
         // result var needed for jest somehow
@@ -54,7 +20,8 @@ export const setUp = async () => {
     }
 };
 
-export const cleanUp = async () => {
+export const cleanUp = async (recordList) => {
+    await sleep(5000);
     for (let i = 0; i < recordList.length; i++) {
         const rec = recordList[i];
         // result var needed for jest somehow
@@ -67,16 +34,6 @@ export const cleanUp = async () => {
         });
     }
 };
-
-beforeAll(async () => {
-    await setUp();
-});
-
-afterAll(async () => {
-    await cleanUp();
-});
-
-
 
 export const eventContext = (event) => {
     const { body, pathParameters, cognitoUserId = testUserCognitoId } = event || {};

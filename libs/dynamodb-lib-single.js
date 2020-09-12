@@ -1,6 +1,8 @@
 import dynamoDb from './dynamodb-lib';
+import { listPhotoPublications } from './dynamodb-lib-photo';
+import { getMemberships } from './dynamodb-lib-memberships';
 
-export const getUser = async (userId, withUpdate = false) => {
+export const getUser = async (userId) => {
     const params = {
         TableName: process.env.photoTable,
         Key: {
@@ -11,7 +13,7 @@ export const getUser = async (userId, withUpdate = false) => {
     const result = await dynamoDb.get(params);
     const oldUser = result.Item;
     if (!oldUser) {
-        throw new Error("Item not found.");
+        throw new Error("User not found.");
     }
     return oldUser;
 };
@@ -71,4 +73,22 @@ export const getPhotoByGroupAlbum = async (photoId, groupId, albumId) => {
 
     // Return the retrieved item
     return photo;
+};
+
+const getGroupId = (key) => key.split('#')[0].slice(2);
+
+export const getPhotoById = async (photoId, userId) => {
+    // returns photo if user has any access
+    try {
+        const photo = await getPhotoByUser(photoId, userId);
+        return photo;
+    } catch (_) {
+        // get all publications and return if user is member of any
+        const publications = await listPhotoPublications(photoId);
+        const memberships = await getMemberships(userId);
+        const groupsWithUser = memberships.map(mem => mem.SK);
+        const pubsWithMembership = publications.filter(pub => groupsWithUser.includes(getGroupId(pub.PK)));
+        if (pubsWithMembership.length === 0) return undefined;
+        return pubsWithMembership[0].photo;
+    }
 };

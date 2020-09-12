@@ -1,8 +1,6 @@
 import handler from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
-import { getMemberRole } from "../libs/dynamodb-lib-single";
-import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
-import { listGroupAlbums } from "../libs/dynamodb-query-lib";
+import { dbUpdateMulti } from "../libs/dynamodb-lib";
+import { getMemberRole, getPhotoById } from "../libs/dynamodb-lib-single";
 import { sanitize } from "../libs/sanitize";
 
 export const main = handler(async (event, context) => {
@@ -13,76 +11,19 @@ export const main = handler(async (event, context) => {
     const memberRole = await getMemberRole(userId, groupId);
     if (memberRole !== 'admin') throw new Error('group update not allowed');
 
-    const newGroup = {
-        id: groupId,
-        name: sanitize(data.name),
-        description: sanitize(data.description) || null,
-        image: data.image || null,
-        imageUrl: (data.image) ? data.image.image : null,
-    };
+    let groupUpdate = {};
+    if (data.name) groupUpdate.name = sanitize(data.name);
+    if (data.description) groupUpdate.description = sanitize(data.description);
+    if (data.photoId) {
+        const photo = await getPhotoById(data.photoId, userId);
+        if (photo) {
+            groupUpdate.photoId = data.photoId;
+            groupUpdate.photo = photo;
+        }
+    }
 
-    const groupParams = {
-        TableName: process.env.photoTable,
-        Key: {
-            PK: 'GBbase',
-            SK: groupId,
-        },
-        UpdateExpression: "SET #name = :name, #desc = :desc, #img = :img, #imgUrl = :imgUrl",
-        ExpressionAttributeNames: {
-            '#name': 'name',
-            "#desc": 'description',
-            '#img': 'image',
-            '#imgUrl': 'imageUrl',
-        },
-        ExpressionAttributeValues: {
-            ":name": newGroup.name,
-            ":desc": newGroup.description,
-            ':img': newGroup.image,
-            ':imgUrl': newGroup.imageUrl,
-        },
-        ReturnValues: "NONE"
-    };
-    const groupMembers = await getMembersAndInvites(groupId);
-    const groupAlbums = await listGroupAlbums(groupId, memberRole);
-    await dynamoDb.transact({
-        TransactItems: [
-            { Update: groupParams },
-            ...groupMembers.map(item => ({
-                Update: {
-                    TableName: process.env.photoTable,
-                    Key: {
-                        PK: item.PK,
-                        SK: item.SK,
-                    },
-                    UpdateExpression: "SET #group = :newGroup",
-                    ExpressionAttributeNames: {
-                        '#group': 'group',
-                    },
-                    ExpressionAttributeValues: {
-                        ":newGroup": newGroup,
-                    },
-                    ReturnValues: "NONE"
-                }
-            })),
-            ...groupAlbums.map(item => ({
-                Update: {
-                    TableName: process.env.photoTable,
-                    Key: {
-                        PK: item.PK,
-                        SK: item.SK,
-                    },
-                    UpdateExpression: "SET #group = :newGroup",
-                    ExpressionAttributeNames: {
-                        '#group': 'group',
-                    },
-                    ExpressionAttributeValues: {
-                        ":newGroup": newGroup,
-                    },
-                    ReturnValues: "NONE"
-                }
-            }))
-        ]
-    });
+    if (Object.keys(groupUpdate).length === 0) return 'ok';
+    const result = await dbUpdateMulti('GBbase', groupId, groupUpdate);
 
-    return { status: true };
+    return result.Attributes;
 });

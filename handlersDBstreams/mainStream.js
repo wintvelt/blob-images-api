@@ -4,6 +4,7 @@ import { updateMemberUser } from "./userChangeToMembership";
 import { updatePhotoUser } from "./userChangeToPhoto";
 import { updatePubPhoto } from "./photoChangeToPub";
 import { updateCoverPhoto } from "./photoChangeToCover";
+import { updateMemberGroup } from "./groupChangeToMembership";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -69,6 +70,12 @@ const recordHandler = async (record) => {
         }
         case 'GB': {
             // group record
+            if (eventType === 'MODIFY') {
+                console.log('updating group change to memberships');
+                await Promise.all([
+                    ...await updateMemberGroup(cleanRec)
+                ]);
+            }
             break;
         }
         case 'UM': {

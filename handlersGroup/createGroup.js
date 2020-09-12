@@ -1,53 +1,49 @@
-import { now, newGroupId } from '../libs/helpers';
+import { newGroupId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getUser } from "../libs/dynamodb-lib-single";
+import { getPhotoById, getUser } from "../libs/dynamodb-lib-single";
 import sanitize from 'sanitize-html';
+import { dbItem } from '../libs/dynamodb-create-lib';
 
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
     const user = await getUser(userId);
+    const groupId = newGroupId();
 
-    const newGroup = {
-        id: newGroupId(),
-        name: sanitize(data.name),
-        description: sanitize(data.description),
-        image: data.image,
-        imageUrl: data.image && data.image.image,
-    };
+    let newGroup = dbItem({
+        PK: 'GBbase',
+        SK: groupId,
+        name: sanitize(data.name || ''),
+        description: sanitize(data.description || ''),
+    });
+    if (data.photoId) {
+        const photo = await getPhotoById(data.photoId, userId);
+
+        if (photo) {
+            newGroup.photoId = data.photoId;
+            newGroup.photo = photo;
+        }
+    }
 
     const params = {
         TransactItems: [
             {
                 Put: {
                     TableName: process.env.photoTable,
-                    Item: {
-                        PK: 'GBbase',
-                        SK: newGroup.id,
-                        name: newGroup.name,
-                        description: newGroup.description,
-                        image: newGroup.image,
-                        imageUrl: newGroup.imageUrl,
-                        comp: 'dummy',
-                        RND: 'GROUP',
-                        createdAt: now(),
-                    }
+                    Item: newGroup
                 }
             },
             {
                 Put: {
                     TableName: process.env.photoTable,
-                    Item: {
+                    Item: dbItem({
                         PK: 'UM' + userId,
-                        SK: newGroup.id,
+                        SK: groupId,
                         role: 'admin',
                         user,
                         group: newGroup,
-                        comp: 'admin',
-                        RND: 'GROUP',
-                        createdAt: now(),
-                    }
+                    })
                 }
             },
         ]
