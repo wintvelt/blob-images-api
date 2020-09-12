@@ -5,7 +5,7 @@ import dynamoDb from "../libs/dynamodb-lib";
 import { getUser, getMemberRole } from "../libs/dynamodb-lib-single";
 import s3 from "../libs/s3-lib";
 import { dbItem, dbCreate, dbCreateItem } from '../libs/dynamodb-create-lib';
-import { getMembers } from '../libs/dynamodb-query-lib';
+import { getMembers } from '../libs/dynamodb-lib-memberships';
 
 export const main = handler(async (event, context) => {
     const eventList = event.Records || [];

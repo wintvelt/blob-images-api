@@ -1,5 +1,6 @@
 import handler from "../libs/handler-lib";
-import { getMemberships, listGroupAlbums } from "../libs/dynamodb-query-lib";
+import { getMemberships } from "../libs/dynamodb-lib-memberships";
+import { listGroupAlbums } from "../libs/dynamodb-query-lib";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
 // import { listGroupAlbums } from "../libs/dynamodb-query-lib";
 

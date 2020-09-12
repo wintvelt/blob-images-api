@@ -1,6 +1,6 @@
 import handler from "../libs/handler-lib";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
-import { getMembersAndInvites } from "../libs/dynamodb-query-lib";
+import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 
 const compareMembers = (a, b) => {
     if (a.status && a.status === 'invite') {

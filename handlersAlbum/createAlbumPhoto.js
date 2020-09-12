@@ -2,7 +2,7 @@ import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 import { getMember, getPhotoByUser } from "../libs/dynamodb-lib-single";
 import { dbCreateItem } from "../libs/dynamodb-create-lib";
-import { getMembers } from "../libs/dynamodb-query-lib";
+import { getMembers } from "../libs/dynamodb-lib-memberships";
 
 export const main = handler(async (event, context) => {
     const userId = 'U' + event.requestContext.identity.cognitoIdentityId;

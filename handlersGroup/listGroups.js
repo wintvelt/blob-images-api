@@ -1,5 +1,5 @@
 import handler from "../libs/handler-lib";
-import { getMemberships } from "../libs/dynamodb-query-lib";
+import { getMemberships } from "../libs/dynamodb-lib-memberships";
 import { now } from "../libs/helpers";
 
 export const main = handler(async (event, context) => {

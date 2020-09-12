@@ -1,4 +1,4 @@
-import { getMemberships } from '../libs/dynamodb-query-lib';
+import { getMembershipsAndInvites } from '../libs/dynamodb-lib-memberships';
 import dynamoDb from '../libs/dynamodb-lib';
 import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
@@ -6,7 +6,7 @@ export const updateMemberUser = async (newUser) => {
     const user = cleanRecord(newUser);
     const userId = user.SK;
     const today = user.visitDateLast;
-    const membershipsToUpdate = await getMemberships(userId);
+    const membershipsToUpdate = await getMembershipsAndInvites(userId);
     const membershipsCount = membershipsToUpdate.length;
     let updatePromises = [];
     for (let i = 0; i < membershipsCount; i++) {

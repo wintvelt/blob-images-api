@@ -1,6 +1,7 @@
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMembershipsAndInvites, listPhotoRatings, getMembers, listPhotoPublications } from "../libs/dynamodb-query-lib";
+import { getMembershipsAndInvites, getMembers } from "../libs/dynamodb-lib-memberships";
+import { listPhotoRatings, listPhotoPublications } from "../libs/dynamodb-query-lib";
 import { listPhotoPublications } from "../libs/dynamodb-lib-photo";
 import s3 from '../libs/s3-lib';
 
