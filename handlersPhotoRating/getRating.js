@@ -1,31 +1,13 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { checkUser } from "../libs/dynamodb-lib";
-import { btoa } from "../libs/helpers";
+import { getPhotoById } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
-    const Key = JSON.parse(btoa(event.pathParameters.id));
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
-    if (Key.SK !== userId) {
-        const groupId = Key.PK.split('#')[0].slice(2);
-        const userIsInGroup = await checkUser(userId, groupId);
-        if (!userIsInGroup) throw new Error('Not authorized to access photo');
-    };
+    const photoId = event.pathParameters.id;
+    const userId = getUserFromEvent(event);
 
-    // get Photo
-    const photoParams = {
-        TableName: process.env.photoTable,
-        Key
-    };
-
-    const result = await dynamoDb.get(photoParams);
-    const item = result.Item;
-    if (!item) {
-        throw new Error("Photo not found.");
-    }
-
-    const photo = item.photo || item;
-    const photoId = photo.PK.slice(2);
+    const photo = await getPhotoById(photoId, userId);
+    if (!photo) throw new Error('no access to photo');
 
     const userRatingKey = {
         PK: 'UF' + photoId,

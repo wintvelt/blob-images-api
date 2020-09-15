@@ -1,10 +1,10 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import dynamoDb, { dbUpdateMulti } from "../libs/dynamodb-lib";
 import { getPhotoById } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
     const photoId = event.pathParameters.id;
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    const userId = getUserFromEvent(event);
 
     const photo = getPhotoById(photoId, userId);
     if (!photo) throw new Error('Not authorized to access photo');
@@ -32,8 +32,10 @@ export const main = handler(async (event, context) => {
     const newUserRating = oldUserRating + userRatingUpdate;
 
     // save new rating of user
-    return await dbUpdateMulti(userRatingKey.PK, userRatingKey.SK, {
+    await dbUpdateMulti(userRatingKey.PK, userRatingKey.SK, {
         rating: newUserRating,
         prevRating: oldUserRating
     });
+
+    return { status: 'ok' };
 });

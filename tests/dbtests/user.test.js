@@ -80,12 +80,19 @@ test('Get user', async () => {
     const event = eventContext({
         pathParameters: { id: testUserId }
     });
-    const response = await getUser(event);
+    await getUser(event);
+    await sleep(1000);
+    const response = await dynamoDb.get({
+        TableName: process.env.photoTable,
+        Key: {
+            PK: 'USER',
+            SK: testUserId
+        }
+    });
+    const user = response.Item;
     const today = now();
-    const body = JSON.parse(response.body);
 
-    expect(response.statusCode).toEqual(200);
-    expect(body.visitDateLast).toBe(today);
+    expect(user?.visitDateLast).toBe(today);
 });
 
 test('Get user by email', async () => {

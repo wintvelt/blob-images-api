@@ -66,8 +66,8 @@ Function `createPhoto` is called from S3 bucket, and has no public API.
 ### API Ratings
 Path                          | Method  | Body                      | Function
 ------------------------------|---------|---------------------------|------------------------------------------------------
-`photos/{id}/rating`          | `GET`   |                           | Retrieves rating of a photo
-`photos/{id}/rating`          | `POST`  | `{ ratingUpdate }`        | Updates rating with +1 or -1
+`photos/{id}/rating`          | `GET`   |                           | Retrieves rating by current user of a photo
+`photos/{id}/rating`          | `POST`  | `{ ratingUpdate }`        | Updates user rating of photo with +1 or -1
 
 
 
