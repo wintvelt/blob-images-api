@@ -17,11 +17,11 @@ provider:
 
   environment:
     photoTable: blob-images-photos
+    coverIndex: cover-idx
     photoIndex: SK-PK-idx
     emailIndex: email-idx
+    cognitoIndex: cog-idx
     dateIndex: date-idx
-    coverIndex: cover-idx
-    messageTable: blob-images-messages
     photoBucket: blob-images
 
   iamRoleStatements:
@@ -58,6 +58,13 @@ functions:
           event: s3:ObjectCreated:*
           rules:
             - prefix: protected/
+          existing: true
+  createUser:
+    handler: handlersUser/createUser.main
+    events:
+      - cognitoUserPool:
+          pool: blob-images-users
+          trigger: PostConfirmation
           existing: true
   createGroup:
     handler: handlersGroup/createGroup.main
@@ -123,19 +130,11 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
-  createUser:
-    handler: handlersUser/createUser.main
-    events:
-      - http:
-          path: users
-          method: post
-          cors: true
-          authorizer: aws_iam
   getUser:
     handler: handlersUser/getUser.main
     events:
       - http:
-          path: users/{id}
+          path: users
           method: get
           cors: true
           authorizer: aws_iam
@@ -168,7 +167,7 @@ functions:
     events:
       - http:
           path: photos/{id}/rating
-          method: put
+          method: post
           cors: true
           authorizer: aws_iam
   listPublications:

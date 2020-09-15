@@ -1,39 +1,33 @@
 import { now } from './helpers';
-import dynamoDb from './dynamodb-lib';
+import dynamoDb, { dbUpdateMulti } from './dynamodb-lib';
 
-export const getLoginUser = async (userId) => {
-    const params = {
-        TableName: process.env.photoTable,
-        Key: {
-            PK: 'UBbase',
-            SK: userId,
-        }
+export const getLoginUser = async (userId, cognitoId) => {
+    const Key = {
+        PK: 'USER',
+        SK: userId,
     };
-    const result = await dynamoDb.get(params);
+
+    const result = await dynamoDb.get({
+        TableName: process.env.photoTable,
+        Key
+    });
     const oldUser = result.Item;
     if (!oldUser) {
-        throw new Error("Item not found.");
+        throw new Error("User not found.");
     }
     const today = now();
+    const newVisitDatePrev = oldUser.visitDateLast || today;
     const isNewVisit = (!oldUser.visitDateLast || today > oldUser.visitDateLast);
-    if (isNewVisit) {
-        const newVisitDatePrev = oldUser.visitDateLast || today;
-        const updatedUser = await dynamoDb.update({
-            ...params,
-            UpdateExpression: 'SET #vl = :vl, #vp = :vp',
-            ExpressionAttributeNames: {
-                "#vl": "visitDateLast",
-                "#vp": "visitDatePrev"
-            },
-            ExpressionAttributeValues: {
-                ":vl": today,
-                ":vp": newVisitDatePrev
-            },
-            ReturnValues: "ALL_NEW"
-        });
-        return updatedUser.Attributes;
-    }
-    return oldUser;
+    const hasNoCognitoId = !oldUser.cognitoId;
+    const visitDateUpdate = (isNewVisit) ?
+        { visitDateLast: today, visitDatePrev: newVisitDatePrev }
+        : {};
+    const visitUpdate = (hasNoCognitoId) ? { ...visitDateUpdate, cognitoId } : visitDateUpdate;
+    if (isNewVisit || hasNoCognitoId) await dbUpdateMulti('UVvisit', Key.SK, visitUpdate);
+    return {
+        ...oldUser,
+        ...visitUpdate
+    };
 };
 
 export const getUserByEmail = async (email) => {
@@ -59,4 +53,36 @@ export const getUserByEmail = async (email) => {
     if (!user) throw new Error("user not found.");
 
     return user;
+};
+
+export const getUser = async (userId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        Key: {
+            PK: 'USER',
+            SK: userId,
+        }
+    };
+    const result = await dynamoDb.get(params);
+    const oldUser = result.Item;
+    if (!oldUser) {
+        throw new Error("User not found.");
+    }
+    return oldUser;
+};
+
+export const getUserByCognitoId = async (cognitoId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        IndexName: process.env.cognitoIndex,
+        KeyConditionExpression: '#c = :c',
+        ExpressionAttributeNames: { '#c': 'cognitoId' },
+        ExpressionAttributeValues: { ':c': cognitoId },
+    };
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) throw new Error("user not found.");
+
+    const userId = result.items[0].SK;
+    return await getUser(userId);
 };

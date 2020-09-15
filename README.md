@@ -1,142 +1,82 @@
-# Serverless Node.js Starter
+# Backend Repo for Photo storage service
 
-A Serverless starter that adds ES7 syntax, serverless-offline, linting, environment variables, and unit test support. Part of the [Serverless Stack](http://serverless-stack.com) guide.
+### API Users
+Path            | Method  | Body                | Function
+----------------|---------|---------------------|------------------------------------------------------
+`/users`        | `GET`   |                     | Gets user details for currently authenticated user *NB: also updates user record with latest visit date*
+`/users`        | `PUT`   | `{ name, photoId }` | Updates user attributes for any provided details, will also include `photo` for `photoId`
+`/users`        | `DELETE`|                     | Deletes current user (and all data)
 
-[Serverless Node.js Starter](https://github.com/AnomalyInnovations/serverless-nodejs-starter) uses the [serverless-bundle](https://github.com/AnomalyInnovations/serverless-bundle) plugin (an extension of the [serverless-webpack](https://github.com/serverless-heaven/serverless-webpack) plugin) and the [serverless-offline](https://github.com/dherault/serverless-offline) plugin. It supports:
+#### User creation
+A separate function `createUser` is called from AWS Cognito Post Confirmation trigger.
+Checks if user exists (in case confirmation is resent)
 
-- **Generating optimized Lambda packages with Webpack**
-- **Use ES7 syntax in your handler functions**
-  - Use `import` and `export`
-- **Run API Gateway locally**
-  - Use `serverless offline start`
-- **Support for unit tests**
-  - Run `npm test` to run your tests
-- **Sourcemaps for proper error messages**
-  - Error message show the correct line numbers
-  - Works in production with CloudWatch
-- **Lint your code with ESLint**
-- **Add environment variables for your stages**
-- **No need to manage Webpack or Babel configs**
+Creation of user is without profile picture. When uploading a photo, you can provide metadata to set it as the profile picture of the active user. [see here](####metadata-with-file-uploadsn)
 
----
+### API Invites
+Path                 | Method   | Body                                   | Function
+---------------------|----------|----------------------------------------|------------------------------------------------------
+`/groups/[id]/invite`| `POST`   | `{ toName, toEmail, message, role }`   | Creates an invite to a group, for user or email. Only if email is not yet invited or member. Also sends an email to invite
+`/invites/[id]`      | `GET`    | `{ toName, toEmail, message, role }`    | Retrieves an invite.  
+`/invites/[id]`      | `POST`   |                                         | Accept invite. Changes membership status from invite to active. Also sends emails to user who invited.
+`/invites/[id]`      | `DELETE` |                                         | Decline invite. Deletes member record and sends email to user who invited.
 
-### Demo
 
-A demo version of this service is hosted on AWS - [`https://z6pv80ao4l.execute-api.us-east-1.amazonaws.com/dev/hello`](https://z6pv80ao4l.execute-api.us-east-1.amazonaws.com/dev/hello)
+### API Groups
+Path            | Method  | Body                                   | Function
+----------------|---------|----------------------------------------|------------------------------------------------------
+`/groups`       | `POST`  | `{ name, description, photoId }`       | Creates new group, will also include `photo` based on `photoId` 
+`/groups`       | `GET`   |                                        | Lists all group memberships of this user
+`/groups/[id]`  | `GET`   |                                        | Retrieves group (user membership) including role (invite, admin etc). User must be member or invite of group
+`/groups/[id]/members`  | `GET`   |                                | Retrieves all members of this group. User must be member/ invite
+`/groups/[id]`  | `PUT`   | `{ name, description, photoId }`       | Updates group, will also include `photo` based on `photoId`. User must be group admin
+`/groups/[id]/membership/[id]`  | `PUT`   | `{ newRole }`    | Updates member role. User must be group admin
+`/groups/[id]`  | `DELETE`|                                        | Deletes group. User must be group admin
+`/groups/[id]/membership/[id]`  | `DELETE`   |               | Deletes member from group. User must be group admin
 
-And here is the ES7 source behind it
+### API Albums
+Path                          | Method  | Body                      | Function
+------------------------------|---------|---------------------------|------------------------------------------------------
+`/groups[id]/albums`          | `POST`  | `{ name, photoId }`       | Creates new album, will also include `photo` based on `photoId`
+`/groups[id]/albums`          | `GET`   |                           | Lists all albums in this group
+`/groups[id]/albums/[id]`| `GET`   |                           | Retrieves album info
+`/groups[id]/albums/[id]`| `PUT`   | `{ name, photoId }`       | Updates album info
+`/groups[id]/albums/[id]/photos`| `GET`   |                    | Lists all photos in this album
+`/groups[id]/albums/[id]/photos`| `POST`  | `{ photoId }`      | Adds a photo to this album
+`/groups[id]/albums/[id]/photos/[id]`| `DELETE`  |        | Removes a photo from this album
 
-``` javascript
-export const hello = async (event, context) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Go Serverless v1.0! ${(await message({ time: 1, copy: 'Your function executed successfully!'}))}`,
-      input: event,
-    }),
-  };
-};
+### API Photos
+Path                          | Method  | Body     | Function
+------------------------------|---------|----------|------------------------------------------------------
+`/photos`                     | `GET`   |          | Lists all photos of this user
+`/photos/[id]`                | `GET`   |          | Retrieves individual photo
+`/photos/[id]/publications`   | `GET`   |          | Lists all publications of photo (in albums)
+`/photos/[id]`                | `DELETE`|          | Deletes a photo
 
-const message = ({ time, ...rest }) => new Promise((resolve, reject) =>
-  setTimeout(() => {
-    resolve(`${rest.copy} (with a delay)`);
-  }, time * 1000)
-);
-```
+#### Metadata with file uploads
+Function `createPhoto` is called from S3 bucket, and has no public API.
+- creates a new photo entity in the database.
+- S3 file metadata is needed. May contain
+  - `{ userId }`: photo only added to private photos
+  - `{ userId, action: 'add', groupid, albumid }`: photo is also added to the album
+  - `{ userId, action: 'groupcover', groupid }`: photo is set as group cover photo
+  - `{ userId, action: 'albumcover', groupid, albumid }`: photo is set as group cover photo
+  - `{ userId, action: 'usercover' }`: photo is set as avatar for user
 
-### Upgrading from v1.x
+### API Ratings
+Path                          | Method  | Body                      | Function
+------------------------------|---------|---------------------------|------------------------------------------------------
+`photos/{id}/rating`          | `GET`   |                           | Retrieves rating of a photo
+`photos/{id}/rating`          | `POST`  | `{ ratingUpdate }`        | Updates rating with +1 or -1
 
-We have detailed instructions on how to upgrade your app to the v2.0 of the starter if you were using v1.x before. [Read about it here](https://github.com/AnomalyInnovations/serverless-nodejs-starter/releases/tag/v2.0).
 
-### Requirements
 
-- [Install the Serverless Framework](https://serverless.com/framework/docs/providers/aws/guide/installation/)
-- [Configure your AWS CLI](https://serverless.com/framework/docs/providers/aws/guide/credentials/)
 
-### Installation
 
-To create a new Serverless project.
+TODO:
+- [x] Change getUser - should be based on cognito id, not path
+- [ ] Implement user Delete
+- [ ] implement group delete
+- [ ] implement membership delete
 
-``` bash
-$ serverless install --url https://github.com/AnomalyInnovations/serverless-nodejs-starter --name my-project
-```
 
-Enter the new directory
-
-``` bash
-$ cd my-project
-```
-
-Install the Node.js packages
-
-``` bash
-$ npm install
-```
-
-### Usage
-
-To run a function on your local
-
-``` bash
-$ serverless invoke local --function hello
-```
-
-To simulate API Gateway locally using [serverless-offline](https://github.com/dherault/serverless-offline)
-
-``` bash
-$ serverless offline start
-```
-
-Deploy your project
-
-``` bash
-$ serverless deploy
-```
-
-Deploy a single function
-
-``` bash
-$ serverless deploy function --function hello
-```
-
-#### Running Tests
-
-Run your tests using
-
-``` bash
-$ npm test
-```
-
-We use Jest to run our tests. You can read more about setting up your tests [here](https://facebook.github.io/jest/docs/en/getting-started.html#content).
-
-#### Environment Variables
-
-To add environment variables to your project
-
-1. Rename `env.example` to `.env`.
-2. Add environment variables for your local stage to `.env`.
-3. Uncomment `environment:` block in the `serverless.yml` and reference the environment variable as `${env:MY_ENV_VAR}`. Where `MY_ENV_VAR` is added to your `.env` file.
-4. Make sure to not commit your `.env`.
-
-#### Linting
-
-We use [ESLint](https://eslint.org) to lint your code via the [serverless-bundle](https://github.com/AnomalyInnovations/serverless-bundle) plugin.
-
-You can turn this off by adding the following to your `serverless.yml`.
-
-``` yaml
-custom:
-  bundle:
-    linting: false
-```
-
-To [override the default config](https://eslint.org/docs/user-guide/configuring), add a `.eslintrc.json` file. To ignore ESLint for specific files, add it to a `.eslintignore` file.
-
-### Support
-
-- Open a [new issue](https://github.com/AnomalyInnovations/serverless-nodejs-starter/issues/new) if you've found a bug or have some suggestions.
-- Or submit a pull request!
-
----
-
-This repo is maintained by [Anomaly Innovations](https://anoma.ly); makers of [Seed](https://seed.run) and [Serverless Stack](https://serverless-stack.com).

@@ -1,7 +1,8 @@
 import handler from "../libs/handler-lib";
 import { getInvite } from './inviteHelpers';
 import dynamoDb from "../libs/dynamodb-lib";
-import { getUser, getMember } from "../libs/dynamodb-lib-single";
+import { getMember } from "../libs/dynamodb-lib-single";
+import { getUser } from "../libs/dynamodb-lib-user";
 import { now } from "../libs/helpers";
 import ses from "../libs/ses-lib";
 import { acceptedInvite } from "../emails/acceptedInvite";

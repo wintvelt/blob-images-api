@@ -2,7 +2,8 @@
 import { newPhotoId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getUser, getMemberRole } from "../libs/dynamodb-lib-single";
+import { getUser } from "../libs/dynamodb-lib-user";
+import { getMemberRole } from "../libs/dynamodb-lib-single";
 import s3 from "../libs/s3-lib";
 import { dbItem, dbCreate, dbCreateItem } from '../libs/dynamodb-create-lib';
 import { getMembers } from '../libs/dynamodb-lib-memberships';
@@ -21,7 +22,6 @@ export const main = handler(async (event, context) => {
             [...userKeyList, key]
             : [key];
     }
-
     const userList = Object.keys(keyListByUser);
     const userListLength = userList.length;
     for (let i = 0; i < userListLength; i++) {

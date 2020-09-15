@@ -2,22 +2,6 @@ import dynamoDb from './dynamodb-lib';
 import { listPhotoPublications } from './dynamodb-lib-photo';
 import { getMemberships } from './dynamodb-lib-memberships';
 
-export const getUser = async (userId) => {
-    const params = {
-        TableName: process.env.photoTable,
-        Key: {
-            PK: 'UBbase',
-            SK: userId,
-        }
-    };
-    const result = await dynamoDb.get(params);
-    const oldUser = result.Item;
-    if (!oldUser) {
-        throw new Error("User not found.");
-    }
-    return oldUser;
-};
-
 export const getMember = async (userId, groupId) => {
     const memberParams = {
         TableName: process.env.photoTable,

@@ -1,8 +1,8 @@
-import dynamoDb from '../libs/dynamodb-lib';
-import { eventContext, testUserId, testUser, testPhotoId, sleep, setUp, cleanUp, testAlbumId } from './context';
-import { main as createGroup } from '../handlersGroup/createGroup';
-import { main as updateGroup } from '../handlersGroup/updateGroup';
-import { getMember } from '../libs/dynamodb-lib-single';
+import dynamoDb from '../../libs/dynamodb-lib';
+import { eventContext, testUserId, testUser, testPhotoId, sleep, setUp, cleanUp, testAlbumId } from '../context';
+import { main as createGroup } from '../../handlersGroup/createGroup';
+import { main as updateGroup } from '../../handlersGroup/updateGroup';
+import { getMember } from '../../libs/dynamodb-lib-single';
 
 const TIMEOUT = 4000;
 

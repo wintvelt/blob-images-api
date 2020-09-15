@@ -1,7 +1,11 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import { getLoginUser } from "../libs/dynamodb-lib-user";
+import { cleanRecord } from "../libs/dynamodb-lib-clean";
 
 export const main = handler(async (event, context) => {
-    const user = await getLoginUser(event.pathParameters.id);
-    return user;
+    const userId = getUserFromEvent(event);
+    const cognitoId = event.requestContext.identity.cognitoIdentityId;
+    // get user, and (potentially) update cognitoId and visit dates
+    const user = await getLoginUser(userId, cognitoId);
+    return cleanRecord(user);
 });

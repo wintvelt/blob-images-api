@@ -1,7 +1,8 @@
 import { newGroupId } from '../libs/helpers';
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getPhotoById, getUser } from "../libs/dynamodb-lib-single";
+import { getPhotoById } from "../libs/dynamodb-lib-single";
+import { getUser } from "../libs/dynamodb-lib-user";
 import sanitize from 'sanitize-html';
 import { dbItem } from '../libs/dynamodb-create-lib';
 

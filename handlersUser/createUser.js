@@ -1,20 +1,29 @@
+// called by AWS cognito post confirmation trigger
 import handler from "../libs/handler-lib";
 import sanitize from 'sanitize-html';
 import { dbCreateItem } from "../libs/dynamodb-create-lib";
+import { cleanRecord } from "../libs/dynamodb-lib-clean";
 
 export const main = handler(async (event, context) => {
-    const data = JSON.parse(event.body);
-    const cognitoId = event.requestContext.identity.cognitoIdentityId;
+    const { request } = event;
 
-    const Item = {
-        PK: 'UBbase',
-        SK: 'U' + cognitoId,
-        name: sanitize(data.name),
-        email: data.email.toLowerCase(),
-        avatar: data.avatar,
-    };
+    const userSub = request?.userAttributes?.sub;
 
-    const result = await dbCreateItem(Item);
+    if (userSub) {
+        const name = request.userAttributes.name;
+        const email = request.userName;
 
-    return result;
+        const Item = {
+            PK: 'UBbase',
+            SK: 'U' + userSub,
+            name: sanitize(name),
+            email: email.toLowerCase(),
+        };
+
+        const result = await dbCreateItem(Item);
+
+        return cleanRecord(result);
+    }
+    // if no update needed
+    return 'ok';
 });

@@ -1,17 +1,18 @@
 import handler from "../libs/handler-lib";
 import { cleanRecord } from "../libs/dynamodb-lib-clean";
 import { updateMemberUser } from "./userChangeToMembership";
-import { updatePhotoUser } from "./userChangeToPhoto";
+import { updatePhotoUser } from "./userBaseChangeToPhoto";
 import { updatePubPhoto } from "./photoChangeToPub";
 import { updateCoverPhoto } from "./photoChangeToCover";
 import { updateMemberGroup } from "./groupChangeToMembership";
 import { updateAlbumGroup } from "./groupChangeToAlbum";
 import { updatePhotoRating } from "./ratingChangeToPhoto";
+import { updateUserBase } from "./userBaseChangeToUser";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
 
-// NB is NOT tall call optimised
+// NB is NOT tail call optimised
 const flatItem = (item) => {
     if (item.S) return item.S;
     if (item.M) {
@@ -43,14 +44,32 @@ const recordHandler = async (record) => {
 
     console.log({ dbType, eventType });
     switch (dbType) {
+        case 'UV': {
+            // user visit record (dates or cognito Id)
+            if (eventType === 'MODIFY' || eventType === 'INSERT') {
+                console.log('updating user visit change to user');
+                await updateUserBase(cleanRec);
+            }
+            break;
+        }
         case 'UB': {
             // user base record
+            if (eventType === 'MODIFY' || eventType === 'INSERT') {
+                console.log('updating user base to user, photos');
+                await Promise.all([
+                    updateUserBase(cleanRec),
+                    ...await updatePhotoUser(cleanRec)
+                ]);
+            }
+            break;
+        }
+        case 'US': {
+            // user full record
             if (eventType === 'MODIFY') {
-                console.log('updating user change to memberships, photos');
+                console.log('updating user change to memberships');
                 const memberUpdates = await updateMemberUser(cleanRec);
                 await Promise.all([
-                    ...memberUpdates,
-                    ...await updatePhotoUser(cleanRec)
+                    ...memberUpdates
                 ]);
             }
             break;

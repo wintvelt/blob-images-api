@@ -1,7 +1,7 @@
-import dynamoDb from '../libs/dynamodb-lib';
-import { eventContext, testUserId, testUser, testPhotoId, sleep, setUp, cleanUp } from './context';
-import { main as updateRating } from '../handlersPhotoRating/updateRating';
-import { getPhotoById } from '../libs/dynamodb-lib-single';
+import dynamoDb from '../../libs/dynamodb-lib';
+import { eventContext, testUserId, testUser, testPhotoId, sleep, setUp, cleanUp } from '../context';
+import { main as updateRating } from '../../handlersPhotoRating/updateRating';
+import { getPhotoById } from '../../libs/dynamodb-lib-single';
 
 const TIMEOUT = 2000;
 
