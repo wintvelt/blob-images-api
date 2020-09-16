@@ -4,6 +4,7 @@ import { main as createGroup } from '../../handlersGroup/createGroup';
 import { main as updateGroup } from '../../handlersGroup/updateGroup';
 import { main as listGroups } from '../../handlersGroup/listGroups';
 import { main as listMembers } from '../../handlersGroup/listMembers';
+import { main as updateMembership } from '../../handlersGroup/updateMembership';
 import { getMember } from '../../libs/dynamodb-lib-single';
 
 const TIMEOUT = 4000;
@@ -19,6 +20,9 @@ const newGroupName = 'CHANGED to new';
 const testGroup2Name = 'ANOTHER TEST GROUP';
 // will be created in test
 let testGroup2Id = 'empty';
+
+const testUser2Id = 'test-user2';
+const testUser2 = { name: 'another member' };
 
 const recordList = [
     {
@@ -48,6 +52,18 @@ const recordList = [
         PK: 'GA' + testGroupId,
         SK: testAlbumId,
         name: 'TESTALBUM'
+    },
+    {
+        PK: 'UBbase',
+        SK: testUser2Id,
+        ...testUser2
+    },
+    {
+        PK: 'UM' + testUser2Id,
+        SK: testGroupId,
+        group: testGroup,
+        user: testUser2,
+        role: 'guest'
     }
 ];
 
@@ -108,12 +124,25 @@ test('List user groups (memberships)', async () => {
     expect(memberships[0].userRole).toBe('admin');
 });
 
-test.only('List all members of a group', async () => {
+test('List all members of a group', async () => {
     const event = eventContext({
         pathParameters: { id: testGroupId },
     });
     const response = await listMembers(event);
     expect(response.statusCode).toEqual(200);
-    const memberships = JSON.parse(response.body);
-    expect(memberships[0].role).toBe('admin');
-})
+    const members = JSON.parse(response.body);
+    expect(members.length).toEqual(2);
+    expect(members[0]).toHaveProperty('role');
+});
+
+test('Update role of a member', async () => {
+    const event = eventContext({
+        pathParameters: { id: testGroupId, memberid: testUser2Id },
+        body: { newRole: 'admin' },
+    });
+    const response = await updateMembership(event);
+    expect(response.statusCode).toEqual(200);
+
+    const changedMember = await getMember(testUser2Id, testGroupId);
+    console.log(changedMember);
+});

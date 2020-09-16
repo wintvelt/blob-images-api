@@ -118,7 +118,7 @@ functions:
     handler: handlersGroup/updateMembership.main
     events:
       - http:
-          path: groups/{id}/membership
+          path: groups/{id}/membership/{memberid}
           method: put
           cors: true
           authorizer: aws_iam
