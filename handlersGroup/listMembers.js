@@ -1,4 +1,4 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
 import { getMembersAndInvites } from "../libs/dynamodb-lib-memberships";
 
@@ -21,12 +21,17 @@ const compareMembers = (a, b) => {
 };
 
 export const main = handler(async (event, context) => {
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
     const groupRole = await getMemberRole(userId, groupId);
     if (!groupRole) throw new Error('no access to group');
 
     const members = await getMembersAndInvites(groupId);
 
-    return members.sort(compareMembers);
+    return members.sort(compareMembers).map(item => ({
+        ...item.user,
+        role: item.role,
+        status: item.status,
+        createdAt: item.createdAt
+    }));
 });

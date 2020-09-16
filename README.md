@@ -25,10 +25,10 @@ Path                 | Method   | Body                                   | Funct
 ### API Groups
 Path            | Method  | Body                                   | Function
 ----------------|---------|----------------------------------------|------------------------------------------------------
+`/groups`       | `GET`   |                                        | Lists all groups (memberships) of this user, including role and seenPics
 `/groups`       | `POST`  | `{ name, description, photoId }`       | Creates new group, will also include `photo` based on `photoId` 
 `/groups/[id]`  | `GET`   |                                        | Retrieves group (user membership) including role (admin/ guest). User must be member of group
-`/groups`       | `GET`   |                                        | Lists all group memberships of this user
-`/groups/[id]/members`  | `GET`   |                                | Retrieves all members of this group. User must be member/ invite
+`/groups/[id]/members`  | `GET`   |                                | Retrieves all members of this group. User must be member.
 `/groups/[id]`  | `PUT`   | `{ name, description, photoId }`       | Updates group, will also include `photo` based on `photoId`. User must be group admin
 `/groups/[id]/membership/[id]`  | `PUT`   | `{ newRole }`    | Updates member role. User must be group admin
 `/groups/[id]`  | `DELETE`|                                        | Deletes group. User must be group admin

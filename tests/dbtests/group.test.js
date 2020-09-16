@@ -2,6 +2,8 @@ import dynamoDb from '../../libs/dynamodb-lib';
 import { eventContext, testUserId, testUser, testPhotoId, sleep, setUp, cleanUp, testAlbumId } from '../context';
 import { main as createGroup } from '../../handlersGroup/createGroup';
 import { main as updateGroup } from '../../handlersGroup/updateGroup';
+import { main as listGroups } from '../../handlersGroup/listGroups';
+import { main as listMembers } from '../../handlersGroup/listMembers';
 import { getMember } from '../../libs/dynamodb-lib-single';
 
 const TIMEOUT = 4000;
@@ -16,7 +18,7 @@ const testGroup = {
 const newGroupName = 'CHANGED to new';
 const testGroup2Name = 'ANOTHER TEST GROUP';
 // will be created in test
-let testGroup2Id = '';
+let testGroup2Id = 'empty';
 
 const recordList = [
     {
@@ -55,7 +57,6 @@ beforeAll(async () => {
 
 
 afterAll(async () => {
-    console.log(testGroup2Id);
     await cleanUp([
         ...recordList,
         { PK: 'USER', SK: testUserId },
@@ -98,3 +99,21 @@ test('Change group name', async () => {
     expect(albumResponse.Item?.group?.name).toEqual(newGroupName);
 
 }, 6000);
+
+test('List user groups (memberships)', async () => {
+    const event = eventContext();
+    const response = await listGroups(event);
+    expect(response.statusCode).toEqual(200);
+    const memberships = JSON.parse(response.body);
+    expect(memberships[0].userRole).toBe('admin');
+});
+
+test.only('List all members of a group', async () => {
+    const event = eventContext({
+        pathParameters: { id: testGroupId },
+    });
+    const response = await listMembers(event);
+    expect(response.statusCode).toEqual(200);
+    const memberships = JSON.parse(response.body);
+    expect(memberships[0].role).toBe('admin');
+})
