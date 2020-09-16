@@ -26,8 +26,8 @@ Path                 | Method   | Body                                   | Funct
 Path            | Method  | Body                                   | Function
 ----------------|---------|----------------------------------------|------------------------------------------------------
 `/groups`       | `POST`  | `{ name, description, photoId }`       | Creates new group, will also include `photo` based on `photoId` 
+`/groups/[id]`  | `GET`   |                                        | Retrieves group (user membership) including role (admin/ guest). User must be member of group
 `/groups`       | `GET`   |                                        | Lists all group memberships of this user
-`/groups/[id]`  | `GET`   |                                        | Retrieves group (user membership) including role (invite, admin etc). User must be member or invite of group
 `/groups/[id]/members`  | `GET`   |                                | Retrieves all members of this group. User must be member/ invite
 `/groups/[id]`  | `PUT`   | `{ name, description, photoId }`       | Updates group, will also include `photo` based on `photoId`. User must be group admin
 `/groups/[id]/membership/[id]`  | `PUT`   | `{ newRole }`    | Updates member role. User must be group admin

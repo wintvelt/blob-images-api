@@ -114,14 +114,6 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-  checkGroupMembership:
-    handler: handlersGroup/getMembership.main
-    events:
-      - http:
-          path: groups/{id}/membership
-          method: get
-          cors: true
-          authorizer: aws_iam
   updateMembership:
     handler: handlersGroup/updateMembership.main
     events:

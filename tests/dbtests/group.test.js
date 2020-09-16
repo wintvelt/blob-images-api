@@ -37,6 +37,16 @@ const recordList = [
         SK: testAlbumId,
         group: testGroup,
     },
+    {
+        PK: 'PO' + testPhotoId,
+        SK: testUserId,
+        url: 'dummy'
+    },
+    {
+        PK: 'GA' + testGroupId,
+        SK: testAlbumId,
+        name: 'TESTALBUM'
+    }
 ];
 
 beforeAll(async () => {
@@ -46,22 +56,11 @@ beforeAll(async () => {
 
 afterAll(async () => {
     console.log(testGroup2Id);
-    await cleanUp(recordList);
-    await Promise.all([
-        dynamoDb.delete({
-            TableName: process.env.photoTable,
-            Key: {
-                PK: 'GBbase',
-                SK: testGroup2Id,
-            }
-        }),
-        dynamoDb.delete({
-            TableName: process.env.photoTable,
-            Key: {
-                PK: 'UM' + testUserId,
-                SK: testGroup2Id,
-            }
-        })
+    await cleanUp([
+        ...recordList,
+        { PK: 'USER', SK: testUserId },
+        { PK: 'GBbase', SK: testGroup2Id },
+        { PK: 'UM' + testUserId, SK: testGroup2Id }
     ]);
 }, 8000);
 

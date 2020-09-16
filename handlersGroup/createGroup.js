@@ -1,14 +1,15 @@
 import { newGroupId } from '../libs/helpers';
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 import { getPhotoById } from "../libs/dynamodb-lib-single";
 import { getUser } from "../libs/dynamodb-lib-user";
 import sanitize from 'sanitize-html';
 import { dbItem } from '../libs/dynamodb-create-lib';
+import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
 export const main = handler(async (event, context) => {
+    const userId = getUserFromEvent(event);
     const data = JSON.parse(event.body);
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
     const user = await getUser(userId);
     const groupId = newGroupId();
 
@@ -52,5 +53,5 @@ export const main = handler(async (event, context) => {
 
     await dynamoDb.transact(params);
 
-    return params.TransactItems[0].Put.Item;
+    return cleanRecord(params.TransactItems[0].Put.Item);
 });

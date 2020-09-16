@@ -14,10 +14,8 @@ export const getMembershipsAndInvites = async (userId) => {
     };
 
     const result = await dynamoDb.query(params);
-    const items = result.Items;
-    if (!items) {
-        throw new Error("membership retrieval failed.");
-    }
+    const items = result.Items || [];
+
     const today = now();
     return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
 };

@@ -1,10 +1,11 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import { dbUpdateMulti } from "../libs/dynamodb-lib";
 import { getMemberRole, getPhotoById } from "../libs/dynamodb-lib-single";
 import { sanitize } from "../libs/sanitize";
+import { cleanRecord } from "../libs/dynamodb-lib-clean";
 
 export const main = handler(async (event, context) => {
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
     const data = JSON.parse(event.body);
 
@@ -25,5 +26,5 @@ export const main = handler(async (event, context) => {
     if (Object.keys(groupUpdate).length === 0) return 'ok';
     const result = await dbUpdateMulti('GBbase', groupId, groupUpdate);
 
-    return result.Attributes;
+    return cleanRecord(result.Attributes);
 });

@@ -1,26 +1,21 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
-import { getMemberRole } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
     if (groupId === 'new') return '';
 
-    const memberRole = await getMemberRole(userId, groupId);
-    if (!memberRole) throw new Error('not a member of this group');
-    const userIsAdmin = (memberRole === 'admin');
-
-    const groupParams = {
+    const result = await dynamoDb.get({
         TableName: process.env.photoTable,
         Key: {
-            PK: 'GBbase',
-            SK: groupId,
+            PK: 'UM' + userId,
+            SK: groupId
         }
-    };
-    const result = await dynamoDb.get(groupParams);
-    if (!result.Item) {
-        throw new Error("Item not found.");
-    }
-    return { ...result.Item, id: groupId, userIsAdmin };
+    });
+    const membership = result.Item;
+    if (!membership || membership.status === 'invite') throw new Error('not a member of this group');
+    const userRole = membership.role;
+
+    return { ...membership.group, userRole };
 });
