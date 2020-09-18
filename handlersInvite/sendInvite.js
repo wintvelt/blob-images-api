@@ -1,15 +1,16 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import ses from "../libs/ses-lib";
 
 import { expireDate, otob, now } from '../libs/helpers';
 import { sanitize } from '../libs/sanitize';
-import dynamoDb from "../libs/dynamodb-lib";
 import { getMember } from "../libs/dynamodb-lib-single";
 import { getUserByEmail } from "../libs/dynamodb-lib-user";
 import { invite } from "../emails/invite";
+import { dbCreateItem } from "../libs/dynamodb-create-lib";
+import { cleanRecord } from "../libs/dynamodb-lib-clean";
 
 export const main = handler(async (event, context) => {
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    const userId = getUserFromEvent(event);
     const groupId = event.pathParameters.id;
 
     const data = JSON.parse(event.body);
@@ -20,11 +21,18 @@ export const main = handler(async (event, context) => {
 
     const member = await getMember(userId, groupId);
     if (!member || member.role !== 'admin') throw new Error('not authorized to invite new');
+
     const { group, user } = member;
+    const today = now();
+
     const invitedUser = await getUserByEmail(safeToEmail);
     if (invitedUser) {
-        const invitedAlreadyMember = await getMember(invitedUser.SK, groupId);
-        if (invitedAlreadyMember) return { status: 'already member' };
+        const invitedAlreadyInGroup = await getMember(invitedUser.SK, groupId);
+        if (invitedAlreadyInGroup) {
+            if (invitedUser.status !== 'invite') return { status: 'invitee is already member' };
+            const hasActiveInvite = (expireDate(invitedUser.createdAt) > today);
+            if (hasActiveInvite) return { status: 'invitee already has active invite' }
+        };
     };
 
     const inviteeId = invitedUser ? invitedUser.SK : safeToEmail;
@@ -32,30 +40,23 @@ export const main = handler(async (event, context) => {
         PK: 'UM' + inviteeId,
         SK: groupId
     };
-    const createdAt = now();
-    const inviteMembershipParams = {
-        TableName: process.env.photoTable,
-        Item: {
-            PK: inviteKey.PK,
-            SK: inviteKey.SK,
-            role: role || 'guest',
-            user: invitedUser || {
-                name: safeToName,
-                email: safeToEmail
-            },
-            group,
-            comp: role,
-            status: 'invite',
-            invitation: {
-                from: user,
-                message: safeMessage
-            },
-            RND: 'GROUP',
-            createdAt,
+    const newMembership = await dbCreateItem({
+        PK: inviteKey.PK, 
+        SK: inviteKey.SK, 
+        role: role || 'guest',
+        user: (invitedUser)? cleanRecord(invitedUser) : {
+            name: safeToName,
+            email: safeToEmail
         },
-    };
-    const membership = await dynamoDb.put(inviteMembershipParams);
-    if (!membership) throw new Error('could not create invite');
+        group,
+        comp: role,
+        status: 'invite',
+        invitation: {
+            from: user,
+            message: safeMessage
+        },
+    });
+    if (!newMembership) throw new Error('could not create invite');
 
     const url = `${process.env.FRONTEND}/invites/${otob(inviteKey)}`;
     const inviteParams = {
@@ -64,7 +65,7 @@ export const main = handler(async (event, context) => {
         fromName: user.name,
         groupName: group.name,
         url,
-        expirationDate: expireDate(createdAt),
+        expirationDate: expireDate(today),
         message: safeMessage
     };
     console.log({ inviteParams });

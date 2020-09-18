@@ -26,7 +26,7 @@ export const dbItem = (item) => {
     };
 };
 
-export const dbCreate = (Item) => {
+const dbCreate = (Item) => {
     return dynamoDb.put({
         TableName: process.env.photoTable,
         Item

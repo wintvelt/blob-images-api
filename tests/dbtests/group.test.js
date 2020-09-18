@@ -76,6 +76,7 @@ afterAll(async () => {
     await cleanUp([
         ...recordList,
         { PK: 'USER', SK: testUserId },
+        { PK: 'USER', SK: testUser2Id },
         { PK: 'GBbase', SK: testGroup2Id },
         { PK: 'UM' + testUserId, SK: testGroup2Id }
     ]);

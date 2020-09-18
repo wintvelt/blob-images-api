@@ -40,7 +40,8 @@ export const getUserByEmail = async (email) => {
     };
     const result = await dynamoDb.query(params);
     const foundUsers = result.Items;
-    if (!foundUsers) throw new Error("user not found.");
+    if (!foundUsers) throw new Error("could not query database for users");
+    if (foundUsers.length === 0) return undefined;
 
     const result2 = await dynamoDb.get({
         TableName: process.env.photoTable,
@@ -50,7 +51,7 @@ export const getUserByEmail = async (email) => {
         }
     });
     const user = result2.Item;
-    if (!user) throw new Error("user not found.");
+    if (!user) return undefined;
 
     return user;
 };

@@ -37,12 +37,12 @@ export const cleanUp = async (recordList) => {
 };
 
 export const eventContext = (event) => {
-    const { body, pathParameters, cognitoUserId = testUserCognitoId } = event || {};
+    const { body, pathParameters, userId = testUserId, cognitoUserId = testUserCognitoId } = event || {};
     return {
         "requestContext": {
             "identity": {
                 "cognitoIdentityId": cognitoUserId,
-                "cognitoAuthenticationProvider": `cognito-idp....:${testUserId.slice(1)}`
+                "cognitoAuthenticationProvider": `cognito-idp....:${userId.slice(1)}`
             }
         },
         body: (body) ? JSON.stringify(body) : '',

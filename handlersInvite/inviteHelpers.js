@@ -23,7 +23,7 @@ export const getInvite = async (userId, inviteId) => {
         throw new Error("invite not found");
     }
     // check if invite is still an invite
-    // if (invite.status !== 'invite') throw new Error('invite already accepted');
+    if (invite.status !== 'invite') throw new Error('invite already accepted');
 
     // check if invite is still valid
     const expirationDate = expireDate(invite.createdAt);

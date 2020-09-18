@@ -16,11 +16,13 @@ Creation of user is without profile picture. When uploading a photo, you can pro
 ### API Invites
 Path                 | Method   | Body                                   | Function
 ---------------------|----------|----------------------------------------|------------------------------------------------------
-`/groups/[id]/invite`| `POST`   | `{ toName, toEmail, message, role }`   | Creates an invite to a group, for user or email. Only if email is not yet invited or member. Also sends an email to invite
+`/groups/[id]/invite`| `POST`   | `{ toName, toEmail, message, role }`   | Creates an invite to a group, for user or email. Only if email is not yet in group as invite or member. Also sends an email to invite, with name from current user.
 `/invites/[id]`      | `GET`    | `{ toName, toEmail, message, role }`    | Retrieves an invite.  
 `/invites/[id]`      | `POST`   |                                         | Accept invite. Changes membership status from invite to active. Also sends emails to user who invited.
 `/invites/[id]`      | `DELETE` |                                         | Decline invite. Deletes member record and sends email to user who invited.
 
+Parameter `[id]` should be a base64 encoded string of an object with signature `{ PK: 'UM' + invitee, SK: groupId }`.
+`invitee` can be either a userId or an email address.
 
 ### API Groups
 Path            | Method  | Body                                   | Function
