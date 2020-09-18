@@ -11,6 +11,7 @@ import { cleanRecord } from "../libs/dynamodb-lib-clean";
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);
     const inviteId = event.pathParameters.id;
+    // get invite (throws error if user has no access to invite)
     const invite = await getInvite(userId, inviteId);
 
     // check if invite is to user

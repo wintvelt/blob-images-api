@@ -3,6 +3,7 @@ import { eventContext, testUserId, testUser, sleep, setUp, cleanUp } from '../co
 import { main as sendInvite } from '../../handlersInvite/sendInvite';
 import { main as acceptInvite } from '../../handlersInvite/acceptInvite';
 import { main as getInvite } from '../../handlersInvite/publicGetInvite';
+import { main as declineInvite } from '../../handlersInvite/publicDeclineInvite';
 import { dbCreateItem } from '../../libs/dynamodb-create-lib';
 import { otob } from '../../libs/helpers';
 
@@ -83,14 +84,34 @@ test('Retrieve an invite', async () => {
 }, TIMEOUT + 5000);
 
 // ONLY WORKS WITH 1 TEST SCENARIO (to prevent multiple invite mails)
-describe('Accept invite', () => {
+describe('Process invite', () => {
     // test('accept email invite for new member', async () => {
     //     await dbCreateItem(testUser2);
     //     await sleep(2000);
     //     const response = await acceptInvite(event);
     //     expect(response.statusCode).toEqual(200);
     // }, TIMEOUT + 3000);
-    test('accept email invite for existing member with lower role', async () => {
+    // test('accept email invite for existing member with lower role', async () => {
+    //     await dbCreateItem(testUser2);
+    //     await dbCreateItem({
+    //         PK: 'UM' + testUser2Id,
+    //         SK: testGroupId,
+    //         user: testUser2,
+    //         group: testGroup,
+    //         status: 'active',
+    //         role: 'guest'
+    //     });
+    //     await sleep(TIMEOUT);
+    //     const response = await acceptInvite(inviteEvent(testUser2Id));
+    //     expect(response.statusCode).toEqual(200);
+    // });
+    // test('accept email invite for existing member with admin', async () => {
+    // });
+    // test('accept fail for user invite for existing member', async () => {
+    // });
+    // test('accept user invite for new member', async () => {
+    // });
+    test('decline email invite for existing member', async () => {
         await dbCreateItem(testUser2);
         await dbCreateItem({
             PK: 'UM' + testUser2Id,
@@ -101,13 +122,7 @@ describe('Accept invite', () => {
             role: 'guest'
         });
         await sleep(TIMEOUT);
-        const response = await acceptInvite(inviteEvent(testUser2Id));
+        const response = await declineInvite(inviteEvent(testUser2Id));
         expect(response.statusCode).toEqual(200);
     });
-    // test('accept email invite for existing member with admin', async () => {
-    // });
-    // test('accept fail for user invite for existing member', async () => {
-    // });
-    // test('accept user invite for new member', async () => {
-    // });
 }, TIMEOUT + 3000);

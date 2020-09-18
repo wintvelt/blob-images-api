@@ -274,6 +274,14 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  declineInvite:
+    handler: handlersInvite/acceptInvite.main
+    events:
+      - http:
+          path: invites/{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
   dbStream:
     handler: handlersDBstreams/mainStream.main
     events:
