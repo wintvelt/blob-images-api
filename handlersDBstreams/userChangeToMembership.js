@@ -1,5 +1,5 @@
 import { getMembershipsAndInvites } from '../libs/dynamodb-lib-memberships';
-import dynamoDb from '../libs/dynamodb-lib';
+import { dbUpdateMulti } from '../libs/dynamodb-lib';
 import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
 export const updateMemberUser = async (newUser) => {
@@ -26,24 +26,12 @@ export const updateMemberUser = async (newUser) => {
             });
         const memberUpdate = (seenPicsChanged) ?
             {
-                UpdateExpression: 'SET #sp = :sp, #u = :u',
-                ExpressionAttributeNames: { '#sp': 'seenPics', '#u': 'user' },
-                ExpressionAttributeValues: { ':sp': newSeenPics, ':u': user }
+                seenPics: newSeenPics,
+                user,
             }
-            : {
-                UpdateExpression: 'SET #u = :u',
-                ExpressionAttributeNames: { '#u': 'user' },
-                ExpressionAttributeValues: { ':u': user }
-            };
+            : { user };
 
-        const memberUpdatePromise = dynamoDb.update({
-            TableName: process.env.photoTable,
-            Key: {
-                PK: membership.PK,
-                SK: membership.SK
-            },
-            ...memberUpdate
-        });
+        const memberUpdatePromise = dbUpdateMulti(membership.PK, membership.SK, memberUpdate);
         updatePromises.push(memberUpdatePromise);
     }
     return updatePromises;

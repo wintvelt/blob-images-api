@@ -8,6 +8,7 @@ import { updateMemberGroup } from "./groupChangeToMembership";
 import { updateAlbumGroup } from "./groupChangeToAlbum";
 import { updatePhotoRating } from "./ratingChangeToPhoto";
 import { updateUserBase } from "./userBaseChangeToUser";
+import { updateMemberSeenPics } from "./groupPhotoAddToMember";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -110,6 +111,10 @@ const recordHandler = async (record) => {
         }
         case 'GP': {
             // group photo record
+            if (eventType === 'INSERT') {
+                console.log('updating photo add to members seenPics');
+                await Promise.all(updateMemberSeenPics(cleanRec));
+            }
             break;
         }
         case 'GA': {

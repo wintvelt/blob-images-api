@@ -31,7 +31,7 @@ export const main = handler(async (event, context) => {
         if (invitedAlreadyInGroup) {
             if (invitedUser.status !== 'invite') return { status: 'invitee is already member' };
             const hasActiveInvite = (expireDate(invitedUser.createdAt) > today);
-            if (hasActiveInvite) return { status: 'invitee already has active invite' }
+            if (hasActiveInvite) return { status: 'invitee already has active invite' };
         };
     };
 
@@ -41,10 +41,10 @@ export const main = handler(async (event, context) => {
         SK: groupId
     };
     const newMembership = await dbCreateItem({
-        PK: inviteKey.PK, 
-        SK: inviteKey.SK, 
+        PK: inviteKey.PK,
+        SK: inviteKey.SK,
         role: role || 'guest',
-        user: (invitedUser)? cleanRecord(invitedUser) : {
+        user: (invitedUser) ? cleanRecord(invitedUser) : {
             name: safeToName,
             email: safeToEmail
         },

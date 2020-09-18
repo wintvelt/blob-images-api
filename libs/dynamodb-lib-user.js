@@ -82,7 +82,10 @@ export const getUserByCognitoId = async (cognitoId) => {
     };
     const result = await dynamoDb.query(params);
     const items = result.Items;
-    if (!items) throw new Error("user not found.");
+    if (!items) {
+        console.log(`no user found with cognitoId "${cognitoId}"`);
+        return undefined;
+    };
 
     const userId = result.items[0].SK;
     return await getUser(userId);

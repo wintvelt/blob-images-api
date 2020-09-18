@@ -59,11 +59,10 @@ Path                          | Method  | Body     | Function
 Function `createPhoto` is called from S3 bucket, and has no public API.
 - creates a new photo entity in the database.
 - S3 file metadata is needed. May contain
-  - `{ userId }`: photo only added to private photos
-  - `{ userId, action: 'add', groupid, albumid }`: photo is also added to the album
-  - `{ userId, action: 'groupcover', groupid }`: photo is set as group cover photo
-  - `{ userId, action: 'albumcover', groupid, albumid }`: photo is set as group cover photo
-  - `{ userId, action: 'usercover' }`: photo is set as avatar for user
+  - `{ action: 'albumphoto', groupid, albumid }`: photo is also added to the album
+  - `{ action: 'groupcover', groupid }`: photo is set as group cover photo
+  - `{ action: 'albumcover', groupid, albumid }`: photo is set as group cover photo
+  - `{ action: 'usercover' }`: photo is set as avatar for user
 
 ### API Ratings
 Path                          | Method  | Body                      | Function
