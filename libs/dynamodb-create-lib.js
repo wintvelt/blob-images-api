@@ -5,25 +5,29 @@ export const dbItem = (item) => {
     // add createdAt date + RK (random key) + date keys (for date search)
     const createdAt = now();
     const RK = RND();
-    // date key with id for PO (my photos) and GP (group photos per album), otherwise just type
-    const recordType = item.PK.slice(0, 2);
-    const datePK = (recordType === 'PO') ?
-        'PO' + item.SK
-        : (recordType === 'GP') ?
-            item.PK
-            : recordType;
-    const dateSK = (recordType === 'PO') ?
-        createdAt
-        : (recordType === 'GP') ?
-            `${createdAt}#${item.PK}`
-            : `${createdAt}#${item.PK}#${item.SK}`;
-    return {
+    let expItem = {
         ...item,
         createdAt,
         RK,
-        datePK,
-        dateSK
     };
+    // date key with id for PO (my photos) and GP (group photos per album), otherwise nothing
+    const recordType = item.PK.slice(0, 2);
+    switch (recordType) {
+        case 'PO': {
+            expItem.datePK = 'PO' + item.SK;
+            expItem.dateSK = createdAt;
+            break;
+        }
+        case 'GP': {
+            expItem.datePK = item.PK;
+            expItem.dateSK = createdAt;
+            break;
+        }
+
+        default:
+            break;
+    }
+    return expItem;
 };
 
 const dbCreate = (Item) => {

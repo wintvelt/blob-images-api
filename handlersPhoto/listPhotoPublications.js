@@ -1,9 +1,10 @@
-import handler from "../libs/handler-lib";
+import handler, { getUserFromEvent } from "../libs/handler-lib";
 import { listPhotoPublications } from "../libs/dynamodb-lib-photo";
 import { checkUser } from "../libs/dynamodb-lib-single";
+import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
 export const main = handler(async (event, context) => {
-    const userId = 'U' + event.requestContext.identity.cognitoIdentityId;
+    const userId = getUserFromEvent(event);
     const photoId = event.pathParameters.id;
     const publications = await listPhotoPublications(photoId);
     let filteredResult = [];
@@ -12,7 +13,7 @@ export const main = handler(async (event, context) => {
         const pub = publications[i];
         const groupId = pub.PK.split('#')[0].slice(2);
         const userIsInGroup = await checkUser(userId, groupId);
-        if (userIsInGroup) filteredResult.push(pub);
+        if (userIsInGroup) filteredResult.push(cleanRecord(pub));
     }
     return filteredResult;
 });

@@ -48,12 +48,13 @@ Path                          | Method  | Body                      | Function
 `/groups[id]/albums/[id]/photos/[id]`| `DELETE`  |        | Removes a photo from this album
 
 ### API Photos
-Path                          | Method  | Body     | Function
-------------------------------|---------|----------|------------------------------------------------------
-`/photos`                     | `GET`   |          | Lists all photos of this user
-`/photos/[id]`                | `GET`   |          | Retrieves individual photo
-`/photos/[id]/publications`   | `GET`   |          | Lists all publications of photo (in albums)
-`/photos/[id]`                | `DELETE`|          | Deletes a photo
+Path                                   | Method  | Body     | Function
+---------------------------------------|---------|----------|------------------------------------------------------
+`/photos`                              | `GET`   |          | Lists all photoIds of this user
+`/photos/[id]`                         | `GET`   |          | Retrieves individual photo.
+`/groups/[id]/albums/[id[/photos/[id]` | `GET`   |          | Retrieves individual photo from album. Includes `isNew` boolean
+`/photos/[id]/publications`            | `GET`   |          | Lists all publications of photo (in albums). Only returns publications in groups where user has access
+`/photos/[id]`                         | `DELETE`|          | Deletes a photo
 
 #### Metadata with file uploads
 Function `createPhoto` is called from S3 bucket, and has no public API.

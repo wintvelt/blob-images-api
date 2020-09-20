@@ -4,21 +4,18 @@ export const listPhotosByDate = async (userId) => {
     const params = {
         TableName: process.env.photoTable,
         IndexName: process.env.dateIndex,
-        KeyConditionExpression: "#t = :type",
+        KeyConditionExpression: "#pk = :pk",
         ExpressionAttributeNames: {
-            '#t': 'type',
+            '#pk': 'PK',
         },
         ExpressionAttributeValues: {
-            ":type": 'PO' + userId,
+            ":PK": 'PO' + userId,
         },
     };
 
     const result = await dynamoDb.query(params);
     const items = result.Items;
-    if (!items) {
-        throw new Error("photos retrieval failed.");
-    }
-    return items;
+    return items || [];
 };
 
 export const listGroupAlbums = async (groupId, groupRole) => {

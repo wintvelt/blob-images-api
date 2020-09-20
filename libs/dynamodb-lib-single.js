@@ -33,7 +33,7 @@ export const getPhotoByUser = async (photoId, userId) => {
 
     const result = await dynamoDb.get(params);
     if (!result.Item) {
-        throw new Error("Item not found.");
+        throw new Error("Photo not found.");
     }
 
     // Return the retrieved item

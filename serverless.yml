@@ -146,6 +146,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  getGroupPhoto:
+    handler: handlersPhoto/getGroupPhoto.main
+    events:
+      - http:
+          path: group/{id}/albums/{albumid}/photos/{photoid}
+          method: get
+          cors: true
+          authorizer: aws_iam
   getPhotoRating:
     handler: handlersPhotoRating/getRating.main
     events:
