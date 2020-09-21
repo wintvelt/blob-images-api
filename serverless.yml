@@ -62,16 +62,16 @@ functions:
           existing: true
   createUser:
     handler: handlersUser/createUser.main
-    events:
-      - cognitoUserPool:
-          pool: blob-images-users
-          trigger: PostConfirmation
-          existing: true
+    # events:
+    #   - cognitoUserPool:
+    #       pool: blob-images-users
+    #       trigger: PostConfirmation
+    #       existing: true
   getUser:
     handler: handlersUser/getUser.main
     events:
       - http:
-          path: users
+          path: user
           method: get
           cors: true
           authorizer: aws_iam
@@ -79,11 +79,10 @@ functions:
     handler: handlersUser/updateUser.main
     events:
       - http:
-          path: users
+          path: user
           method: put
           cors: true
           authorizer: aws_iam
-  getPhoto:
     handler: handlersPhoto/getPhoto.main
     events:
       - http:
@@ -111,7 +110,7 @@ functions:
     handler: handlersPhoto/listPhotoPublications.main
     events:
       - http:
-          path: publications/{id}
+          path: photos/{id}/publications
           method: get
           cors: true
           authorizer: aws_iam
@@ -129,14 +128,6 @@ functions:
       - http:
           path: photos/{id}
           method: delete
-          cors: true
-          authorizer: aws_iam
-  listAllAlbums:
-    handler: handlersUser/listAllAlbums.main
-    events:
-      - http:
-          path: albums
-          method: get
           cors: true
           authorizer: aws_iam
   sendInvite:
@@ -181,7 +172,7 @@ custom:
     domainName: 'api.clubalmanac.com' # Change this to your domain.
     basePath: '/' # This will be prefixed to all routes
     stage: ${self:provider.stage}
-    createRoute53Record: true
+    createRoute53Record: false
     
 resources:
   # API Gateway Errors
