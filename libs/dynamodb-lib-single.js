@@ -40,25 +40,6 @@ export const getPhotoByUser = async (photoId, userId) => {
     return result.Item;
 };
 
-export const getPhotoByGroupAlbum = async (photoId, groupId, albumId) => {
-    const params = {
-        TableName: process.env.photoTable,
-        Key: {
-            PK: `GA${groupId}#${albumId}`,
-            SK: photoId,
-        }
-    };
-
-    const result = await dynamoDb.get(params);
-    const photo = result.Item?.photo;
-    if (!photo) {
-        throw new Error("Photo not found.");
-    }
-
-    // Return the retrieved item
-    return photo;
-};
-
 const getGroupId = (key) => key.split('#')[0].slice(2);
 
 export const getPhotoById = async (photoId, userId) => {
