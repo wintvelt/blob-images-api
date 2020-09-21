@@ -25,6 +25,29 @@ export const getMemberships = async (userId) => {
     return items.filter(item => item.status !== 'invite');
 };
 
+const getMembersAndInvites = async (groupId) => {
+    const params = {
+        TableName: process.env.photoTable,
+        IndexName: process.env.photoIndex,
+        KeyConditionExpression: "#g = :grp and begins_with(PK, :p)",
+        ExpressionAttributeNames: {
+            '#g': 'SK',
+        },
+        ExpressionAttributeValues: {
+            ":grp": groupId,
+            ":p": 'UM',
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items;
+    if (!items) {
+        throw new Error("members retrieval failed.");
+    };
+    const today = now();
+    return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
+};
+
 export const getMembers = async (groupId) => {
     const items = await getMembersAndInvites(groupId);
     return items.filter(item => item.status !== 'invite');
