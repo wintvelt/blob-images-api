@@ -1,4 +1,4 @@
-import dynamoDb from './dynamodb-lib';
+import { dynamoDb } from 'blob-common/core/db';
 import { listPhotoPublications } from './dynamodb-lib-photo';
 import { getMemberships } from './dynamodb-lib-memberships';
 

@@ -1,4 +1,4 @@
-import dynamoDb from './dynamodb-lib';
+import { dynamoDb } from 'blob-common/core/db';
 
 export const listPhotosByDate = async (userId) => {
     const params = {

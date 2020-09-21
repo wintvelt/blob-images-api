@@ -1,5 +1,5 @@
-import dynamoDb from './dynamodb-lib';
-import { now, expireDate } from './helpers';
+import { dynamoDb } from 'blob-common/core/db';
+import { now, expireDate } from 'blob-common/core/date';
 
 export const getMembershipsAndInvites = async (userId) => {
     const params = {

@@ -1,5 +1,6 @@
-import dynamoDb from "./dynamodb-lib";
-import { now, RND } from "./helpers";
+import { dynamoDb } from "blob-common/core/db";
+import { now } from "blob-common/core/date";
+import { RND } from "blob-common/core/RND";
 
 export const dbItem = (item) => {
     // add createdAt date + RK (random key) + date keys (for date search)
