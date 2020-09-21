@@ -1,4 +1,4 @@
-import handler from "../libs/handler-lib";
+import { handler } from "../libs/handler-lib";
 import { getMemberships } from "../libs/dynamodb-lib-memberships";
 import { listGroupAlbums } from "../libs/dynamodb-query-lib";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
@@ -16,7 +16,7 @@ export const main = handler(async (event, context) => {
         const groupRole = await getMemberRole(userId, groupId);
         if (groupRole) {
             const albums = await listGroupAlbums(groupId, groupRole);
-            const albumsWithGroupName = albums.map(album => ({...album, groupName}));
+            const albumsWithGroupName = albums.map(album => ({ ...album, groupName }));
             groupAlbums = [...groupAlbums, ...albumsWithGroupName];
         }
     }

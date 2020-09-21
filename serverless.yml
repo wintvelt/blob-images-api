@@ -211,7 +211,7 @@ functions:
           cors: true
           authorizer: aws_iam
   listAllAlbums:
-    handler: handlersAlbum/listAllAlbums.main
+    handler: handlersUser/listAllAlbums.main
     events:
       - http:
           path: albums

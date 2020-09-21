@@ -30,6 +30,7 @@ Path            | Method  | Body                                   | Function
 `/groups`       | `GET`   |                                        | Lists all groups (memberships) of this user, including role and seenPics
 `/groups`       | `POST`  | `{ name, description, photoId }`       | Creates new group, will also include `photo` based on `photoId` 
 `/groups/[id]`  | `GET`   |                                        | Retrieves group (user membership) including role (admin/ guest). User must be member of group
+`/groups/[id]/photos`  | `GET`   |                                        | Retrieves all photos in this group (keys only). User must be member
 `/groups/[id]/members`  | `GET`   |                                | Retrieves all members of this group. User must be member.
 `/groups/[id]`  | `PUT`   | `{ name, description, photoId }`       | Updates group, will also include `photo` based on `photoId`. User must be group admin
 `/groups/[id]/membership/[id]`  | `PUT`   | `{ newRole }`    | Updates member role. User must be group admin
@@ -43,7 +44,7 @@ Path                          | Method  | Body                      | Function
 `/groups[id]/albums`          | `GET`   |                           | Lists all albums in this group
 `/groups[id]/albums/[id]`| `GET`   |                           | Retrieves album info
 `/groups[id]/albums/[id]`| `PUT`   | `{ name, photoId }`       | Updates album info
-`/groups[id]/albums/[id]/photos`| `GET`   |                    | Lists all photos in this album
+`/groups[id]/albums/[id]/photos`| `GET`   |                    | Lists all photos in this album (keys only)
 `/groups[id]/albums/[id]/photos`| `POST`  | `{ photoId }`      | Adds a photo to this album
 `/groups[id]/albums/[id]/photos/[id]`| `DELETE`  |        | Removes a photo from this album
 

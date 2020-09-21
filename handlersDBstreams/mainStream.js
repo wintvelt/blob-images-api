@@ -115,6 +115,11 @@ const recordHandler = async (record) => {
                 console.log('updating photo add to members seenPics');
                 await Promise.all(updateMemberSeenPics(cleanRec));
             }
+            if (eventType === 'REMOVE') {
+                console.log('updating photo remove to members seenPics');
+                // TODO: implement delete photo from album to seenPics
+                // await Promise.all(updateMemberSeenPics(cleanRec));
+            }
             break;
         }
         case 'GA': {
