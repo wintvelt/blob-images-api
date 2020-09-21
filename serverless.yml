@@ -8,6 +8,7 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-domain-manager
 
 provider:
   name: aws
@@ -87,14 +88,6 @@ functions:
     events:
       - http:
           path: photos/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  getGroupPhoto:
-    handler: handlersPhoto/getGroupPhoto.main
-    events:
-      - http:
-          path: group/{id}/albums/{albumid}/photos/{photoid}
           method: get
           cors: true
           authorizer: aws_iam
@@ -182,7 +175,14 @@ functions:
     handler: handlersDBstreams/mainStream.main
     events:
       - stream: arn:aws:dynamodb:eu-central-1:899888592127:table/blob-images-photos/stream/2020-09-09T17:57:49.872
-                                                                                        
+
+custom:
+  customDomain:
+    domainName: 'api.clubalmanac.com' # Change this to your domain.
+    basePath: '/' # This will be prefixed to all routes
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+    
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
