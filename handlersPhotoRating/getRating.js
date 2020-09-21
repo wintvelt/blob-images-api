@@ -1,10 +1,10 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dynamoDb } from "blob-common/core/db";
 import { getPhotoById } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {
-    const photoId = event.pathParameters.id;
     const userId = getUserFromEvent(event);
+    const photoId = event.pathParameters.id;
 
     const photo = await getPhotoById(photoId, userId);
     if (!photo) throw new Error('no access to photo');

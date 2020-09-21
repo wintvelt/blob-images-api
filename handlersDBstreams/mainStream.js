@@ -1,5 +1,5 @@
-import handler from "../libs/handler-lib";
-import { cleanRecord } from "../libs/dynamodb-lib-clean";
+import { handler } from "blob-common/core/handler";
+import { cleanRecord } from "blob-common/core/dbClean";
 import { updateMemberUser } from "./userChangeToMembership";
 import { updatePhotoUser } from "./userBaseChangeToPhoto";
 import { updatePubPhoto } from "./photoChangeToPub";

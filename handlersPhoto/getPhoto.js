@@ -1,6 +1,6 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { cleanRecord } from "blob-common/core/dbClean";
 import { getPhotoByUser } from "../libs/dynamodb-lib-single";
-import { cleanRecord } from "../libs/dynamodb-lib-clean";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);

@@ -1,8 +1,8 @@
 // called by AWS cognito post confirmation trigger
-import handler from "../libs/handler-lib";
-import sanitize from 'sanitize-html';
-import { dbCreateItem } from "../libs/dynamodb-create-lib";
-import { cleanRecord } from "../libs/dynamodb-lib-clean";
+import { handler } from "blob-common/core/handler";
+import { sanitize } from 'blob-common/core/sanitize';
+import { dbCreateItem } from "blob-common/core/dbCreate";
+import { cleanRecord } from "blob-common/core/dbClean";
 
 export const main = handler(async (event, context) => {
     const { request } = event;

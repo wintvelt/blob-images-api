@@ -1,4 +1,4 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { getInvite } from './inviteHelpers';
 
 export const main = handler(async (event, context) => {

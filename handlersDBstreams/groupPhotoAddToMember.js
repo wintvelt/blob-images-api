@@ -1,4 +1,4 @@
-import { dbUpdate } from '../libs/dynamodb-lib';
+import { dbUpdate } from 'blob-common/core/db';
 import { getMembersAndInvites } from '../libs/dynamodb-lib-memberships';
 
 export const updateMemberSeenPics = async (newGroupPhoto) => {

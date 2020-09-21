@@ -66,62 +66,6 @@ functions:
           pool: blob-images-users
           trigger: PostConfirmation
           existing: true
-  createGroup:
-    handler: handlersGroup/createGroup.main
-    events:
-      - http:
-          path: groups
-          method: post
-          cors: true
-          authorizer: aws_iam
-  updateGroup:
-    handler: handlersGroup/updateGroup.main
-    events:
-      - http:
-          path: groups/{id}
-          method: put
-          cors: true
-          authorizer: aws_iam
-  getGroup:
-    handler: handlersGroup/getGroup.main
-    events:
-      - http:
-          path: groups/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  listGroups:
-    handler: handlersGroup/listGroups.main
-    events:
-      - http:
-          path: groups
-          method: get
-          cors: true
-          authorizer: aws_iam
-  listGroupPhotos:
-    handler: handlersGroup/listGroupPhotos.main
-    events:
-      - http:
-          path: groups/{id}/photos
-          method: get
-          cors: true
-          authorizer: aws_iam
-  listGroupMembers:
-    handler: handlersGroup/listMembers.main
-    events:
-      - http:
-          path: groups/{id}/members
-          method: get
-          cors: true
-          authorizer: aws_iam
-  updateMembership:
-    handler: handlersGroup/updateMembership.main
-    events:
-      - http:
-          path: groups/{id}/membership/{memberid}
-          method: put
-          cors: true
-          authorizer: aws_iam
   getUser:
     handler: handlersUser/getUser.main
     events:
@@ -194,67 +138,11 @@ functions:
           method: delete
           cors: true
           authorizer: aws_iam
-  createAlbum:
-    handler: handlersAlbum/createAlbum.main
-    events:
-      - http:
-          path: groups/{id}/albums
-          method: post
-          cors: true
-          authorizer: aws_iam
-  listAlbums:
-    handler: handlersAlbum/listAlbums.main
-    events:
-      - http:
-          path: groups/{id}/albums
-          method: get
-          cors: true
-          authorizer: aws_iam
   listAllAlbums:
     handler: handlersUser/listAllAlbums.main
     events:
       - http:
           path: albums
-          method: get
-          cors: true
-          authorizer: aws_iam
-  getAlbum:
-    handler: handlersAlbum/getAlbum.main
-    events:
-      - http:
-          path: groups/{id}/albums/{albumid}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  updateAlbum:
-    handler: handlersAlbum/updateAlbum.main
-    events:
-      - http:
-          path: groups/{id}/albums/{albumid}
-          method: put
-          cors: true
-          authorizer: aws_iam
-  createAlbumPhoto:
-    handler: handlersAlbum/createAlbumPhoto.main
-    events:
-      - http:
-          path: groups/{id}/albums/{albumid}/photos
-          method: post
-          cors: true
-          authorizer: aws_iam
-  deleteAlbumPhoto:
-    handler: handlersAlbum/deleteAlbumPhoto.main
-    events:
-      - http:
-          path: groups/{id}/albums/{albumid}/photos/{photoid}
-          method: delete
-          cors: true
-          authorizer: aws_iam
-  listAlbumPhotos:
-    handler: handlersAlbum/listAlbumPhotos.main
-    events:
-      - http:
-          path: groups/{id}/albums/{albumid}/photos
           method: get
           cors: true
           authorizer: aws_iam

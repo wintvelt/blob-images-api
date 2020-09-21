@@ -1,12 +1,12 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dynamoDb, dbUpdate } from "blob-common/core/db";
+import { ses } from "blob-common/core/ses";
+import { dbItem } from "blob-common/core/dbCreate";
+import { cleanRecord } from "blob-common/core/dbClean";
 import { getInvite } from './inviteHelpers';
-import dynamoDb, { dbUpdate } from "../libs/dynamodb-lib";
 import { getMember } from "../libs/dynamodb-lib-single";
 import { getUser } from "../libs/dynamodb-lib-user";
-import ses from "../libs/ses-lib";
 import { acceptedInvite } from "../emails/acceptedInvite";
-import { dbItem } from "../libs/dynamodb-create-lib";
-import { cleanRecord } from "../libs/dynamodb-lib-clean";
 
 export const main = handler(async (event, context) => {
     const userId = getUserFromEvent(event);

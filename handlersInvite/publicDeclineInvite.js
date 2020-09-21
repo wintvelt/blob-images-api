@@ -1,7 +1,7 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dynamoDb } from "blob-common/core/db";
+import { ses } from "blob-common/core/ses";
 import { getInvite } from './inviteHelpers';
-import dynamoDb from "../libs/dynamodb-lib";
-import ses from "../libs/ses-lib";
 import { declinedInvite } from "../emails/declinedInvite";
 
 export const main = handler(async (event, context) => {

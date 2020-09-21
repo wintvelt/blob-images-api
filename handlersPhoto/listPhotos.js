@@ -1,4 +1,4 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
 import { listPhotosByDate } from "../libs/dynamodb-query-lib";
 
 export const main = handler(async (event, context) => {

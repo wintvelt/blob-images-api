@@ -1,6 +1,6 @@
+import { dbUpdate } from 'blob-common/core/db';
+import { cleanRecord } from 'blob-common/core/dbClean';
 import { getMembersAndInvites } from '../libs/dynamodb-lib-memberships';
-import { dbUpdate } from '../libs/dynamodb-lib';
-import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
 export const updateMemberGroup = async (newGroup) => {
     const group = cleanRecord(newGroup);

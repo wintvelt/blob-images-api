@@ -1,5 +1,5 @@
-import dynamoDb, { dbUpdate } from '../libs/dynamodb-lib';
-import { cleanRecord } from '../libs/dynamodb-lib-clean';
+import { dynamoDb, dbUpdate } from 'blob-common/core/db';
+import { cleanRecord } from 'blob-common/core/dbClean';
 
 
 const getAlbumsByGroup = async (groupId) => {

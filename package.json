@@ -6,6 +6,12 @@
   "scripts": {
     "test": "serverless-bundle test"
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules\/(?!blob-common)/",
+      "\\.pnp\\.[^\\\/]+$"
+    ]
+  },
   "author": "Wouter",
   "license": "MIT",
   "repository": {

@@ -1,9 +1,9 @@
-import handler from "../libs/handler-lib";
-import dynamoDb from "../libs/dynamodb-lib";
+import { handler } from "blob-common/core/handler";
+import { dynamoDb } from "blob-common/core/db";
+import { s3 } from 'blob-common/core/s3';
 import { getMembershipsAndInvites, getMembers } from "../libs/dynamodb-lib-memberships";
 import { listPhotoRatings } from "../libs/dynamodb-query-lib";
 import { listPhotoPublications } from "../libs/dynamodb-lib-photo";
-import s3 from '../libs/s3-lib';
 
 const groupUpdate = (photoUrl) => (group) => {
     return dynamoDb.update({

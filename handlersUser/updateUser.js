@@ -1,6 +1,6 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
-import { dbUpdateMulti } from "../libs/dynamodb-lib";
-import sanitize from "sanitize-html";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dbUpdateMulti } from "blob-common/core/db";
+import { sanitize } from "blob-common/core/sanitize";
 import { getPhotoById } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {

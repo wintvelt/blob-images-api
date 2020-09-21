@@ -1,5 +1,5 @@
-import { dbUpdate } from '../libs/dynamodb-lib';
-import { cleanRecord } from '../libs/dynamodb-lib-clean';
+import { dbUpdate } from 'blob-common/core/db';
+import { cleanRecord } from 'blob-common/core/dbClean';
 import { listPhotoCovers } from '../libs/dynamodb-lib-photo';
 
 export const updateCoverPhoto = async (newPhoto) => {

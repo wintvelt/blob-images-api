@@ -1,5 +1,5 @@
-import { dbUpdateMulti } from '../libs/dynamodb-lib';
-import { cleanRecord } from '../libs/dynamodb-lib-clean';
+import { dbUpdateMulti } from 'blob-common/core/db';
+import { cleanRecord } from 'blob-common/core/dbClean';
 
 export const updateUserBase = (newUserBase) => {
     const userId = newUserBase.SK;

@@ -1,5 +1,6 @@
-import dynamoDb from "../libs/dynamodb-lib";
-import { btoa, expireDate, now } from "../libs/helpers";
+import {dynamoDb} from "blob-common/core/db";
+import { expireDate, now } from "blob-common/core/date";
+import { btoa } from "blob-common/core/base64";
 
 export const getInvite = async (userId, inviteId) => {
     let Key;

@@ -1,4 +1,4 @@
-import { handler } from "../libs/handler-lib";
+import { handler } from "blob-common/core/handler";
 import { getMemberships } from "../libs/dynamodb-lib-memberships";
 import { listGroupAlbums } from "../libs/dynamodb-query-lib";
 import { getMemberRole } from "../libs/dynamodb-lib-single";

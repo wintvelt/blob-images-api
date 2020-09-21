@@ -1,5 +1,5 @@
-import handler, { getUserFromEvent } from "../libs/handler-lib";
-import dynamoDb, { dbUpdateMulti } from "../libs/dynamodb-lib";
+import { handler, getUserFromEvent } from "blob-common/core/handler";
+import { dynamoDb, dbUpdateMulti } from "blob-common/core/db";
 import { getPhotoById } from "../libs/dynamodb-lib-single";
 
 export const main = handler(async (event, context) => {

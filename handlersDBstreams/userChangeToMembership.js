@@ -1,6 +1,6 @@
+import { dbUpdateMulti } from 'blob-common/core/db';
+import { cleanRecord } from 'blob-common/core/dbClean';
 import { getMembershipsAndInvites } from '../libs/dynamodb-lib-memberships';
-import { dbUpdateMulti } from '../libs/dynamodb-lib';
-import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
 export const updateMemberUser = async (newUser) => {
     const user = cleanRecord(newUser);

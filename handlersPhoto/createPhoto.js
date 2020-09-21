@@ -1,12 +1,12 @@
 // invoked from S3 Lambda trigger
-import { newPhotoId } from '../libs/helpers';
-import handler from "../libs/handler-lib";
-import { dbUpdateMulti } from "../libs/dynamodb-lib";
+import { handler } from "blob-common/core/handler";
+import { newPhotoId } from 'blob-common/core/ids';
+import { dbUpdateMulti } from "blob-common/core/db";
+import { dbItem, dbCreateItem } from 'blob-common/core/dbCreate';
+import { cleanRecord } from 'blob-common/core/dbClean';
+import { s3 } from "blob-common/core/s3";
 import { getUserByCognitoId } from "../libs/dynamodb-lib-user";
 import { getMemberRole } from "../libs/dynamodb-lib-single";
-import s3 from "../libs/s3-lib";
-import { dbItem, dbCreateItem } from '../libs/dynamodb-create-lib';
-import { cleanRecord } from '../libs/dynamodb-lib-clean';
 
 export const main = handler(async (event, context) => {
     const eventList = event.Records || [];
