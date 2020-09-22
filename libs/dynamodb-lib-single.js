@@ -2,26 +2,6 @@ import { dynamoDb } from 'blob-common/core/db';
 import { listPhotoPublications } from './dynamodb-lib-photo';
 import { getMemberships } from './dynamodb-lib-memberships';
 
-export const getMember = async (userId, groupId) => {
-    const memberParams = {
-        TableName: process.env.photoTable,
-        Key: {
-            PK: 'UM' + userId,
-            SK: groupId
-        },
-    };
-    const result = await dynamoDb.get(memberParams);
-    return (result.Item);
-};
-export const getMemberRole = async (userId, groupId) => {
-    const membership = await getMember(userId, groupId);
-    return membership && (membership.status !== 'invite') && membership.role;
-};
-export const checkUser = async (userId, groupId) => {
-    const groupRole = await getMemberRole(userId, groupId);
-    return (!!groupRole);
-};
-
 export const getPhotoByUser = async (photoId, userId) => {
     const params = {
         TableName: process.env.photoTable,

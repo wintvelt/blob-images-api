@@ -20,11 +20,6 @@ export const getMembershipsAndInvites = async (userId) => {
     return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
 };
 
-export const getMemberships = async (userId) => {
-    const items = await getMembershipsAndInvites(userId);
-    return items.filter(item => item.status !== 'invite');
-};
-
 const getMembersAndInvites = async (groupId) => {
     const params = {
         TableName: process.env.photoTable,
@@ -46,9 +41,4 @@ const getMembersAndInvites = async (groupId) => {
     };
     const today = now();
     return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
-};
-
-export const getMembers = async (groupId) => {
-    const items = await getMembersAndInvites(groupId);
-    return items.filter(item => item.status !== 'invite');
 };

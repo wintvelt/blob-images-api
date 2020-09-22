@@ -1,8 +1,0 @@
-{
-    "body": "{\"name\":\"Wouter COO\"}",
-    "requestContext": {
-        "identity": {
-            "cognitoIdentityId": "eu-central-1:4088f074-d8fc-49df-8cf9-fdb3dddcff7e"
-        }
-    }
-}

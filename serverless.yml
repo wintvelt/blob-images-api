@@ -8,7 +8,6 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
-  - serverless-domain-manager
 
 provider:
   name: aws
@@ -51,129 +50,11 @@ provider:
       Resource: "arn:aws:s3:::*"
 
 functions:
-  createPhoto:
-    handler: handlersPhoto/createPhoto.main
-    events:
-      - s3:
-          bucket: blob-images
-          event: s3:ObjectCreated:*
-          rules:
-            - prefix: protected/
-          existing: true
-  createUser:
-    handler: handlersUser/createUser.main
-    # events:
-    #   - cognitoUserPool:
-    #       pool: blob-images-users
-    #       trigger: PostConfirmation
-    #       existing: true
-  getUser:
-    handler: handlersUser/getUser.main
-    events:
-      - http:
-          path: user
-          method: get
-          cors: true
-          authorizer: aws_iam
-  updateUser:
-    handler: handlersUser/updateUser.main
-    events:
-      - http:
-          path: user
-          method: put
-          cors: true
-          authorizer: aws_iam
-    handler: handlersPhoto/getPhoto.main
-    events:
-      - http:
-          path: photos/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  getPhotoRating:
-    handler: handlersPhotoRating/getRating.main
-    events:
-      - http:
-          path: photos/{id}/rating
-          method: get
-          cors: true
-          authorizer: aws_iam
-  updatePhotoRating:
-    handler: handlersPhotoRating/updateRating.main
-    events:
-      - http:
-          path: photos/{id}/rating
-          method: post
-          cors: true
-          authorizer: aws_iam
-  listPublications:
-    handler: handlersPhoto/listPhotoPublications.main
-    events:
-      - http:
-          path: photos/{id}/publications
-          method: get
-          cors: true
-          authorizer: aws_iam
-  listPhotos:
-    handler: handlersPhoto/listPhotos.main
-    events:
-      - http:
-          path: photos
-          method: get
-          cors: true
-          authorizer: aws_iam
-  deletePhoto:
-    handler: handlersPhoto/deletePhoto.main
-    events:
-      - http:
-          path: photos/{id}
-          method: delete
-          cors: true
-          authorizer: aws_iam
-  sendInvite:
-    handler: handlersInvite/sendInvite.main
-    events:
-      - http:
-          path: groups/{id}/invite
-          method: post
-          cors: true
-          authorizer: aws_iam
-  publicGetInvite:
-    handler: handlersInvite/publicGetInvite.main
-    events:
-      - http:
-          path: invites/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  acceptInvite:
-    handler: handlersInvite/acceptInvite.main
-    events:
-      - http:
-          path: invites/{id}
-          method: post
-          cors: true
-          authorizer: aws_iam
-  declineInvite:
-    handler: handlersInvite/acceptInvite.main
-    events:
-      - http:
-          path: invites/{id}
-          method: delete
-          cors: true
-          authorizer: aws_iam
   dbStream:
     handler: handlersDBstreams/mainStream.main
     events:
       - stream: arn:aws:dynamodb:eu-central-1:899888592127:table/blob-images-photos/stream/2020-09-09T17:57:49.872
 
-custom:
-  customDomain:
-    domainName: 'api.clubalmanac.com' # Change this to your domain.
-    basePath: '/' # This will be prefixed to all routes
-    stage: ${self:provider.stage}
-    createRoute53Record: false
-    
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}

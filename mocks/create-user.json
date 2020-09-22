@@ -1,8 +1,0 @@
-{
-    "body": "{\"name\":\"Wouter\",\"avatar\":\"\"}",
-    "requestContext": {
-        "identity": {
-            "cognitoIdentityId": "eu-central-1:test1234"
-        }
-    }
-}
