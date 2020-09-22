@@ -19,26 +19,3 @@ export const getMembershipsAndInvites = async (userId) => {
     const today = now();
     return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
 };
-
-const getMembersAndInvites = async (groupId) => {
-    const params = {
-        TableName: process.env.photoTable,
-        IndexName: process.env.photoIndex,
-        KeyConditionExpression: "#g = :grp and begins_with(PK, :p)",
-        ExpressionAttributeNames: {
-            '#g': 'SK',
-        },
-        ExpressionAttributeValues: {
-            ":grp": groupId,
-            ":p": 'UM',
-        },
-    };
-
-    const result = await dynamoDb.query(params);
-    const items = result.Items;
-    if (!items) {
-        throw new Error("members retrieval failed.");
-    };
-    const today = now();
-    return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
-};

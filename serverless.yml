@@ -54,8 +54,3 @@ functions:
     handler: handlersDBstreams/mainStream.main
     events:
       - stream: arn:aws:dynamodb:eu-central-1:899888592127:table/blob-images-photos/stream/2020-09-09T17:57:49.872
-
-resources:
-  # API Gateway Errors
-  - ${file(resources/api-gateway-errors.yml)}
-  
