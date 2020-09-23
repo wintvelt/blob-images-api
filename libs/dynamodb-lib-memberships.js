@@ -18,3 +18,22 @@ export const getMembershipsAndInvites = async (userId) => {
     const today = now();
     return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
 };
+
+export const getMembersAndInvites = async (groupId) => {
+    const params = {
+        IndexName: process.env.photoIndex,
+        KeyConditionExpression: "#sk = :group",
+        ExpressionAttributeNames: {
+            '#sk': 'SK',
+        },
+        ExpressionAttributeValues: {
+            ":group": groupId,
+        },
+    };
+
+    const result = await dynamoDb.query(params);
+    const items = result.Items || [];
+
+    const today = now();
+    return items.filter(item => item.status !== 'invite' || expireDate(item.createdAt) >= today);
+};
