@@ -1,9 +1,7 @@
 import { dbUpdate } from 'blob-common/core/db';
-import { cleanRecord } from 'blob-common/core/dbClean';
 import { listPhotoPublications } from '../libs/dynamodb-lib-photo';
 
-export const updatePubPhoto = async (newPhoto) => {
-    const photo = cleanRecord(newPhoto);
+export const updatePubPhoto = async (photo) => {
     const photoId = photo.PK.slice(2);
 
     const publications = await listPhotoPublications(photoId);

@@ -1,9 +1,7 @@
 import { dbUpdateMulti } from 'blob-common/core/db';
-import { cleanRecord } from 'blob-common/core/dbClean';
 import { getMembershipsAndInvites } from '../libs/dynamodb-lib-memberships';
 
-export const updateMemberUser = async (newUser) => {
-    const user = cleanRecord(newUser);
+export const updateMemberUser = async (user) => {
     const userId = user.SK;
     const today = user.visitDateLast;
     const membershipsToUpdate = await getMembershipsAndInvites(userId);

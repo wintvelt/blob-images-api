@@ -49,7 +49,7 @@ const recordHandler = async (record) => {
             // user visit record (dates or cognito Id)
             if (eventType === 'MODIFY' || eventType === 'INSERT') {
                 console.log('updating user visit change to user');
-                await updateUserBase(cleanRec);
+                await updateUserBase(newRecord);
             }
             break;
         }

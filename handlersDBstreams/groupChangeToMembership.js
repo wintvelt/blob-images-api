@@ -1,9 +1,7 @@
 import { dbUpdate } from 'blob-common/core/db';
-import { cleanRecord } from 'blob-common/core/dbClean';
 import { getMembersAndInvites } from '../libs/dynamodb-lib-memberships';
 
-export const updateMemberGroup = async (newGroup) => {
-    const group = cleanRecord(newGroup);
+export const updateMemberGroup = async (group) => {
     const groupId = group.SK;
     const membersToUpdate = await getMembersAndInvites(groupId);
     const membersCount = membersToUpdate.length;

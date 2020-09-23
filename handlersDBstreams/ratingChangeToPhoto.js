@@ -1,10 +1,8 @@
 import { dbUpdate } from 'blob-common/core/db';
-import { cleanRecord } from 'blob-common/core/dbClean';
 import { getPhotoById } from '../libs/dynamodb-lib-single';
 
 
-export const updatePhotoRating = async (newRating) => {
-    const rating = cleanRecord(newRating);
+export const updatePhotoRating = async (rating) => {
     const prevRating = rating.prevRating || 0;
     const photoId = rating.PK.slice(2);
     const userId = rating.SK;

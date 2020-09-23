@@ -1,6 +1,4 @@
 import { dynamoDb, dbUpdate } from 'blob-common/core/db';
-import { cleanRecord } from 'blob-common/core/dbClean';
-
 
 const getAlbumsByGroup = async (groupId) => {
     const params = {
@@ -17,8 +15,7 @@ const getAlbumsByGroup = async (groupId) => {
     return items || [];
 };
 
-export const updateAlbumGroup = async (newGroup) => {
-    const group = cleanRecord(newGroup);
+export const updateAlbumGroup = async (group) => {
     const groupId = group.SK;
     const albumsToUpdate = await getAlbumsByGroup(groupId);
     const albumsCount = albumsToUpdate.length;

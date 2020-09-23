@@ -1,9 +1,7 @@
 import { dynamoDb } from 'blob-common/core/db';
-import { cleanRecord } from 'blob-common/core/dbClean';
 import { listPhotos } from '../libs/dynamodb-lib-photo';
 
-export const updatePhotoUser = async (newUser) => {
-    const user = cleanRecord(newUser);
+export const updatePhotoUser = async (user) => {
     const userId = user.SK;
     const photosToUpdate = await listPhotos(userId);
     const photoCount = photosToUpdate.length;

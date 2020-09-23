@@ -1,9 +1,7 @@
 import { dbUpdate } from 'blob-common/core/db';
-import { cleanRecord } from 'blob-common/core/dbClean';
 import { listPhotoCovers } from '../libs/dynamodb-lib-photo';
 
-export const updateCoverPhoto = async (newPhoto) => {
-    const photo = cleanRecord(newPhoto);
+export const updateCoverPhoto = async (photo) => {
     const photoId = photo.PK.slice(2);
 
     const covers = await listPhotoCovers(photoId);
