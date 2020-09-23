@@ -3,7 +3,6 @@ import { now, expireDate } from 'blob-common/core/date';
 
 export const getMembershipsAndInvites = async (userId) => {
     const params = {
-        TableName: process.env.photoTable,
         KeyConditionExpression: "#u = :member",
         ExpressionAttributeNames: {
             '#u': 'PK',

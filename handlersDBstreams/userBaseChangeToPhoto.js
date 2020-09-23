@@ -17,7 +17,6 @@ export const updatePhotoUser = async (newUser) => {
         };
 
         const photoUpdatePromise = dynamoDb.update({
-            TableName: process.env.photoTable,
             Key: {
                 PK: photo.PK,
                 SK: photo.SK

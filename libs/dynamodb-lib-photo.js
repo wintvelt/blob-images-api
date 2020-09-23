@@ -2,7 +2,6 @@ import { dynamoDb } from 'blob-common/core/db';
 
 export const listPhotos = async (userId) => {
     const params = {
-        TableName: process.env.photoTable,
         IndexName: process.env.photoIndex,
         KeyConditionExpression: "#u = :user and begins_with(PK, :p)",
         ExpressionAttributeNames: {
@@ -25,7 +24,6 @@ export const listPhotos = async (userId) => {
 
 export const listPhotoPublications = async (photoId) => {
     const params = {
-        TableName: process.env.photoTable,
         IndexName: process.env.photoIndex,
         KeyConditionExpression: "#p = :pid and begins_with(PK, :p)",
         ExpressionAttributeNames: {
@@ -44,7 +42,6 @@ export const listPhotoPublications = async (photoId) => {
 
 export const listPhotoCovers = async (photoId) => {
     const params = {
-        TableName: process.env.photoTable,
         IndexName: process.env.coverIndex,
         KeyConditionExpression: "#p = :pid",
         ExpressionAttributeNames: {

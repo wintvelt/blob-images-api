@@ -8,7 +8,6 @@ export const getLoginUser = async (userId, cognitoId) => {
     };
 
     const result = await dynamoDb.get({
-        TableName: process.env.photoTable,
         Key
     });
     const oldUser = result.Item;
@@ -32,7 +31,6 @@ export const getLoginUser = async (userId, cognitoId) => {
 
 export const getUserByEmail = async (email) => {
     const params = {
-        TableName: process.env.photoTable,
         IndexName: process.env.emailIndex,
         KeyConditionExpression: '#p = :p and #e = :e',
         ExpressionAttributeNames: { '#p': 'PK', '#e': 'email' },
@@ -44,7 +42,6 @@ export const getUserByEmail = async (email) => {
     if (foundUsers.length === 0) return undefined;
 
     const result2 = await dynamoDb.get({
-        TableName: process.env.photoTable,
         Key: {
             PK: 'UBbase',
             SK: foundUsers[0].SK
@@ -58,7 +55,6 @@ export const getUserByEmail = async (email) => {
 
 export const getUser = async (userId) => {
     const params = {
-        TableName: process.env.photoTable,
         Key: {
             PK: 'USER',
             SK: userId,
@@ -74,7 +70,6 @@ export const getUser = async (userId) => {
 
 export const getUserByCognitoId = async (cognitoId) => {
     const params = {
-        TableName: process.env.photoTable,
         IndexName: process.env.cognitoIndex,
         KeyConditionExpression: '#c = :c',
         ExpressionAttributeNames: { '#c': 'cognitoId' },

@@ -4,7 +4,6 @@ import { cleanRecord } from 'blob-common/core/dbClean';
 
 const getAlbumsByGroup = async (groupId) => {
     const params = {
-        TableName: process.env.photoTable,
         KeyConditionExpression: "#g = :g",
         ExpressionAttributeNames: {
             '#g': 'PK',

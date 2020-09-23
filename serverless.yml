@@ -12,11 +12,11 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: prod
+  stage: ${opt:stage, 'dev'}
   region: eu-central-1
 
   environment:
-    photoTable: blob-images-photos
+    photoTable: blob-images-photos-${self:provider.stage}
     coverIndex: cover-idx
     photoIndex: SK-PK-idx
     emailIndex: email-idx
@@ -53,4 +53,4 @@ functions:
   dbStream:
     handler: handlersDBstreams/mainStream.main
     events:
-      - stream: arn:aws:dynamodb:eu-central-1:899888592127:table/blob-images-photos/stream/2020-09-09T17:57:49.872
+      - stream: ${file(./serverlessDomainConfig.js):dynamoStream.${self:provider.stage}}
