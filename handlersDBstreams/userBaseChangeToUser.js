@@ -6,6 +6,5 @@ export const updateUserBase = (newUserBase) => {
     let userUpdate = cleanRecord(newUserBase);
     delete userUpdate.PK;
     delete userUpdate.SK;
-    if (newUserBase.cognitoId) userUpdate.cognitoId = newUserBase.cognitoId;
     return dbUpdateMulti('USER', userId, userUpdate);
 };

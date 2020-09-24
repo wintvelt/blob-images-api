@@ -22,12 +22,13 @@ export const getMembershipsAndInvites = async (userId) => {
 export const getMembersAndInvites = async (groupId) => {
     const params = {
         IndexName: process.env.photoIndex,
-        KeyConditionExpression: "#sk = :group",
+        KeyConditionExpression: "#sk = :group and begins_with(PK, :mem)",
         ExpressionAttributeNames: {
             '#sk': 'SK',
         },
         ExpressionAttributeValues: {
             ":group": groupId,
+            ':mem': 'UM'
         },
     };
 
