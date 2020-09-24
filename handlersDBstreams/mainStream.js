@@ -58,7 +58,7 @@ const recordHandler = async (record) => {
             if (eventType === 'MODIFY' || eventType === 'INSERT') {
                 console.log('updating user base to user, photos');
                 await Promise.all([
-                    updateUserBase(cleanRec),
+                    updateUserBase(newRecord),
                     ...await updatePhotoUser(cleanRec)
                 ]);
             }

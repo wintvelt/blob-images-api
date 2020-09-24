@@ -6,6 +6,11 @@ export const updateUserBase = (newUserBase) => {
     let userUpdate = cleanRecord(newUserBase);
     delete userUpdate.PK;
     delete userUpdate.SK;
-    delete userUpdate.createdAt;
+    if (newUserBase.PK === 'UBbase') {
+        userUpdate.createdAt = newUserBase.createdAt;
+        userUpdate.RK = newUserBase.RK;
+    } else {
+        delete userUpdate.createdAt;
+    }
     return dbUpdateMulti('USER', userId, userUpdate);
 };
