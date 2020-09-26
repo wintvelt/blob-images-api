@@ -9,6 +9,9 @@ export const updateUserBase = (newUserBase) => {
     if (newUserBase.PK === 'UBbase') {
         userUpdate.createdAt = newUserBase.createdAt;
         userUpdate.RK = newUserBase.RK;
+        // also include photo keys, to remove if they are empty
+        userUpdate.photoId = newUserBase.photoId;
+        userUpdate.photoUrl = newUserBase.photoUrl;
     } else {
         delete userUpdate.createdAt;
     }
