@@ -21,7 +21,7 @@ export const removeMemberAlbumPhotos = async (memberKeys) => {
         KeyConditionExpression: '#pk = :pk',
         ProjectionExpression: '#pk, #sk',
         ExpressionAttributeNames: { '#pk': 'PK', '#sk': 'SK' },
-        ExpressionAttributeNames: { ':pk': 'GA' + groupId },
+        ExpressionAttributeValues: { ':pk': 'GA' + groupId },
     });
     const groupAlbums = groupAlbumResult.Items;
 
@@ -34,7 +34,7 @@ export const removeMemberAlbumPhotos = async (memberKeys) => {
             KeyConditionExpression: '#pk = :pk',
             ProjectionExpression: '#pk, #sk',
             ExpressionAttributeNames: { '#pk': 'PK', '#sk': 'SK' },
-            ExpressionAttributeNames: { ':pk': `GP${groupId}#${albumKey.SK}` },
+            ExpressionAttributeValues: { ':pk': `GP${groupId}#${albumKey.SK}` },
         });
         groupPhotoPromises.push(albumPhotos);
     };
