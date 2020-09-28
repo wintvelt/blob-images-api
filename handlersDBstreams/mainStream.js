@@ -80,7 +80,7 @@ const recordHandler = async (record) => {
         case 'PO': {
             // photo record
             if (eventType === 'MODIFY') {
-                console.log('updating photo change to publications and covers');
+                console.log('updating photo change to publications, covers');
                 await Promise.all([
                     ...await updatePubPhoto(cleanRec),
                     ...await updateCoverPhoto(cleanRec)
@@ -99,7 +99,7 @@ const recordHandler = async (record) => {
         case 'GB': {
             // group record
             if (eventType === 'MODIFY') {
-                console.log('updating group change to memberships');
+                console.log('updating group change to memberships, albums');
                 await Promise.all([
                     ...await updateMemberGroup(cleanRec),
                     ...await updateAlbumGroup(cleanRec)
@@ -115,13 +115,13 @@ const recordHandler = async (record) => {
             // group photo record
             if (eventType === 'INSERT') {
                 console.log('updating photo add to members seenPics');
-                await Promise.all(updateMemberSeenPics(cleanRec));
+                await Promise.all(await updateMemberSeenPics(cleanRec));
             }
             if (eventType === 'REMOVE') {
-                console.log('updating photo remove to members seenPics');
+                console.log('updating photo remove to members seenPics, ratings');
                 await Promise.all([
-                    ...cleanMemberSeenPics(cleanRec),
-                    ...clearMemberRating(cleanRec)
+                    ...await cleanMemberSeenPics(Keys),
+                    ...await clearMemberRating(Keys)
                 ]);
             }
             break;

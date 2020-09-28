@@ -5,7 +5,9 @@ export const updateMemberSeenPics = async (newGroupPhoto) => {
     const photoId = newGroupPhoto.SK;
     const groupId = newGroupPhoto.PK.split('#')[0].slice(2);
     const albumId = newGroupPhoto.PK.split('#')[1];
-    const membersToUpdate = await getMembersAndInvites(groupId);
+    const photoOwnerId = newGroupPhoto.photo.user.SK;
+    const members = await getMembersAndInvites(groupId);
+    const membersToUpdate = members.filter(mem => mem.PK.slice(2) !== photoOwnerId);
     const membersCount = membersToUpdate.length;
     let updatePromises = [];
 

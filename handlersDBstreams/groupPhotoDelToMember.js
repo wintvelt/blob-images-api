@@ -13,7 +13,7 @@ export const cleanMemberSeenPics = async (groupPhotoKeys) => {
         const member = membersToUpdate[i];
         const seenPics = member.seenPics;
         if (seenPics && seenPics.length > 0) {
-            const newSeenPics = seenPics.filter(pic => (pic.photoId === photoId && pic.albumId === albumId));
+            const newSeenPics = seenPics.filter(pic => (pic.photoId !== photoId || pic.albumId !== albumId));
             const memberUpdatePromise = dbUpdate(member.PK, member.SK, 'seenPics', newSeenPics);
             updatePromises.push(memberUpdatePromise);
         }
