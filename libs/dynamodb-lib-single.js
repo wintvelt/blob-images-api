@@ -36,3 +36,14 @@ export const getPhotoById = async (photoId, userId) => {
         return pubsWithMembership[0].photo;
     }
 };
+
+export const getPhotoDirect = async (photoId) => {
+    const photoResult = await dynamoDb.query({
+        KeyConditionExpression: '#pk = :pk',
+        ExpressionAttributeNames: { '#pk': 'PK' },
+        ExpressionAttributeValues: { ':pk': 'PO' + photoId }
+    });
+    const photos = photoResult.Items;
+    if (!photos) return undefined;
+    return photos[0];
+};

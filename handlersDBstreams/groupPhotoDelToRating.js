@@ -17,12 +17,13 @@ export const clearMemberRating = async (groupPhotoKeys) => {
             const Key = { PK: 'UF' + photoId, SK: memberId };
             const ratingResult = await dynamoDb.get({ Key });
             const oldRating = ratingResult.Item;
-            if (oldRating && oldRating.rating !== 0) {
-                const ratingToZero = dbUpdateMulti(oldRating.PK, oldRating.SK, {
+            if (oldRating && oldRating.rating) {
+                // directly set rating to 0, to ensure this happens first
+                await dbUpdateMulti(oldRating.PK, oldRating.SK, {
                     rating: 0,
                     prevRating: oldRating.rating
                 });
-                updatePromises.push(ratingToZero);
+                // add deletion to promises
                 const delRating = dynamoDb.delete({ Key });
                 updatePromises.push(delRating);
             }
