@@ -14,6 +14,8 @@ import { clearMemberRating } from "./groupPhotoDelToRating";
 import { removeMemberAlbumPhotos } from "./memberDelToAlbumPhoto";
 import { clearGroupAlbumCover } from "./groupPhotoDelToCover";
 import { cleanGroupMembers } from "./memberDelToGroup";
+import { delGroupMembers } from "./groupDelToMembers";
+import { removeAlbumPhotos } from "./albumDelToAlbumPhoto";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -107,6 +109,11 @@ const recordHandler = async (record) => {
                     ...await updateMemberGroup(cleanRec),
                     ...await updateAlbumGroup(cleanRec)
                 ]);
+            } else if (eventType === 'REMOVE') {
+                console.log('deleting group members, albums');
+                await Promise.all([
+                    ...await delGroupMembers(Keys)
+                ]);
             }
             break;
         }
@@ -126,8 +133,7 @@ const recordHandler = async (record) => {
             if (eventType === 'INSERT') {
                 console.log('updating photo add to members seenPics');
                 await Promise.all(await updateMemberSeenPics(cleanRec));
-            }
-            if (eventType === 'REMOVE') {
+            } else if (eventType === 'REMOVE') {
                 console.log('updating photo remove to members seenPics, ratings');
                 await Promise.all([
                     ...await cleanMemberSeenPics(Keys),
@@ -139,6 +145,12 @@ const recordHandler = async (record) => {
         }
         case 'GA': {
             // album record
+            if (eventType === 'REMOVE') {
+                console.log('updating album remove to albumPhotos');
+                await Promise.all([
+                    ...await removeAlbumPhotos(Keys)
+                ]);
+            }
             break;
         }
         default:
