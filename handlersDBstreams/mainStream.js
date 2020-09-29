@@ -17,6 +17,9 @@ import { cleanGroupMembers } from "./memberDelToGroup";
 import { delGroupMembers } from "./groupDelToMembers";
 import { removeAlbumPhotos } from "./albumDelToAlbumPhoto";
 import { delGroupAlbums } from "./groupDelToAlbums";
+import { delPhotoRatings } from "./photoDelToRating";
+import { delPhotoPubs } from "./photoDelToPublications";
+import { clearCovers } from "./photoDelToCover";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -90,6 +93,13 @@ const recordHandler = async (record) => {
                 await Promise.all([
                     ...await updatePubPhoto(cleanRec),
                     ...await updateCoverPhoto(cleanRec)
+                ]);
+            } else if (eventType === 'REMOVE') {
+                console.log('updating photo change to publications, ratings, covers');
+                await  Promise.all([
+                    ...await delPhotoPubs(Keys),
+                    ...await delPhotoRatings(Keys),
+                    ...await clearCovers(Keys)
                 ]);
             }
             break;
