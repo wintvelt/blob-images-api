@@ -12,7 +12,7 @@ export const clearGroupAlbumCover = async (groupPhotoKeys) => {
     const emptyCover = { photoId: '', photo: '' };
 
     // remove as albumcover if needed
-    const albumResult = await dynamoDb.get({ Key: albumKey })
+    const albumResult = await dynamoDb.get({ Key: albumKey });
     const album = albumResult.Item;
     const isAlbumCover = (album.photoId === photoId);
     if (isAlbumCover) deletePromises.push(dbUpdateMulti(albumKey.PK, albumKey.SK, emptyCover));
