@@ -16,6 +16,7 @@ import { clearGroupAlbumCover } from "./groupPhotoDelToCover";
 import { cleanGroupMembers } from "./memberDelToGroup";
 import { delGroupMembers } from "./groupDelToMembers";
 import { removeAlbumPhotos } from "./albumDelToAlbumPhoto";
+import { delGroupAlbums } from "./groupDelToAlbums";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -112,7 +113,8 @@ const recordHandler = async (record) => {
             } else if (eventType === 'REMOVE') {
                 console.log('deleting group members, albums');
                 await Promise.all([
-                    ...await delGroupMembers(Keys)
+                    ...await delGroupMembers(Keys),
+                    ...await delGroupAlbums(Keys)
                 ]);
             }
             break;

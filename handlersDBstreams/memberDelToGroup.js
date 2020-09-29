@@ -11,8 +11,7 @@ export const cleanGroupMembers = async (memberKeys) => {
     let memUpdateCount = 0;
     let groupUpdateCount = 0;
     if (group) {
-        const membersResult = await getMembersAndInvites(groupId);
-        const members = membersResult.Items;
+        const members = await getMembersAndInvites(groupId);
         if (members && members.length > 0) {
             // if needed, make all others admin
             const hasOtherAdmin = members.find(mem => (mem.role === 'admin'));

@@ -6,7 +6,7 @@ export const delGroupMembers = async (Keys) => {
         IndexName: process.env.photoIndex,
         KeyConditionExpression: '#sk = :sk and begins_with(PK, :um)',
         ExpressionAttributeNames: { '#sk': 'SK' },
-        ExpressionAttributeValues: { ':sk': groupId, ':mem': 'UM' }
+        ExpressionAttributeValues: { ':sk': groupId, ':um': 'UM' }
     });
     const allMembers = membersQuery.Items;
     let memberDelPromises = [];
