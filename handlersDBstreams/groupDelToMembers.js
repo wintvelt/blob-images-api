@@ -18,7 +18,7 @@ export const delGroupMembers = async (Keys) => {
                 PK: mem.PK,
                 SK: mem.SK
             }
-        })); 
+        }));
     }
 
     console.log(`${memberDelPromises.length} members/ invites deleted`);
