@@ -22,7 +22,8 @@ provider:
     emailIndex: email-idx
     cognitoIndex: cog-idx
     dateIndex: date-idx
-    photoBucket: blob-images
+    photoBucket: ${file(./serverlessDomainConfig.js):bucket.${self:provider.stage}}
+    frontend: ${file(./serverlessDomainConfig.js):frontend.${self:provider.stage}}
 
   iamRoleStatements:
     - Effect: Allow
@@ -54,3 +55,11 @@ functions:
     handler: handlersDBstreams/mainStream.main
     events:
       - stream: ${file(./serverlessDomainConfig.js):dynamoStream.${self:provider.stage}}
+  cognitoSync:
+    handler: handlersCognito/sync.main
+    events:
+      # BUG IN SERVERLESS/ CLOUDFORMATION: Do this manually instead
+      # - cognitoUserPool:
+      #     pool: ${file(./serverlessDomainConfig.js):dynamoStream.${self:provider.stage}}
+      #     trigger: CustomMessage
+      #     existing: true
