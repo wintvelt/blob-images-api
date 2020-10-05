@@ -13,7 +13,6 @@ export const updateUserBase = (newUserBase) => {
         userUpdate.photoId = newUserBase.photoId;
         userUpdate.photoUrl = newUserBase.photoUrl;
     } else {
-        userUpdate.cognitoId = newUserBase.cognitoId;
         delete userUpdate.createdAt;
     }
     return dbUpdateMulti('USER', userId, userUpdate);
