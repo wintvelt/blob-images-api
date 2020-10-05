@@ -1,7 +1,7 @@
 import { message as verifySignupMessage } from './verifySignup';
 import { message as forgotPasswordMessage } from './forgotPassword';
 
-export const handler = (event, context, callback) => {
+export const main = (event, context, callback) => {
     const name = event.request.userAttributes['custom:name'];
     const email = event.request.userAttributes.email;
     const code = event.request.codeParameter;
