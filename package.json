@@ -24,7 +24,7 @@
     "serverless-offline": "^5.12.1"
   },
   "dependencies": {
-    "blob-common": "^1.2.7",
+    "blob-common": "^1.2.9",
     "nanoid": "^3.1.12",
     "sanitize-html": "^1.27.4",
     "serverless": "^2.4.0"
