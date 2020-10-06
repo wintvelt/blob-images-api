@@ -3,9 +3,11 @@ import { dynamoDb } from 'blob-common/core/db';
 export const listPhotos = async (userId) => {
     const params = {
         IndexName: process.env.photoIndex,
-        KeyConditionExpression: "#u = :user and begins_with(PK, :p)",
+        KeyConditionExpression: "#us = :user and begins_with(PK, :p)",
+        ProjectionExpression: 'PK, #us, #url',
         ExpressionAttributeNames: {
-            '#u': 'SK',
+            '#us': 'SK',
+            '#url': 'url',
         },
         ExpressionAttributeValues: {
             ":user": userId,

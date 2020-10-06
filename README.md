@@ -4,7 +4,7 @@
 Path            | Method  | Body                | Function
 ----------------|---------|---------------------|------------------------------------------------------
 `/users`        | `GET`   |                     | Gets user details for currently authenticated user *NB: also updates user record with latest visit date*
-`/users`        | `PUT`   | `{ name, photoId }` | Updates user attributes for any provided details, will also include `photo` for `photoId`
+`/users`        | `PUT`   | `{ name, photoId, filename }` | Updates user attributes for any provided details, will also include `photoUrl` for `photoId`, or get photo from `filename`
 `/users`        | `DELETE`|                     | Deletes current user (and all data)
 
 #### User creation

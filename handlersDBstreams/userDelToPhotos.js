@@ -1,4 +1,5 @@
 import { dynamoDb } from 'blob-common/core/db';
+import { s3 } from 'blob-common/core/s3';
 import { listPhotos } from '../libs/dynamodb-lib-photo';
 
 export const delUserPhotos = async (Keys) => {
@@ -16,6 +17,9 @@ export const delUserPhotos = async (Keys) => {
                 PK: photo.PK,
                 SK: photo.SK
             }
+        }));
+        delPromises.push(s3.delete({
+            Key: photo.url
         }));
     }
 
