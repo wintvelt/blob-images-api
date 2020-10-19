@@ -4,15 +4,16 @@ import {
 } from 'blob-common/core/email';
 
 const baseUrl = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
+const dividerSrc = makeEmailSrc('public/img/invite_divider.png');
 
 export const message = (name, email, code) => {
-    const url = `${url}/verifysignup?email=${email}&code=${code}`;
-    const textBody = `Dankjewel voor je aanmelding als lid bij clubalmanac.
-    Om je inschrijving af te ronden, willen graag nog wel je email adres bevestigen.
+    const url = `${baseUrl}/verifysignup?email=${email}&code=${code}`;
+    const textBody = `Dankjewel voor je aanmelding als lid bij clubalmanac.<br/>
+    Om je inschrijving af te ronden, willen graag nog wel je email adres bevestigen.<br/>
     Dit kun je doen met de code hieronder.`;
-    const textBody2 = `Kopieer deze code rechtstreeks in de verificatiepagina,
-    Of open <a href="${url}">${url}</a> in je browser.
-    
+    const textBody2 = `Kopieer deze code rechtstreeks in de verificatiepagina,<br/>
+    Of open <a href="${url}">${url}</a> in je browser.<br/>
+    <br/>
     We zien je graag als lid bij clubalmanac terug!`;
 
     return emailBody([

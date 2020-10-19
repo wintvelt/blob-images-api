@@ -3,14 +3,15 @@ import {
     footerRow, greeting, headerRow, paragraph, signatureCell, makeEmailSrc, codeCell
 } from 'blob-common/core/email';
 
-const url = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
+const baseUrl = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
+const dividerSrc = makeEmailSrc('public/img/invite_divider.png');
 
 export const message = (name, email, code) => {
-    const url = `${url}/confirmpsw?email=${email}&code=${code}`;
+    const url = `${baseUrl}/confirmpsw?email=${email}&code=${code}`;
     const textBody = `Om je wachtwoord te resetten, heb je onderstaande verificatiecode nodig.`;
-    const textBody2 = `Kopieer deze code rechtstreeks in de wachtwoord reset pagina,
-    Of open <a href="${url}">${url}</a> in je browser.
-    
+    const textBody2 = `Kopieer deze code rechtstreeks in de wachtwoord reset pagina,<br/>
+    Of open <a href="${url}">${url}</a> in je browser.<br/>
+    <br/>
     We zien je graag als lid bij clubalmanac terug!`;
 
     return emailBody([
