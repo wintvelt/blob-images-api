@@ -7,10 +7,10 @@ export const main = (event, context, callback) => {
     const code = event.request.codeParameter;
     if (event.triggerSource === "CustomMessage_SignUp" ||
         event.triggerSource === "CustomMessage_ResendCode") {
-        event.response.emailSubject = "Confirm your email address for Photo Duck";
+        event.response.emailSubject = "Bevestig je emailadres voor clubalmanac";
         event.response.emailMessage = verifySignupMessage(name, email, code);
     } else if (event.triggerSource === "CustomMessage_ForgotPassword") {
-        event.response.emailSubject = "Reset your password on Photo Duck";
+        event.response.emailSubject = "Stel je wachtwoord voor clubalmanac opnieuw in";
         event.response.emailMessage = forgotPasswordMessage(name, email, code);
     }
 

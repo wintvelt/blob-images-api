@@ -1,32 +1,34 @@
-const url = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
+import {
+    dividerCell, emailBody, row, textCell,
+    footerRow, greeting, headerRow, paragraph, signatureCell, makeEmailSrc, codeCell
+} from 'blob-common/core/email';
+
+const baseUrl = process.env.frontend || process.env.devFrontend || 'http://localhost:3000';
 
 export const message = (name, email, code) => {
-    return `
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml">
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                <title>Confirm your Photo Duck account</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-            </head>
-            <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
-                <tr>
-                    <td>
-                        <h2>Hi ${name},</h2>
-                        <br/>
-                        Thank you for signing up to Photo Duck.<br/>
-                        <br/>
-                        To complete your registration, please confirm your email address with the code below.<br/>
-                        <br/>
-                        <h3>Your verification code is <span style="font-weight: bold">${code}</span>.</h3>
-                        You can enter this code directly on the verification page, <br/>
-                        <br/>
-                        Or open ${url}/verifysignup?email=${email}&code=${code} in your browser<br/>
-                        <br/>
-                        We look forward to welcoming you on board!
-                    </td>
-                </tr>
-            </table>
-        </html>
-    `;
+    const url = `${url}/verifysignup?email=${email}&code=${code}`;
+    const textBody = `Dankjewel voor je aanmelding als lid bij clubalmanac.
+    Om je inschrijving af te ronden, willen graag nog wel je email adres bevestigen.
+    Dit kun je doen met de code hieronder.`;
+    const textBody2 = `Kopieer deze code rechtstreeks in de verificatiepagina,
+    Of open <a href="${url}">${url}</a> in je browser.
+    
+    We zien je graag als lid bij clubalmanac terug!`;
+
+    return emailBody([
+        headerRow(makeEmailSrc('public/img/logo_email_1.png')),
+        row([
+            dividerCell(makeEmailSrc('public/img/verify.png')),
+            textCell(greeting(`Hi ${name}`)),
+            textCell(paragraph(textBody)),
+            codeCell(code),
+            textCell(paragraph(textBody2)),
+            dividerCell(dividerSrc),
+        ]),
+        row([
+            textCell(paragraph('Met hoogachtende groet')),
+            signatureCell(makeEmailSrc('public/img/signature_wouter.png'))
+        ]),
+        footerRow
+    ]);
 };
