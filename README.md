@@ -33,9 +33,9 @@ Path            | Method  | Body                                   | Function
 `/groups/[id]/photos`  | `GET`   |                                        | Retrieves all photos in this group (keys only). User must be member
 `/groups/[id]/members`  | `GET`   |                                | Retrieves all members of this group. User must be member.
 `/groups/[id]`  | `PUT`   | `{ name, description, photoId }`       | Updates group, will also include `photo` based on `photoId`. User must be group admin
-`/groups/[id]/membership/[id]`  | `PUT`   | `{ newRole }`    | Updates member role. User must be group admin
+`/groups/[id]/membership/[id]`  | `PUT`   | `{ newRole, isFounder }`    | Updates member role. User must be group admin. Only founder is allowed to transfer foundership to another member.
 `/groups/[id]`  | `DELETE`|                                        | Deletes group. User must be group admin and founder
-`/groups/[id]/membership/[id]`  | `DELETE`   |               | Deletes member from group. User must be group admin
+`/groups/[id]/membership/[id]`  | `DELETE`   |               | Deletes member from group. User must be group admin. Cannot remove founder from group
 
 ### API Albums
 Path                          | Method  | Body                      | Function
