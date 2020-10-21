@@ -24,7 +24,8 @@
     "serverless-offline": "^5.12.1"
   },
   "dependencies": {
-    "blob-common": "^1.2.15",
+    "blob-common": "^1.2.16",
+    "mailparser": "^3.0.0",
     "nanoid": "^3.1.12",
     "sanitize-html": "^1.27.4",
     "serverless": "^2.8.0"

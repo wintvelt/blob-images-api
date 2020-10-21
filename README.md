@@ -73,13 +73,3 @@ Path                          | Method  | Body                      | Function
 `photos/{id}/rating`          | `POST`  | `{ ratingUpdate }`        | Updates user rating of photo with +1 or -1
 
 
-
-
-
-TODO:
-- [x] Change getUser - should be based on cognito id, not path
-- [ ] Implement user Delete
-- [ ] implement group delete
-- [ ] implement membership delete
-
-

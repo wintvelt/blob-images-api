@@ -1,4 +1,4 @@
-import { dbUpdate, dynamoDb } from 'blob-common/core/db';
+import { dbUpdate, dbUpdateMulti, dynamoDb } from 'blob-common/core/db';
 import { getMembersAndInvites } from '../libs/dynamodb-lib-memberships';
 
 export const cleanGroupMembers = async (memberKeys) => {
@@ -15,13 +15,20 @@ export const cleanGroupMembers = async (memberKeys) => {
         if (members && members.length > 0) {
             // if needed, make all others admin
             const hasOtherAdmin = members.find(mem => (mem.role === 'admin'));
+            const noFounderleft = !members.find(mem => (mem.isFounder));
             if (!hasOtherAdmin) {
                 for (let i = 0; i < members.length; i++) {
                     const mem = members[i];
-                    if (mem.role !== 'admin') {
+                    if (noFounderleft && i === 0) {
+                        // make first found member founder
+                        groupPromises.push(dbUpdateMulti(mem.PK, mem.SK, {
+                            role: 'admin',
+                            isFounder: true
+                        }));
+                    } else {
                         groupPromises.push(dbUpdate(mem.PK, mem.SK, 'role', 'admin'));
-                        memUpdateCount++;
                     }
+                    memUpdateCount++;
                 }
             }
         } else {
