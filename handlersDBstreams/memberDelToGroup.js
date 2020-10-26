@@ -30,6 +30,11 @@ export const cleanGroupMembers = async (memberKeys) => {
                     }
                     memUpdateCount++;
                 }
+            } else if (noFounderleft) {
+                // make the (first) found admin also the founder
+                groupPromises.push(dbUpdateMulti(hasOtherAdmin.PK, hasOtherAdmin.SK, {
+                    isFounder: true
+                }));
             }
         } else {
             // no members left, so delete group
