@@ -12,6 +12,10 @@ export const delUserBase = async (Keys) => {
             PK: 'UVvisit',
             SK: userId
         }}),
+        dynamoDb.delete({ Key: {
+            PK: 'UPstats',
+            SK: userId
+        }}),
     ];
 
     return delBasePromises;
