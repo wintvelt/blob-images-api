@@ -24,6 +24,8 @@ import { delUserRatings } from "./userDelToRating";
 import { delUserBase } from "./userDelToBase";
 import { delUserPhotos } from "./userDelToPhotos";
 import { delUserMemberships } from "./userDelToMemberships";
+import { decPhotoCount } from "./photoDelToStats";
+import { incPhotoCount } from "./photoAddToStats";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -107,12 +109,16 @@ const recordHandler = async (record) => {
                     ...await updateCoverPhoto(cleanRec)
                 ]);
             } else if (eventType === 'REMOVE') {
-                console.log('updating photo change to publications, ratings, covers');
+                console.log('updating photo delete to publications, ratings, covers, user stats');
                 await Promise.all([
                     ...await delPhotoPubs(Keys),
                     ...await delPhotoRatings(Keys),
-                    ...await clearCovers(Keys)
+                    ...await clearCovers(Keys),
+                    decPhotoCount(Keys)
                 ]);
+            } else if (eventType === 'INSERT') {
+                console.log('updating photo insert to user stats');
+                await incPhotoCount(Keys);
             }
             break;
         }
