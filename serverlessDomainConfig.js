@@ -9,6 +9,11 @@ module.exports.frontend = () => ({
     'prod': 'clubalmanac.com'
 });
 
+module.exports.webmaster = () => ({
+    'dev': 'wintvelt@me.com',
+    'prod': 'wintvelt@me.com'
+});
+
 module.exports.bucket = () => ({
     'dev': 'blob-images-dev',
     'prod': 'blob-images'
