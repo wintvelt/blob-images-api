@@ -1,6 +1,7 @@
 import { message as verifySignupMessage } from './verifySignup';
 import { message as forgotPasswordMessage } from './forgotPassword';
 import { message as tempPasswordMessage } from './tempPassword';
+import { adminCreateDbUser } from './adminCreateDbUser';
 
 export const main = (event, context, callback) => {
     const name = event.request.userAttributes['custom:name'];
@@ -17,11 +18,11 @@ export const main = (event, context, callback) => {
     } else if (event.triggerSource === "CustomMessage_AdminCreateUser") {
         console.log('triggered by manual creation of user');
         console.log(event.request);
+        adminCreateDbUser(event.request);
         event.response.emailSubject = "Je bent lid gemaakt van clubalmanac";
         const message = tempPasswordMessage(username, code);
         console.log(message);
         event.response.emailMessage = message;
-        // event.response.emailMessage = "Welcome to the service. Your user name is " + event.request.usernameParameter + " Your temporary password is " + event.request.codeParameter;
     }
 
     callback(null, event);

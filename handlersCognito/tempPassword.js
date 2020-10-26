@@ -16,7 +16,7 @@ export const message = (email, code) => {
     const textBody = `Er is een account voor je gemaakt op clubalmanac<br/>
 Je gebruikersnaam is ${email}<br/>
 </br>
-Je tijdelijkse wachtwoord is`;
+Je tijdelijke wachtwoord is`;
     const textBody2 = `Via onderstaande link kun je een nieuw wachtwoord instellen<br/>
 <a href="${url}">${url}</a>`;
 
