@@ -14,21 +14,29 @@ const getInvite = async Key => {
 export const main = async (event, context, callback) => {
     const email = event.request.userAttributes.email;
     if (allowSignup || email === webmaster) {
+        console.log('allowing signup');
         callback(null, event);
     } else {
         const inviteId = event.request.validationData?.inviteId;
-        if (!inviteId) throw new Error('no invite ID provided');
+        if (!inviteId) {
+            console.log('no invite ID');
+            throw new Error('no invite ID provided');
+        };
 
         let Key;
         try {
             Key = JSON.parse(btoa(inviteId));
         } catch (_) {
+            console.log('invite ID invalid');
             throw new Error('invite ID invalid');
         }
 
         const invite = await getInvite(Key);
         console.log({ invite });
-        if (!invite) throw new Error('invite not found');
+        if (!invite) {
+            console.log('invite not found');
+            throw new Error('invite not found');
+        };
 
         callback(null, event);
     }
