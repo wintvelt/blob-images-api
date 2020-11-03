@@ -5,7 +5,7 @@ module.exports.dynamoStream = () => ({
 });
 
 module.exports.frontend = () => ({
-    'dev': 'https://localhost:3000',
+    'dev': 'http://localhost:3000',
     'prod': 'https://clubalmanac.com'
 });
 

@@ -8,6 +8,7 @@ export const main = (event, context, callback) => {
     const email = event.request.userAttributes.email;
     const code = event.request.codeParameter;
     const username = event.request.usernameParameter;
+    console.log(event.request);
     if (event.triggerSource === "CustomMessage_SignUp" ||
         event.triggerSource === "CustomMessage_ResendCode") {
         event.response.emailSubject = "Bevestig je emailadres voor clubalmanac";
