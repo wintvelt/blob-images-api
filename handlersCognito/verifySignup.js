@@ -9,7 +9,7 @@ const dividerSrc = makeEmailSrc('public/img/invite_divider.png');
 export const message = (name, email, code) => {
     const url = `${baseUrl}/verifysignup?email=${email}&code=${code}`;
     const textBody = `Dankjewel voor je aanmelding als lid bij clubalmanac.<br/>
-    Om je inschrijving af te ronden, willen graag nog wel je email adres bevestigen.<br/>
+    Om je inschrijving af te ronden, willen we graag nog wel je email adres bevestigen.<br/>
     Dit kun je doen met de code hieronder.`;
     const textBody2 = `Kopieer deze code rechtstreeks in de verificatiepagina,<br/>
     Of open <a href="${url}">${url}</a> in je browser.<br/>
