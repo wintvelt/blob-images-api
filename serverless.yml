@@ -26,31 +26,33 @@ provider:
     frontend: ${file(./serverlessDomainConfig.js):frontend.${self:provider.stage}}
     webmaster: ${file(./serverlessDomainConfig.js):webmaster.${self:provider.stage}}
 
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:DescribeTable
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-        - dynamodb:DescribeStream
-        - dynamodb:ListStreams
-      Resource: "arn:aws:dynamodb:eu-central-1:*:*"
-    - Effect: Allow
-      Action:
-        - ses:SendEmail
-        - ses:SendRawEmail
-        - ses:SendTemplatedEmail
-        - ses:SendBulkTemplatedEmail
-      Resource: "arn:aws:ses:eu-central-1:*:*"
-    - Effect: Allow
-      Action:
-        - s3:GetObject
-        - s3:DeleteObject
-      Resource: "arn:aws:s3:::*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:DescribeStream
+            - dynamodb:ListStreams
+          Resource: "arn:aws:dynamodb:eu-central-1:*:*"
+        - Effect: Allow
+          Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+            - ses:SendTemplatedEmail
+            - ses:SendBulkTemplatedEmail
+          Resource: "arn:aws:ses:eu-central-1:*:*"
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:DeleteObject
+          Resource: "arn:aws:s3:::*"
 
 functions:
   dbStream:
