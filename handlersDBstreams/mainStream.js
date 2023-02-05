@@ -26,6 +26,7 @@ import { delUserPhotos } from "./userDelToPhotos";
 import { delUserMemberships } from "./userDelToMemberships";
 import { decPhotoCount } from "./photoDelToStats";
 import { incPhotoCount } from "./photoAddToStats";
+import { acceptMembership } from "./userStatsAddToMembership";
 
 const getEvent = (eventRecord) => eventRecord.eventName;
 const getType = (Keys) => Keys.PK?.slice(0, 2);
@@ -62,40 +63,44 @@ const recordHandler = async (record) => {
 
     console.log({ dbType, eventType });
     switch (dbType) {
-        case 'UV': {
-            // user visit record (dates or cognito Id)
-            if (eventType === 'MODIFY' || eventType === 'INSERT') {
-                console.log('updating user visit change to user');
-                await updateUserBase(newRecord);
-            }
-            break;
-        }
-        case 'UB': {
-            // user base record
-            if (eventType === 'MODIFY' || eventType === 'INSERT') {
-                console.log('updating user base to user, photos');
+        case 'GA': {
+            // album record
+            if (eventType === 'REMOVE') {
+                console.log('updating album remove to albumPhotos');
                 await Promise.all([
-                    updateUserBase(newRecord),
-                    ...await updatePhotoUser(cleanRec)
+                    ...await removeAlbumPhotos(Keys)
                 ]);
             }
             break;
         }
-        case 'US': {
-            // user full record
+        case 'GB': {
+            // group record
             if (eventType === 'MODIFY') {
-                console.log('updating user change to memberships');
-                const memberUpdates = await updateMemberUser(cleanRec);
+                console.log('updating group change to memberships, albums');
                 await Promise.all([
-                    ...memberUpdates
+                    ...await updateMemberGroup(cleanRec),
+                    ...await updateAlbumGroup(cleanRec)
                 ]);
             } else if (eventType === 'REMOVE') {
-                console.log('updating user delete to ratings, base/visit, photos, memberships');
+                console.log('deleting group members, albums');
                 await Promise.all([
-                    ...await delUserBase(Keys),
-                    ...await delUserRatings(Keys),
-                    ...await delUserPhotos(Keys),
-                    ...await delUserMemberships(Keys)
+                    ...await delGroupMembers(Keys),
+                    ...await delGroupAlbums(Keys)
+                ]);
+            }
+            break;
+        }
+        case 'GP': {
+            // group photo record
+            if (eventType === 'INSERT') {
+                console.log('updating photo add to members seenPics');
+                await Promise.all(await updateMemberSeenPics(cleanRec));
+            } else if (eventType === 'REMOVE') {
+                console.log('updating photo remove to members seenPics, ratings');
+                await Promise.all([
+                    ...await cleanMemberSeenPics(Keys),
+                    ...await clearMemberRating(Keys),
+                    ...await clearGroupAlbumCover(Keys)
                 ]);
             }
             break;
@@ -122,28 +127,22 @@ const recordHandler = async (record) => {
             }
             break;
         }
+        case 'UB': {
+            // user base record
+            if (eventType === 'MODIFY' || eventType === 'INSERT') {
+                console.log('updating user base to user, photos');
+                await Promise.all([
+                    updateUserBase(newRecord),
+                    ...await updatePhotoUser(cleanRec)
+                ]);
+            }
+            break;
+        }
         case 'UF': {
             // rating record
             if (eventType === 'MODIFY' || eventType === 'INSERT') {
                 console.log('updating rating change to photo');
                 await updatePhotoRating(cleanRec);
-            }
-            break;
-        }
-        case 'GB': {
-            // group record
-            if (eventType === 'MODIFY') {
-                console.log('updating group change to memberships, albums');
-                await Promise.all([
-                    ...await updateMemberGroup(cleanRec),
-                    ...await updateAlbumGroup(cleanRec)
-                ]);
-            } else if (eventType === 'REMOVE') {
-                console.log('deleting group members, albums');
-                await Promise.all([
-                    ...await delGroupMembers(Keys),
-                    ...await delGroupAlbums(Keys)
-                ]);
             }
             break;
         }
@@ -158,28 +157,38 @@ const recordHandler = async (record) => {
             }
             break;
         }
-        case 'GP': {
-            // group photo record
+        case 'UP': {
+            // stats record, when created, accept any invite connected to it
             if (eventType === 'INSERT') {
-                console.log('updating photo add to members seenPics');
-                await Promise.all(await updateMemberSeenPics(cleanRec));
-            } else if (eventType === 'REMOVE') {
-                console.log('updating photo remove to members seenPics, ratings');
+                console.log('on user creation, auto accept membership of initiating invite');
+                await acceptMembership(cleanRec);
+            }
+            break;
+        }
+        case 'US': {
+            // user full record
+            if (eventType === 'MODIFY') {
+                console.log('updating user change to memberships');
+                const memberUpdates = await updateMemberUser(cleanRec);
                 await Promise.all([
-                    ...await cleanMemberSeenPics(Keys),
-                    ...await clearMemberRating(Keys),
-                    ...await clearGroupAlbumCover(Keys)
+                    ...memberUpdates
+                ]);
+            } else if (eventType === 'REMOVE') {
+                console.log('updating user delete to ratings, base/visit, photos, memberships');
+                await Promise.all([
+                    ...await delUserBase(Keys),
+                    ...await delUserRatings(Keys),
+                    ...await delUserPhotos(Keys),
+                    ...await delUserMemberships(Keys)
                 ]);
             }
             break;
         }
-        case 'GA': {
-            // album record
-            if (eventType === 'REMOVE') {
-                console.log('updating album remove to albumPhotos');
-                await Promise.all([
-                    ...await removeAlbumPhotos(Keys)
-                ]);
+        case 'UV': {
+            // user visit record (dates or cognito Id)
+            if (eventType === 'MODIFY' || eventType === 'INSERT') {
+                console.log('updating user visit change to user');
+                await updateUserBase(newRecord);
             }
             break;
         }

@@ -23,3 +23,8 @@ module.exports.userpool = () => ({
     'dev': 'blob-images-users-dev',
     'prod': 'blob-images-users'
 });
+
+module.exports.acceptarn = () => ({
+    'dev': 'arn:aws:lambda:eu-central-1:899888592127:function:blob-images-api-invites-dev-acceptInvite',
+    'prod': 'arn:aws:lambda:eu-central-1:899888592127:function:blob-images-api-invites-prod-acceptInvite'
+});
